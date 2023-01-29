@@ -38,10 +38,10 @@
     "incremental": true,
     "removeComments": false,
     "paths": {
-      "@fp-ts/schema": ["./src/index.ts"],
-      "@fp-ts/schema/test/*": ["./test/*"],
-      "@fp-ts/schema/examples/*": ["./examples/*"],
-      "@fp-ts/schema/*": ["./src/*"]
+      "@effect/match": ["./src/index.ts"],
+      "@effect/match/test/*": ["./test/*"],
+      "@effect/match/examples/*": ["./examples/*"],
+      "@effect/match/*": ["./src/*"]
     },
     "plugins": [{ "name": "@effect/language-service" }]
   },

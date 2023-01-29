@@ -13,8 +13,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@fp-ts/schema/test": path.resolve(__dirname, "/test"),
-      "@fp-ts/schema": path.resolve(__dirname, "/src")
+      "@effect/match/test": path.resolve(__dirname, "/test"),
+      "@effect/match": path.resolve(__dirname, "/src")
     }
   }
 })
