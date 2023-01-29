@@ -209,3 +209,17 @@ describe("Matcher", () => {
     expect(match({ age: 5 })).toEqual("5 is too old")
   })
 })
+
+interface User {
+  name: string
+  age: number
+}
+
+const match = pipe(
+  Match.type<User>(),
+  Match.when({ age: (age) => age >= 5 }, (user) => `Age: ${user.age}`),
+  Match.orElse((user) => `${user.name} is too young`),
+)
+
+expect(match({ name: "Tim", age: 5 })).toEqual("Age: 5")
+expect(match({ name: "Tim", age: 4 })).toEqual("Tim is too young")
