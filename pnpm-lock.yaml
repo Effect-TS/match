@@ -1,14 +1,11 @@
 lockfileVersion: 5.4
 
 patchedDependencies:
-  '@fp-ts/core@0.1.1':
-    hash: y3lbm4arx3ydwimrg32hyta3vu
-    path: patches/@fp-ts__core@0.1.1.patch
   '@effect-ts/build-utils@0.40.3':
     hash: wzvflwv62ngf22ppz3frldq37m
     path: patches/@effect-ts__build-utils@0.40.3.patch
   docs-ts@0.6.10:
-    hash: kn5eixy6frizaidrzh6vqnnk6m
+    hash: qh6hn2na6svbs2rv7mvr332uoq
     path: patches/docs-ts@0.6.10.patch
 
 importers:
@@ -24,7 +21,6 @@ importers:
       '@effect-ts/core': ^0.60.2
       '@effect/language-service': ^0.0.10
       '@fp-ts/core': ^0.1.1
-      '@fp-ts/data': ^0.1.0
       '@fp-ts/schema': ^0.1.3
       '@types/benchmark': ^2.1.2
       '@types/chai': ^4.3.4
@@ -63,8 +59,7 @@ importers:
       vite: ^3.2.5
       vitest: 0.25.5
     dependencies:
-      '@fp-ts/core': 0.1.1_y3lbm4arx3ydwimrg32hyta3vu
-      '@fp-ts/data': 0.1.0
+      '@fp-ts/core': 0.1.1
       '@fp-ts/schema': 0.1.3
     devDependencies:
       '@babel/cli': 7.19.3_@babel+core@7.20.5
@@ -90,7 +85,7 @@ importers:
       benchmark: 2.1.4
       concurrently: 7.6.0
       cpx: 1.5.0
-      docs-ts: 0.6.10_kn5eixy6frizaidrzh6vqnnk6m_brpckf4sz23pco3jyty2eys3iq
+      docs-ts: 0.6.10_qh6hn2na6svbs2rv7mvr332uoq_brpckf4sz23pco3jyty2eys3iq
       dtslint: github.com/gcanti/dtslint/4552d162099399c4e14f8486ced673411e5b3659
       eslint: 8.29.0
       eslint-config-prettier: 8.6.0_eslint@8.29.0
@@ -740,10 +735,9 @@ packages:
     resolution: {integrity: sha512-FuXKPHTEvvgxV3LulGJXkSpAghovh7wLxux+Pm9LKefC0gtZZQ4OajTjTK5RsQtpyKIsAn26PwdG6W6zksF/UA==}
     dev: true
 
-  /@fp-ts/core/0.1.1_y3lbm4arx3ydwimrg32hyta3vu:
+  /@fp-ts/core/0.1.1:
     resolution: {integrity: sha512-7vQnrnvJAMrXgIwt0qQNhXkPDtm4l8vwql8EvXeY47v/FwnWpDvt1HISoO9Kq3am5SZ0A8Av+4NqPab2FRdKxw==}
     dev: false
-    patched: true
 
   /@fp-ts/data/0.0.20:
     resolution: {integrity: sha512-7nv25VxgZiJzintT1Bsl4mXOZlIOGag/GsI0Rov1r/RTfOzd4RePpnDYZzC9BFJ5Iru2/mHeXejRuxgBP2v8Qg==}
@@ -754,13 +748,13 @@ packages:
   /@fp-ts/data/0.1.0:
     resolution: {integrity: sha512-T4PbFVo2fzy2XaUHbFmEc24TJSPzTl/xUHC+1qCXZZfb3MaIKdKHS10aUt+9zcQ75KpiZbHL8hBfoP9fHOI6Mg==}
     dependencies:
-      '@fp-ts/core': 0.1.1_y3lbm4arx3ydwimrg32hyta3vu
+      '@fp-ts/core': 0.1.1
     dev: false
 
   /@fp-ts/schema/0.1.3:
     resolution: {integrity: sha512-rdyqwodZPqbY96mAUg3cAEKK7WsJ3JqZWDfBShSoPvxwB+fnFw1Rjhg3tsTpBhBN1oGlSHatIRJQ+QcoaAU+uA==}
     dependencies:
-      '@fp-ts/core': 0.1.1_y3lbm4arx3ydwimrg32hyta3vu
+      '@fp-ts/core': 0.1.1
       '@fp-ts/data': 0.1.0
       fast-check: 3.6.2
     dev: false
@@ -2372,7 +2366,7 @@ packages:
     dev: true
     patched: true
 
-  /docs-ts/0.6.10_kn5eixy6frizaidrzh6vqnnk6m_brpckf4sz23pco3jyty2eys3iq:
+  /docs-ts/0.6.10_qh6hn2na6svbs2rv7mvr332uoq_brpckf4sz23pco3jyty2eys3iq:
     resolution: {integrity: sha512-DTX9c5AJ92ojMOKqqvwF8t77C8Gdgs9FPB8seymHs+F+Wl6aapc3ZkHUM+p8o+jwcBmPoihxssdK903dfwQ1JQ==}
     hasBin: true
     peerDependencies:

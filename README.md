@@ -8,7 +8,7 @@ Functional pattern matching with the full power of Typescript.
 
 ## Credits
 
-This library is built upon [@fp-ts/schema](https://github.com/fp-ts/schema).
+This library is built upon the great work of [@fp-ts/schema](https://github.com/fp-ts/schema).
 
 ## License
 

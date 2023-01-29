@@ -1,105 +1,48 @@
 /**
  * @since 1.0.0
  */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as E from "@fp-ts/core/Either"
 import { identity } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import * as RA from "@fp-ts/core/ReadonlyArray"
-import type * as T from "@fp-ts/core/These"
 import type * as AST from "@fp-ts/schema/AST"
 import * as P from "@fp-ts/schema/Parser"
 import * as S from "@fp-ts/schema/Schema"
 
 /**
+ * @category model
  * @since 1.0.0
  */
 export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
   | TypeMatcher<Input, Remaining, RemainingApplied, Result>
   | ValueMatcher<Input, Remaining, RemainingApplied, Result, Provided>
 
-/**
- * @since 1.0.0
- */
-export class TypeMatcher<Input, Remaining, RemainingApplied, Result> {
-  /**
-   * @since 1.0.0
-   */
+class TypeMatcher<Input, Remaining, RemainingApplied, Result> {
   readonly _tag = "TypeMatcher"
-  /**
-   * @since 1.0.0
-   */
   readonly _input: (_: Input) => unknown = identity
-  /**
-   * @since 1.0.0
-   */
   readonly _remaining: (_: never) => Remaining = identity
-  /**
-   * @since 1.0.0
-   */
   readonly _remainingApplied: (_: never) => RemainingApplied = identity
-  /**
-   * @since 1.0.0
-   */
   readonly _result: (_: never) => Result = identity
 
-  constructor(
-    /**
-     * @since 1.0.0
-     */
-    readonly cases: ReadonlyArray<Case>,
-  ) {}
+  constructor(readonly cases: ReadonlyArray<Case>) {}
 
-  /**
-   * @since 1.0.0
-   */
   add<I, R, RA, A>(_case: Case): TypeMatcher<I, R, RA, A> {
     return new TypeMatcher([...this.cases, _case])
   }
 }
 
-/**
- * @since 1.0.0
- */
-export class ValueMatcher<
-  Input,
-  Remaining,
-  RemainingApplied,
-  Result,
-  Provided,
-> {
-  /**
-   * @since 1.0.0
-   */
+class ValueMatcher<Input, Remaining, RemainingApplied, Result, Provided> {
   readonly _tag = "ValueMatcher"
-  /**
-   * @since 1.0.0
-   */
   readonly _input: (_: Input) => unknown = identity
-  /**
-   * @since 1.0.0
-   */
   readonly _remaining: (_: never) => Remaining = identity
-  /**
-   * @since 1.0.0
-   */
   readonly _result: (_: never) => Result = identity
 
   constructor(
-    /**
-     * @since 1.0.0
-     */
     readonly provided: Provided,
-    /**
-     * @since 1.0.0
-     */
     readonly value: E.Either<RemainingApplied, Provided>,
   ) {}
 
-  /**
-   * @since 1.0.0
-   */
   add<I, R, RA, A, Pr>(_case: Case): ValueMatcher<I, R, RA, A, Pr> {
     if (this.value._tag === "Right") {
       // @ts-expect-error
@@ -129,47 +72,20 @@ export class ValueMatcher<
   }
 }
 
-/**
- * @since 1.0.0
- */
-export type Case = When | Not
+type Case = When | Not
 
-/**
- * @since 1.0.0
- */
-export class When {
-  /**
-   * @since 1.0.0
-   */
+class When {
   readonly _tag = "When"
   constructor(
-    /**
-     * @since 1.0.0
-     */
     readonly guard: (u: unknown, opts: AST.ParseOptions) => boolean,
-    /**
-     * @since 1.0.0
-     */
     readonly evaluate: (input: unknown) => any,
   ) {}
 }
 
-/**
- * @since 1.0.0
- */
-export class Not {
-  /**
-   * @since 1.0.0
-   */
+class Not {
   readonly _tag = "Not"
   constructor(
-    /**
-     * @since 1.0.0
-     */
     readonly guard: (u: unknown, opts: AST.ParseOptions) => boolean,
-    /**
-     * @since 1.0.0
-     */
     readonly evaluate: (input: unknown) => any,
   ) {}
 }
@@ -199,17 +115,20 @@ const makeSchema = <I>(
 }
 
 /**
+ * @category constructors
  * @since 1.0.0
  */
 export const type = <I>(): Matcher<I, I, I, never, never> => new TypeMatcher([])
 
 /**
+ * @category constructors
  * @since 1.0.0
  */
 export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
   new ValueMatcher(i, E.left(i))
 
 /**
+ * @category combinators
  * @since 1.0.0
  */
 export const when: {
@@ -222,7 +141,7 @@ export const when: {
     I,
     AddWithout<R, ResolveSchema<PredToSchema<P>>>,
     ApplyFilters<AddWithout<R, ResolveSchema<PredToSchema<P>>>>,
-    Unify<A | B>,
+    A | B,
     Pr
   >
 
@@ -233,17 +152,12 @@ export const when: {
     Pr,
   >(
     self: Matcher<I, R, RA, A, Pr>,
-  ) => Matcher<
-    I,
-    AddWithout<R, P>,
-    ApplyFilters<AddWithout<R, P>>,
-    Unify<A | B>,
-    Pr
-  >
+  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, P>>, A | B, Pr>
 } = (pattern: any, f: (input: unknown) => any) => (self: any) =>
   self.add(new When(P.is(makeSchema(pattern)), f))
 
 /**
+ * @category combinators
  * @since 1.0.0
  */
 export const tag: {
@@ -256,7 +170,7 @@ export const tag: {
     I,
     AddWithout<R, Extract<RA, { _tag: P }>>,
     ApplyFilters<AddWithout<R, Extract<RA, { _tag: P }>>>,
-    Unify<A | B>,
+    A | B,
     Pr
   >
 } = (pattern, f) => (self: any) =>
@@ -269,6 +183,7 @@ export const tag: {
   )
 
 /**
+ * @category combinators
  * @since 1.0.0
  */
 export const not: {
@@ -281,24 +196,26 @@ export const not: {
     I,
     AddOnly<R, ResolveSchema<ResolvePred<P>>>,
     ApplyFilters<AddOnly<R, ResolveSchema<ResolvePred<P>>>>,
-    Unify<A | B>,
+    A | B,
     Pr
   >
 
   <P, RA, B>(schema: S.Schema<P>, f: (_: Exclude<RA, P>) => B): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>,
-  ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, Unify<A | B>, Pr>
+  ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, A | B, Pr>
 } =
   (pattern: any, f: (_: never) => any) =>
   (self: any): any =>
     self.add(new Not(P.is(makeSchema(pattern)), f as any))
 
 /**
+ * @category predicates
  * @since 1.0.0
  */
 export const is = S.literal
 
 /**
+ * @category conversions
  * @since 1.0.0
  */
 export const orElse =
@@ -321,6 +238,7 @@ export const orElse =
   }
 
 /**
+ * @category conversions
  * @since 1.0.0
  */
 export const either: <I, R, RA, A, Pr>(
@@ -357,6 +275,7 @@ export const either: <I, R, RA, A, Pr>(
 }) as any
 
 /**
+ * @category conversions
  * @since 1.0.0
  */
 export const option: <I, R, RA, A, Pr>(
@@ -372,6 +291,7 @@ export const option: <I, R, RA, A, Pr>(
 }) as any
 
 /**
+ * @category conversions
  * @since 1.0.0
  */
 export const exaustive: <I, R, A, Pr>(
@@ -524,50 +444,3 @@ type ApplyFilters<A> = A extends Only<any, infer X>
   : A
 
 type Tags<P> = P extends { _tag: infer X } ? X : never
-
-/**
- * @since 1.0.0
- */
-export declare const unifyF: unique symbol
-/**
- * @since 1.0.0
- */
-export type unifyF = typeof unifyF
-/**
- * @since 1.0.0
- */
-export declare const unify: unique symbol
-/**
- * @since 1.0.0
- */
-export type unify = typeof unify
-/**
- * @since 1.0.0
- */
-export type Unify<A> = [A] extends [{ [unify]?: any; [unifyF]?: () => any }]
-  ? ReturnType<NonNullable<(A & { [unify]: A })[unifyF]>>
-  : A
-
-declare module "@fp-ts/core/Either" {
-  interface Left<E> {
-    [unify]?: unknown
-    [unifyF]?: () => this[unify] extends E.Either<infer E0, infer A0>
-      ? E.Either<E0, A0>
-      : this[unify]
-  }
-  interface Right<A> {
-    [unify]?: unknown
-    [unifyF]?: () => this[unify] extends E.Either<infer E0, infer A0>
-      ? E.Either<E0, A0>
-      : this[unify]
-  }
-}
-
-declare module "@fp-ts/core/These" {
-  interface Both<E, A> {
-    [unify]?: unknown
-    [unifyF]?: () => this[unify] extends T.These<infer E0, infer A0>
-      ? T.These<E0, A0>
-      : this[unify]
-  }
-}
