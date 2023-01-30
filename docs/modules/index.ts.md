@@ -21,13 +21,27 @@ Added in v1.0.0
   - [value](#value)
 - [conversions](#conversions)
   - [either](#either)
-  - [exaustive](#exaustive)
+  - [exhaustive](#exhaustive)
   - [option](#option)
   - [orElse](#orelse)
 - [model](#model)
   - [Matcher (type alias)](#matcher-type-alias)
+  - [SafeSchema (interface)](#safeschema-interface)
 - [predicates](#predicates)
+  - [any](#any)
+  - [bigint](#bigint)
+  - [boolean](#boolean)
+  - [date](#date)
   - [is](#is)
+  - [null](#null)
+  - [number](#number)
+  - [safe](#safe)
+  - [string](#string)
+  - [undefined](#undefined)
+  - [unsafe](#unsafe)
+- [utils](#utils)
+  - [\_null](#_null)
+  - [\_undefined](#_undefined)
 
 ---
 
@@ -39,7 +53,7 @@ Added in v1.0.0
 
 ```ts
 export declare const not: {
-  <RA, P extends PatternBase<RA>, B>(pattern: Narrow<P>, f: (_: Exclude<RA, ResolveSchema<PredToSchema<P>>>) => B): <
+  <RA, P extends PatternBase<RA>, B>(pattern: Narrow<P>, f: (_: Exclude<RA, SafeSchemaR<PredToSchema<P>>>) => B): <
     I,
     R,
     A,
@@ -48,12 +62,12 @@ export declare const not: {
     self: Matcher<I, R, RA, A, Pr>
   ) => Matcher<
     I,
-    AddOnly<R, ResolveSchema<ResolvePred<P>>>,
-    ApplyFilters<AddOnly<R, ResolveSchema<ResolvePred<P>>>>,
+    AddOnly<R, SafeSchemaP<ResolvePred<P>>>,
+    ApplyFilters<AddOnly<R, SafeSchemaP<ResolvePred<P>>>>,
     B | A,
     Pr
   >
-  <P, RA, B>(schema: S.Schema<P>, f: (_: Exclude<RA, P>) => B): <I, R, A, Pr>(
+  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<RA, SR>) => B): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>
   ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, B | A, Pr>
 }
@@ -94,19 +108,19 @@ Added in v1.0.0
 export declare const when: {
   <RA, P extends PatternBase<RA>, B>(
     pattern: Narrow<P>,
-    f: (_: Replace<TryExtract<RA, ResolveSchema<ResolvePred<P>>>, ResolveSchema<ResolvePred<P>>>) => B
+    f: (_: Replace<TryExtract<RA, SafeSchemaP<ResolvePred<P>>>, SafeSchemaP<ResolvePred<P>>>) => B
   ): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>
   ) => Matcher<
     I,
-    AddWithout<R, ResolveSchema<PredToSchema<P>>>,
-    ApplyFilters<AddWithout<R, ResolveSchema<PredToSchema<P>>>>,
+    AddWithout<R, SafeSchemaR<PredToSchema<P>>>,
+    ApplyFilters<AddWithout<R, SafeSchemaR<PredToSchema<P>>>>,
     B | A,
     Pr
   >
-  <P, RA, B>(schema: S.Schema<P>, f: (_: Replace<TryExtract<RA, P>, P>) => B): <I, R, A, Pr>(
+  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Replace<TryExtract<RA, P>, P>) => B): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>
-  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, P>>, B | A, Pr>
+  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, SR>>, B | A, Pr>
 }
 ```
 
@@ -148,12 +162,12 @@ export declare const either: <I, R, RA, A, Pr>(
 
 Added in v1.0.0
 
-## exaustive
+## exhaustive
 
 **Signature**
 
 ```ts
-export declare const exaustive: <I, R, A, Pr>(
+export declare const exhaustive: <I, R, A, Pr>(
   self: Matcher<I, R, never, A, Pr>
 ) => [Pr] extends [never] ? (u: I) => A : A
 ```
@@ -198,7 +212,61 @@ export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
 
 Added in v1.0.0
 
+## SafeSchema (interface)
+
+**Signature**
+
+```ts
+export interface SafeSchema<A, R = A> {
+  readonly _tag: 'SafeSchema'
+  readonly _A: A
+  readonly _R: R
+}
+```
+
+Added in v1.0.0
+
 # predicates
+
+## any
+
+**Signature**
+
+```ts
+export declare const any: SafeSchema<unknown, any>
+```
+
+Added in v1.0.0
+
+## bigint
+
+**Signature**
+
+```ts
+export declare const bigint: SafeSchema<bigint, bigint>
+```
+
+Added in v1.0.0
+
+## boolean
+
+**Signature**
+
+```ts
+export declare const boolean: SafeSchema<boolean, boolean>
+```
+
+Added in v1.0.0
+
+## date
+
+**Signature**
+
+```ts
+export declare const date: SafeSchema<Date, Date>
+```
+
+Added in v1.0.0
 
 ## is
 
@@ -206,8 +274,96 @@ Added in v1.0.0
 
 ```ts
 export declare const is: <Literals extends readonly AST.LiteralValue[]>(
-  ...literals: Literals
-) => S.Schema<Literals[number]>
+  ...a: Literals
+) => SafeSchema<Literals[number], Literals[number]>
+```
+
+Added in v1.0.0
+
+## null
+
+**Signature**
+
+```ts
+export declare const null: SafeSchema<null, null>
+```
+
+Added in v1.0.0
+
+## number
+
+**Signature**
+
+```ts
+export declare const number: SafeSchema<number, number>
+```
+
+Added in v1.0.0
+
+## safe
+
+Use a schema as a predicate, marking it **safe**. Safe means **it does not**
+contain refinements that could make the pattern not match.
+
+**Signature**
+
+```ts
+export declare const safe: <A, R = A>(schema: S.Schema<A>) => SafeSchema<A, R>
+```
+
+Added in v1.0.0
+
+## string
+
+**Signature**
+
+```ts
+export declare const string: SafeSchema<string, string>
+```
+
+Added in v1.0.0
+
+## undefined
+
+**Signature**
+
+```ts
+export declare const undefined: SafeSchema<undefined, undefined>
+```
+
+Added in v1.0.0
+
+## unsafe
+
+Use a schema as a predicate, marking it **unsafe**. Unsafe means it contains
+refinements that could make the pattern not match.
+
+**Signature**
+
+```ts
+export declare const unsafe: <A>(schema: S.Schema<A>) => SafeSchema<A, never>
+```
+
+Added in v1.0.0
+
+# utils
+
+## \_null
+
+**Signature**
+
+```ts
+export declare const _null: SafeSchema<null, null>
+```
+
+Added in v1.0.0
+
+## \_undefined
+
+**Signature**
+
+```ts
+export declare const _undefined: SafeSchema<undefined, undefined>
 ```
 
 Added in v1.0.0

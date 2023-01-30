@@ -12,6 +12,8 @@ import * as S from "@fp-ts/schema/Schema"
 
 /**
  * @category model
+ * @tsplus type effect/match/Matcher
+ * @tsplus companion effect/match/Matcher.Ops
  * @since 1.0.0
  */
 export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
@@ -116,12 +118,15 @@ const makeSchema = <I>(
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops type
  * @since 1.0.0
  */
 export const type = <I>(): Matcher<I, I, I, never, never> => new TypeMatcher([])
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops value
+ * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
 export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
@@ -129,6 +134,7 @@ export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher when
  * @since 1.0.0
  */
 export const when: {
@@ -156,6 +162,7 @@ export const when: {
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher tag
  * @since 1.0.0
  */
 export const tag: {
@@ -182,6 +189,7 @@ export const tag: {
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher not
  * @since 1.0.0
  */
 export const not: {
@@ -211,13 +219,23 @@ export const not: {
   (self: any): any =>
     self.add(new Not(P.is(makeSchema(pattern)), f as any))
 
+/**
+ * @category model
+ * @since 1.0.0
+ */
 export interface SafeSchema<A, R = A> {
   readonly _tag: "SafeSchema"
   readonly _A: A
   readonly _R: R
 }
 
+/**
+ * @since 1.0.0
+ */
 export namespace SafeSchema {
+  /**
+   * @since 1.0.0
+   */
   export type Infer<
     S extends { readonly _tag: "SafeSchema"; readonly _A: any },
   > = Parameters<S["_A"]>[0]
@@ -228,6 +246,7 @@ export namespace SafeSchema {
  * refinements that could make the pattern not match.
  *
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops unsafe
  * @since 1.0.0
  */
 export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
@@ -238,6 +257,7 @@ export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
  * contain refinements that could make the pattern not match.
  *
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops safe
  * @since 1.0.0
  */
 export const safe = <A, R = A>(schema: S.Schema<A>): SafeSchema<A, R> =>
@@ -245,62 +265,82 @@ export const safe = <A, R = A>(schema: S.Schema<A>): SafeSchema<A, R> =>
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops is
  * @since 1.0.0
  */
 export const is = flow(S.literal, safe)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops string
  * @since 1.0.0
  */
 export const string = safe(S.string)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops number
  * @since 1.0.0
  */
 export const number = safe(S.number)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops any
  * @since 1.0.0
  */
 export const any: SafeSchema<unknown, any> = safe(S.any)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops boolean
  * @since 1.0.0
  */
 export const boolean = safe(S.boolean)
 
 /**
- * @category predicates
+ * @tsplus static effect/match/Matcher.Ops undefined
  * @since 1.0.0
  */
-const _undefined = safe(S.undefined)
-export { _undefined as undefined }
+export const _undefined = safe(S.undefined)
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _undefined as undefined,
+}
+
+/**
+ * @tsplus static effect/match/Matcher.Ops null
+ * @since 1.0.0
+ */
+export const _null = safe(S.null)
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _null as null,
+}
 
 /**
  * @category predicates
- * @since 1.0.0
- */
-const _null = safe(S.null)
-export { _null as null }
-
-/**
- * @category predicates
+ * @tsplus static effect/match/Matcher.Ops bigint
  * @since 1.0.0
  */
 export const bigint = safe(S.bigint)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops date
  * @since 1.0.0
  */
 export const date = safe(S.date)
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
  */
 export const orElse =
@@ -324,6 +364,7 @@ export const orElse =
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher either
  * @since 1.0.0
  */
 export const either: <I, R, RA, A, Pr>(
@@ -361,6 +402,7 @@ export const either: <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher option
  * @since 1.0.0
  */
 export const option: <I, R, RA, A, Pr>(
@@ -377,6 +419,7 @@ export const option: <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
+ * @tsplus getter effect/match/Matcher exhaustive
  * @since 1.0.0
  */
 export const exhaustive: <I, R, A, Pr>(
