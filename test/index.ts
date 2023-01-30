@@ -11,7 +11,7 @@ describe("Matcher", () => {
       Match.type<{ a: number } | { b: number }>(),
       Match.when({ a: S.number }, (_) => _.a),
       Match.when({ b: S.number }, (_) => _.b),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(match({ a: 0 })).toBe(0)
     expect(match({ b: 1 })).toBe(1)
@@ -22,7 +22,7 @@ describe("Matcher", () => {
       Match.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
       Match.when({ _tag: "A" }, (_) => E.right(_.a)),
       Match.when({ _tag: "B" }, (_) => T.right(_.b)),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(match({ _tag: "A", a: 0 })).toEqual(E.right(0))
     expect(match({ _tag: "B", b: 1 })).toEqual(T.right(1))
@@ -32,7 +32,7 @@ describe("Matcher", () => {
     const match = pipe(
       Match.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
       Match.when({ _tag: Match.is("A", "B") }, (_) => E.right(_._tag)),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(match({ _tag: "A", a: 0 })).toEqual(E.right("A"))
     expect(match({ _tag: "B", b: 1 })).toEqual(T.right("B"))
@@ -43,7 +43,7 @@ describe("Matcher", () => {
       Match.type<number>(),
       Match.when(1, () => true),
       Match.not(1, () => false),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(match(1)).toEqual(true)
     expect(match(2)).toEqual(false)
@@ -54,7 +54,7 @@ describe("Matcher", () => {
       Match.value(E.right(0)),
       Match.tag("Right", (_) => _.right),
       Match.tag("Left", (_) => _.left),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(result).toEqual(0)
   })
@@ -105,7 +105,7 @@ describe("Matcher", () => {
       Match.type<string | number>(),
       Match.not(S.number, (_) => "a"),
       Match.when(S.number, (_) => "b"),
-      Match.exaustive,
+      Match.exhaustive,
     )
     expect(match("hi")).toEqual("a")
     expect(match(123)).toEqual("b")
@@ -177,7 +177,7 @@ describe("Matcher", () => {
         (_) => _.foo.bar.baz.qux,
       ),
       Match.when({ foo: { bar: null } }, (_) => _.foo.bar),
-      Match.exaustive,
+      Match.exhaustive,
     )
 
     expect(match({ foo: { bar: { baz: { qux: 1 } } } })).toEqual(1)
@@ -209,17 +209,3 @@ describe("Matcher", () => {
     expect(match({ age: 5 })).toEqual("5 is too old")
   })
 })
-
-interface User {
-  name: string
-  age: number
-}
-
-const match = pipe(
-  Match.type<User>(),
-  Match.when({ age: (age) => age >= 5 }, (user) => `Age: ${user.age}`),
-  Match.orElse((user) => `${user.name} is too young`),
-)
-
-expect(match({ name: "Tim", age: 5 })).toEqual("Age: 5")
-expect(match({ name: "Tim", age: 4 })).toEqual("Tim is too young")
