@@ -294,7 +294,7 @@ export const option: <I, R, RA, A, Pr>(
  * @category conversions
  * @since 1.0.0
  */
-export const exaustive: <I, R, A, Pr>(
+export const exhaustive: <I, R, A, Pr>(
   self: Matcher<I, R, never, A, Pr>,
 ) => [Pr] extends [never] ? (u: I) => A : A = (<I, A>(
   self: Matcher<I, any, never, A, I>,
