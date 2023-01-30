@@ -31,6 +31,7 @@ For example:
 ```ts
 import * as S from "@fp-ts/schema"
 import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
 
 const match = pipe(
   Match.type<{ a: number } | { b: string }>(),
@@ -49,6 +50,7 @@ For example:
 
 ```ts
 import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
 
 const result = pipe(
   Match.value({ name: "John", age: 30 }),
@@ -62,7 +64,7 @@ const result = pipe(
 console.log(result) // "John is 30 years old"
 ```
 
-## Types of patterns
+## Types of Matchers
 
 ### Predicates
 
@@ -70,6 +72,7 @@ Values can be tested against arbitrary functions.
 
 ```ts
 import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
 
 const match = pipe(
   Match.type<{ age: number }>(),
@@ -81,12 +84,13 @@ console.log(match({ age: 5 })) // "Age: 5"
 console.log(match({ age: 4 })) // "4 is too young"
 ```
 
-### `not` patterns
+### `Matcher.not`
 
 `not` lets you match on everything but a specific value or Schema.
 
 ```ts
 import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
 
 const match = pipe(
   Match.type<string | number>(),
@@ -96,6 +100,47 @@ const match = pipe(
 
 console.log(match("hello")) // "a"
 console.log(match("hi")) // "b"
+```
+
+### `Matcher.tag`
+
+Matches against the tag in a [Discriminated Union](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions)
+
+```ts
+import * as Match from "@effect/match"
+import * as E from "@fp-ts/core/Either";
+import { pipe } from "@fp-ts/core/Function"
+
+// type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
+const result = pipe(
+  Match.value(E.right(0)), 
+  Match.tag("Right", (_) => _.right),
+  Match.tag("Left", (_) => _.left),
+  Match.exhaustive,
+)
+
+console.log(match(E.right("a"))) // "a"
+```
+
+### `Matcher.option`
+
+A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-ts/core/blob/main/Option.md). 
+
+```ts
+import * as Match from "@effect/match"
+import * as E from '@fp-ts/core/Either;
+import { pipe } from "@fp-ts/core/Function"
+
+// type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
+// type Option<T> = { _tag: "Some", value: T } | { _tag: "None" }
+const result = pipe(
+  E.right(0),
+  Match.value,
+  Match.when({ _tag: "Right" }, (_) => _.right),
+  Match.option,
+)
+
+console.log(result) // { _tag: "Some", value: 0 }
 ```
 
 ## Credits
