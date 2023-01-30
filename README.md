@@ -29,13 +29,12 @@ You can then use the `when`, `not` & `tag` combinators to specify the patterns t
 For example:
 
 ```ts
-import * as S from "@fp-ts/schema"
 import * as Match from "@effect/match"
 
 const match = pipe(
   Match.type<{ a: number } | { b: string }>(),
-  Match.when({ a: S.number }, (_) => _.a),
-  Match.when({ b: S.string }, (_) => _.b),
+  Match.when({ a: Match.number }, (_) => _.a),
+  Match.when({ b: Match.string }, (_) => _.b),
   Match.exhaustive,
 )
 

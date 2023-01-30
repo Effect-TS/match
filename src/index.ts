@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as E from "@fp-ts/core/Either"
-import { identity } from "@fp-ts/core/Function"
+import { flow, identity } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import * as RA from "@fp-ts/core/ReadonlyArray"
@@ -12,6 +12,8 @@ import * as S from "@fp-ts/schema/Schema"
 
 /**
  * @category model
+ * @tsplus type effect/match/Matcher
+ * @tsplus companion effect/match/Matcher.Ops
  * @since 1.0.0
  */
 export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
@@ -92,7 +94,7 @@ class Not {
 
 const makeSchema = <I>(
   pattern: I,
-): I extends S.Schema<any> ? I : S.Schema<I> => {
+): I extends SafeSchema<any> ? I : SafeSchema<I> => {
   if (typeof pattern === "function") {
     return S.filter(pattern as any)(S.any) as any
   } else if (Array.isArray(pattern)) {
@@ -116,12 +118,15 @@ const makeSchema = <I>(
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops type
  * @since 1.0.0
  */
 export const type = <I>(): Matcher<I, I, I, never, never> => new TypeMatcher([])
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops value
+ * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
 export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
@@ -129,6 +134,7 @@ export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher when
  * @since 1.0.0
  */
 export const when: {
@@ -139,25 +145,24 @@ export const when: {
     self: Matcher<I, R, RA, A, Pr>,
   ) => Matcher<
     I,
-    AddWithout<R, ResolveSchema<PredToSchema<P>>>,
-    ApplyFilters<AddWithout<R, ResolveSchema<PredToSchema<P>>>>,
+    AddWithout<R, SafeSchemaR<PredToSchema<P>>>,
+    ApplyFilters<AddWithout<R, SafeSchemaR<PredToSchema<P>>>>,
     A | B,
     Pr
   >
 
-  <P, RA, B>(schema: S.Schema<P>, f: (_: WhenSchemaMatch<RA, P>) => B): <
-    I,
-    R,
-    A,
-    Pr,
-  >(
+  <P, SR, RA, B>(
+    schema: SafeSchema<P, SR>,
+    f: (_: WhenSchemaMatch<RA, P>) => B,
+  ): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>,
-  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, P>>, A | B, Pr>
+  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, SR>>, A | B, Pr>
 } = (pattern: any, f: (input: unknown) => any) => (self: any) =>
   self.add(new When(P.is(makeSchema(pattern)), f))
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher tag
  * @since 1.0.0
  */
 export const tag: {
@@ -184,6 +189,7 @@ export const tag: {
 
 /**
  * @category combinators
+ * @tsplus pipeable effect/match/Matcher not
  * @since 1.0.0
  */
 export const not: {
@@ -194,13 +200,18 @@ export const not: {
     self: Matcher<I, R, RA, A, Pr>,
   ) => Matcher<
     I,
-    AddOnly<R, ResolveSchema<ResolvePred<P>>>,
-    ApplyFilters<AddOnly<R, ResolveSchema<ResolvePred<P>>>>,
+    AddOnly<R, SafeSchemaP<ResolvePred<P>>>,
+    ApplyFilters<AddOnly<R, SafeSchemaP<ResolvePred<P>>>>,
     A | B,
     Pr
   >
 
-  <P, RA, B>(schema: S.Schema<P>, f: (_: Exclude<RA, P>) => B): <I, R, A, Pr>(
+  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<RA, SR>) => B): <
+    I,
+    R,
+    A,
+    Pr,
+  >(
     self: Matcher<I, R, RA, A, Pr>,
   ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, A | B, Pr>
 } =
@@ -209,13 +220,127 @@ export const not: {
     self.add(new Not(P.is(makeSchema(pattern)), f as any))
 
 /**
- * @category predicates
+ * @category model
  * @since 1.0.0
  */
-export const is = S.literal
+export interface SafeSchema<A, R = A> {
+  readonly _tag: "SafeSchema"
+  readonly _A: A
+  readonly _R: R
+}
+
+/**
+ * @since 1.0.0
+ */
+export namespace SafeSchema {
+  /**
+   * @since 1.0.0
+   */
+  export type Infer<
+    S extends { readonly _tag: "SafeSchema"; readonly _A: any },
+  > = Parameters<S["_A"]>[0]
+}
+
+/**
+ * Use a schema as a predicate, marking it **unsafe**. Unsafe means it contains
+ * refinements that could make the pattern not match.
+ *
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops unsafe
+ * @since 1.0.0
+ */
+export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
+  schema as any
+
+/**
+ * Use a schema as a predicate, marking it **safe**. Safe means **it does not**
+ * contain refinements that could make the pattern not match.
+ *
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops safe
+ * @since 1.0.0
+ */
+export const safe = <A, R = A>(schema: S.Schema<A>): SafeSchema<A, R> =>
+  schema as any
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops is
+ * @since 1.0.0
+ */
+export const is = flow(S.literal, safe)
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops string
+ * @since 1.0.0
+ */
+export const string = safe(S.string)
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops number
+ * @since 1.0.0
+ */
+export const number = safe(S.number)
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops any
+ * @since 1.0.0
+ */
+export const any: SafeSchema<unknown, any> = safe(S.any)
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops boolean
+ * @since 1.0.0
+ */
+export const boolean = safe(S.boolean)
+
+/**
+ * @tsplus static effect/match/Matcher.Ops undefined
+ * @since 1.0.0
+ */
+export const _undefined = safe(S.undefined)
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _undefined as undefined,
+}
+
+/**
+ * @tsplus static effect/match/Matcher.Ops null
+ * @since 1.0.0
+ */
+export const _null = safe(S.null)
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _null as null,
+}
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops bigint
+ * @since 1.0.0
+ */
+export const bigint = safe(S.bigint)
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops date
+ * @since 1.0.0
+ */
+export const date = safe(S.date)
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
  */
 export const orElse =
@@ -239,6 +364,7 @@ export const orElse =
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher either
  * @since 1.0.0
  */
 export const either: <I, R, RA, A, Pr>(
@@ -276,6 +402,7 @@ export const either: <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
+ * @tsplus pipeable effect/match/Matcher option
  * @since 1.0.0
  */
 export const option: <I, R, RA, A, Pr>(
@@ -292,6 +419,7 @@ export const option: <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
+ * @tsplus getter effect/match/Matcher exhaustive
  * @since 1.0.0
  */
 export const exhaustive: <I, R, A, Pr>(
@@ -325,49 +453,55 @@ export const exhaustive: <I, R, A, Pr>(
 
 // combinations
 type WhenMatch<R, P> = Replace<
-  TryExtract<R, ResolveSchema<ResolvePred<P>>>,
-  ResolveSchema<ResolvePred<P>>
+  TryExtract<R, SafeSchemaP<ResolvePred<P>>>,
+  SafeSchemaP<ResolvePred<P>>
 >
 type WhenSchemaMatch<R, P> = Replace<TryExtract<R, P>, P>
 
-type NotMatch<R, P> = Exclude<R, ResolveSchema<PredToSchema<P>>>
+type NotMatch<R, P> = Exclude<R, SafeSchemaR<PredToSchema<P>>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, any>
 
-type Narrow<A> = NarrowRaw<A> | PredicateA<any> | S.Schema<any>
+type Narrow<A> = NarrowRaw<A> | PredicateA<any> | SafeSchema<any>
 
 type NarrowRaw<A> =
   | (A extends [] ? [] : never)
   | (A extends PredicateA<any> ? A : never)
   | {
-      [K in keyof A]: A[K] extends S.Schema<any> ? A[K] : NarrowRaw<A[K]>
+      [K in keyof A]: A[K] extends SafeSchema<any> ? A[K] : NarrowRaw<A[K]>
     }
   | (A extends Narrowable ? A : never)
 
 type Narrowable = string | number | bigint | boolean
 
-type ResolveSchema<A> = A extends S.Schema<infer S>
+type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? S
   : A extends Record<string, any>
-  ? { [K in keyof A]: ResolveSchema<A[K]> }
+  ? { [K in keyof A]: SafeSchemaP<A[K]> }
+  : A
+
+type SafeSchemaR<A> = A extends SafeSchema<infer _, infer R>
+  ? R
+  : A extends Record<string, any>
+  ? { [K in keyof A]: SafeSchemaR<A[K]> }
   : A
 
 type ResolvePred<A> = A extends Refinement<any, infer P>
   ? P
   : A extends Predicate<infer P>
   ? P
-  : A extends S.Schema<any>
+  : A extends SafeSchema<any>
   ? A
   : A extends Record<string, any>
   ? { [K in keyof A]: ResolvePred<A[K]> }
   : A
 
 type PredToSchema<A> = A extends Refinement<any, infer P>
-  ? S.Schema<P>
-  : A extends Predicate<any>
-  ? S.Schema<never>
-  : A extends S.Schema<any>
+  ? SafeSchema<P, P>
+  : A extends Predicate<infer P>
+  ? SafeSchema<P, never>
+  : A extends SafeSchema<any>
   ? A
   : A extends Record<string, any>
   ? { [K in keyof A]: PredToSchema<A[K]> }
@@ -381,9 +515,9 @@ type ExpandTuples<A> = A extends Array<infer I>
 
 type PatternBase<A> = A extends Record<string, any>
   ? Partial<{
-      [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | S.Schema<any>
+      [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | SafeSchema<any>
     }>
-  : A | PredicateA<A> | S.Schema<any>
+  : A | PredicateA<A> | SafeSchema<any>
 
 type WithoutLiterals<A> = A extends string
   ? string
