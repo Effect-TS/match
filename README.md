@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img src="./docs/example.png" width="700">
+  <img src="https://raw.githubusercontent.com/Effect-TS/match/main/docs/example.png" width="700">
 </h3>
 
 <p align="center">
@@ -81,7 +81,7 @@ console.log(match({ age: 5 })) // "Age: 5"
 console.log(match({ age: 4 })) // "4 is too young"
 ```
 
-### `not` matcher
+### `not` patterns
 
 `not` lets you match on everything but a specific value or Schema.
 
