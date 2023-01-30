@@ -277,7 +277,8 @@ export const boolean = safe(S.boolean)
  * @category predicates
  * @since 1.0.0
  */
-export const undefined = safe(S.undefined)
+const _undefined = safe(S.undefined)
+export { _undefined as undefined }
 
 /**
  * @category predicates
