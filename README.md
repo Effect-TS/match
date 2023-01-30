@@ -8,7 +8,7 @@ Functional pattern matching with the full power of Typescript.
 
 ## Getting started
 
-To install the **alpha** version:
+To install from npm:
 
 ```
 npm install @effect/match
@@ -20,73 +20,83 @@ Once you have installed the library, you can import the necessary types and func
 import * as Match from "@effect/match"
 ```
 
-## Defining a Match
+## Defining a Matcher
 
-To define a `Match`, you can use the provided `type` function to define a new `Match` that matches part of an object of the specified type.
+To define a `Matcher` from a given type, you can use the `type` constructor function.
 
-For example, 
+You can then use the `when`, `not` & `tag` combinators to specify the patterns to match against.
+
+For example:
 
 ```ts
 import * as S from "@fp-ts/schema"
 import * as Match from "@effect/match"
 
 const match = pipe(
-    Match.type<{ a: number } | { b: number }>(),
-    Match.when({ a: S.number }, (_) => _.a),
-    Match.when({ b: S.number }, (_) => _.b),
-    Match.exaustive,
+  Match.type<{ a: number } | { b: string }>(),
+  Match.when({ a: S.number }, (_) => _.a),
+  Match.when({ b: S.string }, (_) => _.b),
+  Match.exhaustive,
 )
 
 console.log(match({ a: 0 })) // 0
+console.log(match({ b: "hello" })) // "hello"
 ```
 
-You can also create a `Match` from a value using the provided `value` function. For example,
+You can also create a `Matcher` from a value using the `value` constructor function.
+
+For example:
 
 ```ts
 import * as Match from "@effect/match"
 
 const result = pipe(
-    Match.value("yeah"),
-    Match.when("yeah", (_) => _ === "yeah"),
-    Match.when("yeah", (_) => "dupe"),
-    Match.orElse(() => "nah"),
+  Match.value({ name: "John", age: 30 }),
+  Match.when(
+    { name: "John" },
+    (user) => `${user.name} is ${user.age} years old`,
+  ),
+  Match.orElse(() => "Oh, not John"),
 )
 
-console.log(result) // "yeah"
+console.log(result) // "John is 30 years old"
 ```
 
-## Types of matches
+## Types of patterns
 
 ### Predicates
+
 Values can be tested against arbitrary functions.
 
 ```ts
 import * as Match from "@effect/match"
 
 const match = pipe(
-    Match.type<{ age: number }>(),
-    Match.when({ age: (a) => a >= 5 }, (_) => `Age: ${_.age}`),
-    Match.orElse((_) => `${_.age} is too young`),
+  Match.type<{ age: number }>(),
+  Match.when({ age: (age) => age >= 5 }, (user) => `Age: ${user.age}`),
+  Match.orElse((user) => `${user.age} is too young`),
 )
 
 console.log(match({ age: 5 })) // "Age: 5"
+console.log(match({ age: 4 })) // "4 is too young"
 ```
 
 ### `not` matcher
-`Match.not` lets you match on everything but a specific value or Schema.
+
+`not` lets you match on everything but a specific value or Schema.
 
 ```ts
 import * as Match from "@effect/match"
 
 const match = pipe(
-    Match.type<string | number>(),
-    Match.not("hi", (_) => "a"),
-    Match.orElse(() => "b"),
-  )
+  Match.type<string | number>(),
+  Match.not("hi", (_) => "a"),
+  Match.orElse(() => "b"),
+)
 
 console.log(match("hello")) // "a"
+console.log(match("hi")) // "b"
 ```
-
 
 ## Credits
 
