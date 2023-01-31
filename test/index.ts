@@ -1,7 +1,6 @@
 import * as E from "@fp-ts/core/Either"
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
-import * as T from "@fp-ts/core/These"
 import * as M from "@effect/match"
 import * as S from "@fp-ts/schema"
 
@@ -21,21 +20,26 @@ describe("Matcher", () => {
     const match = pipe(
       M.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
       M.when({ _tag: "A" }, (_) => E.right(_.a)),
-      M.when({ _tag: "B" }, (_) => T.right(_.b)),
+      M.when({ _tag: "B" }, (_) => E.right(_.b)),
       M.exhaustive,
     )
     expect(match({ _tag: "A", a: 0 })).toEqual(E.right(0))
-    expect(match({ _tag: "B", b: 1 })).toEqual(T.right(1))
+    expect(match({ _tag: "B", b: 1 })).toEqual(E.right(1))
   })
 
   it("schema exhaustive-literal", () => {
     const match = pipe(
-      M.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
-      M.when({ _tag: M.is("A", "B") }, (_) => E.right(_._tag)),
-      M.exhaustive,
+      M.type<{ _tag: "A"; a: number | string } | { _tag: "B"; b: number }>(),
+      M.when({ _tag: "A", a: M.number }, (_) => E.right(_._tag)),
+      M.when({ _tag: "A", a: M.string }, (_) => E.right(_._tag)),
+      M.when({ b: M.number }, (_) => E.left(_._tag)),
+      M.orElse(() => {
+        throw "absurd"
+      }),
     )
     expect(match({ _tag: "A", a: 0 })).toEqual(E.right("A"))
-    expect(match({ _tag: "B", b: 1 })).toEqual(T.right("B"))
+    expect(match({ _tag: "A", a: "hi" })).toEqual(E.right("A"))
+    expect(match({ _tag: "B", b: 1 })).toEqual(E.left("B"))
   })
 
   it("exhaustive literal with not", () => {

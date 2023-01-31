@@ -99,7 +99,10 @@ console.log(match("hi")) // "b"
 
 ## Credits
 
-This library is built upon the great work of [@fp-ts/schema](https://github.com/fp-ts/schema).
+This library is built upon the great work of:
+
+- [@fp-ts/schema](https://github.com/fp-ts/schema).
+- [ts-pattern](https://github.com/gvergnaud/ts-pattern)
 
 ## License
 
