@@ -364,7 +364,7 @@ export const orElse =
 
 /**
  * @category conversions
- * @tsplus pipeable effect/match/Matcher either
+ * @tsplus getter effect/match/Matcher either
  * @since 1.0.0
  */
 export const either: <I, R, RA, A, Pr>(
@@ -402,7 +402,7 @@ export const either: <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
- * @tsplus pipeable effect/match/Matcher option
+ * @tsplus getter effect/match/Matcher option
  * @since 1.0.0
  */
 export const option: <I, R, RA, A, Pr>(
