@@ -260,8 +260,7 @@ export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
  * @tsplus static effect/match/Matcher.Ops safe
  * @since 1.0.0
  */
-export const safe = <A, R = A>(schema: S.Schema<A>): SafeSchema<A, R> =>
-  schema as any
+export const safe = <A>(schema: S.Schema<A>): SafeSchema<A, A> => schema as any
 
 /**
  * @category predicates
@@ -463,7 +462,7 @@ type NotMatch<R, P> = Exclude<R, SafeSchemaR<PredToSchema<P>>>
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, any>
 
-type Narrow<A> = NarrowRaw<A> | PredicateA<any> | SafeSchema<any>
+type Narrow<A> = NarrowRaw<A> | PredicateA<any>
 
 type NarrowRaw<A> =
   | (A extends [] ? [] : never)
