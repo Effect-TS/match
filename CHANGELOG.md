@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.4
+
+### Patch Changes
+
+- [`4257b6c`](https://github.com/Effect-TS/match/commit/4257b6c726df67640f2729005cc3272bfdbc9bf6) Thanks [@tim-smart](https://github.com/tim-smart)! - fix tsplus
+
 ## 0.0.3
 
 ### Patch Changes
