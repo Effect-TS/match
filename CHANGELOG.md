@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.6
+
+### Patch Changes
+
+- [#13](https://github.com/Effect-TS/match/pull/13) [`8b7ab82`](https://github.com/Effect-TS/match/commit/8b7ab8223be02965e005b690d1a2ee7561d2e2c2) Thanks [@tim-smart](https://github.com/tim-smart)! - more precise match types
+
 ## 0.0.5
 
 ### Patch Changes
