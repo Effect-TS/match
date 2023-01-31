@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
 import * as E from "@fp-ts/core/Either"
 import { flow, identity } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
@@ -156,7 +157,13 @@ export const when: {
     f: (_: WhenSchemaMatch<RA, P>) => B,
   ): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>,
-  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, SR>>, A | B, Pr>
+  ) => Matcher<
+    I,
+    AddWithout<R, WhenSchemaMatch<RA, P>>,
+    ApplyFilters<AddWithout<R, WhenSchemaMatch<RA, P>>>,
+    A | B,
+    Pr
+  >
 } = (pattern: any, f: (input: unknown) => any) => (self: any) =>
   self.add(new When(P.is(makeSchema(pattern)), f))
 
@@ -200,20 +207,24 @@ export const not: {
     self: Matcher<I, R, RA, A, Pr>,
   ) => Matcher<
     I,
-    AddOnly<R, SafeSchemaP<ResolvePred<P>>>,
-    ApplyFilters<AddOnly<R, SafeSchemaP<ResolvePred<P>>>>,
+    AddOnly<R, WhenMatch<RA, P>>,
+    ApplyFilters<AddOnly<R, WhenMatch<RA, P>>>,
     A | B,
     Pr
   >
 
-  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<RA, SR>) => B): <
-    I,
-    R,
-    A,
-    Pr,
-  >(
+  <P, SR, RA, B>(
+    schema: SafeSchema<P, SR>,
+    f: (_: Exclude<RA, ExtractMatch<RA, SR>>) => B,
+  ): <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>,
-  ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, A | B, Pr>
+  ) => Matcher<
+    I,
+    AddOnly<R, ExtractMatch<RA, P>>,
+    ApplyFilters<AddOnly<R, ExtractMatch<RA, P>>>,
+    A | B,
+    Pr
+  >
 } =
   (pattern: any, f: (_: never) => any) =>
   (self: any): any =>
@@ -451,13 +462,10 @@ export const exhaustive: <I, R, A, Pr>(
 // type helpers
 
 // combinations
-type WhenMatch<R, P> = Replace<
-  TryExtract<R, SafeSchemaP<ResolvePred<P>>>,
-  SafeSchemaP<ResolvePred<P>>
->
-type WhenSchemaMatch<R, P> = Replace<TryExtract<R, P>, P>
+type WhenMatch<R, P> = ExtractMatch<R, SafeSchemaP<ResolvePred<P>>>
+type WhenSchemaMatch<R, P> = ExtractMatch<R, P>
 
-type NotMatch<R, P> = Exclude<R, SafeSchemaR<PredToSchema<P>>>
+type NotMatch<R, P> = Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, any>
@@ -506,41 +514,11 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: PredToSchema<A[K]> }
   : A
 
-type ExpandTuples<A> = A extends Array<infer I>
-  ? Array<I> | A
-  : A extends Record<string, any>
-  ? { [K in keyof A]: ExpandTuples<A[K]> }
-  : A
-
 type PatternBase<A> = A extends Record<string, any>
   ? Partial<{
       [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | SafeSchema<any>
     }>
   : A | PredicateA<A> | SafeSchema<any>
-
-type WithoutLiterals<A> = A extends string
-  ? string
-  : A extends number
-  ? number
-  : A extends bigint
-  ? bigint
-  : A extends boolean
-  ? boolean
-  : A extends Record<string, any>
-  ? { [K in keyof A]: WithoutLiterals<A[K]> }
-  : A
-
-type ExtractWithoutLiterals<A, E> = A extends WithoutLiterals<E> ? A : never
-
-type TryExtract<A, E> = Extract<A, ExpandTuples<E>> extends never
-  ? ExtractWithoutLiterals<A, ExpandTuples<E>>
-  : Extract<A, ExpandTuples<E>>
-
-type Replace<A, B> = A extends Record<string | number, any>
-  ? { [K in keyof A]: K extends keyof B ? Replace<A[K], B[K]> : A[K] }
-  : B extends A
-  ? B
-  : A
 
 interface Without<A, X> {
   readonly _tag: "Without"
@@ -573,7 +551,7 @@ type AddOnly<A, X> = A extends Without<infer P, infer WX>
 type ApplyFilters<A> = A extends Only<any, infer X>
   ? X
   : A extends Without<infer P, infer X>
-  ? Exclude<P, X>
+  ? Exclude<P, ExtractMatch<P, X>>
   : A
 
 type Tags<P> = P extends { _tag: infer X } ? X : never
