@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.5
+
+### Patch Changes
+
+- [#11](https://github.com/Effect-TS/match/pull/11) [`c81d98a`](https://github.com/Effect-TS/match/commit/c81d98a8bccd7c45efb721327d78891d2885110a) Thanks [@tim-smart](https://github.com/tim-smart)! - improve narrow when using schemas
+
 ## 0.0.4
 
 ### Patch Changes
