@@ -151,7 +151,7 @@ describe("Matcher", () => {
       M.value("yeah"),
       M.when("yeah", (_) => _ === "yeah"),
       M.when("yeah", (_) => "dupe"),
-      M.orElse(() => "nah"),
+      M.orElse((_) => "nah"),
     )
 
     expect(result).toEqual(true)

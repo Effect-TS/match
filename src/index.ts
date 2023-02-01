@@ -147,8 +147,8 @@ export const when: {
     self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddWithout<F, SafeSchemaR<PredToSchema<P>>>,
-    ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P>>>>,
+    AddWithout<F, PForExclude<P>>,
+    ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
     A | B,
     Pr
   >
@@ -165,8 +165,8 @@ export const when: {
     A | B,
     Pr
   >
-} = (pattern: any, f: (input: unknown) => any) => (self: any) =>
-  self.add(new When(P.is(makeSchema(pattern)), f))
+} = (pattern: any, f: Function) => (self: any) =>
+  self.add(new When(P.is(makeSchema(pattern)), f as any))
 
 /**
  * @category combinators
@@ -463,10 +463,13 @@ export const exhaustive: <I, F, A, Pr>(
 // type helpers
 
 // combinations
-type WhenMatch<R, P> = ExtractMatch<R, SafeSchemaP<ResolvePred<P>>>
+type WhenMatch<R, P> = ExtractMatch<R, PForMatch<P>>
 type WhenSchemaMatch<R, P> = ExtractMatch<R, P>
 
-type NotMatch<R, P> = Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>
+type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
+
+type PForMatch<P> = RemoveInvalidPatterns<SafeSchemaP<ResolvePred<P>>>
+type PForExclude<P> = RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, any>
@@ -520,6 +523,20 @@ type PatternBase<A> = A extends Record<string, any>
       [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | SafeSchema<any>
     }>
   : A | PredicateA<A> | SafeSchema<any>
+
+type RemoveInvalidPatterns<P> = ValidPattern<P> extends true ? P : never
+
+type ValidPattern<P> = P extends SafeSchema<any>
+  ? false
+  : P extends Record<string, any>
+  ? [
+      { [K in keyof P]: ValidPattern<P[K]> } extends infer R
+        ? Extract<R[keyof R], false>
+        : never,
+    ] extends [never]
+    ? true
+    : false
+  : true
 
 interface Without<X> {
   readonly _tag: "Without"
