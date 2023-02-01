@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 
 export type ExtractMatch<I, P> = ReplaceUnions<I, P> extends infer EI
-  ? Extract<EI, P> extends infer E
-    ? [E] extends [never]
-      ? EI
-      : E
-    : never
+  ? Extract<EI, P>
   : never
 
 type IntersectOf<U extends unknown> = (
@@ -45,9 +41,13 @@ type Replace<A, B> = A extends Record<string | number, any>
   : {
       0: A
       1: B
-    }[B extends A ? 1 : 0]
+    }[[B] extends [A] ? 1 : 0]
 
-type MaybeReplace<I, P> = P extends I ? P : I extends P ? Replace<I, P> : Fail
+type MaybeReplace<I, P> = [P] extends [I]
+  ? P
+  : [I] extends [P]
+  ? Replace<I, P>
+  : Fail
 
 type FlattenRecordFails<R, D = Fail> = Fail extends R[keyof R] ? D : R
 type FlattenUnionFails<U> = [U] extends [Fail] ? Fail : Exclude<U, Fail>
@@ -120,3 +120,4 @@ type ReplaceUnions<I, P> =
 // type I = { _tag: "A"; a: number | string } | { _tag: "B"; b: number }
 // type P = { _tag: string; a: number }
 // type a = ReplaceUnions<I, P>
+//

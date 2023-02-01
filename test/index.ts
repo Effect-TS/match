@@ -30,7 +30,7 @@ describe("Matcher", () => {
   it("schema exhaustive-literal", () => {
     const match = pipe(
       M.type<{ _tag: "A"; a: number | string } | { _tag: "B"; b: number }>(),
-      M.when({ _tag: M.string, a: M.number }, (_) => E.right(_._tag)),
+      M.when({ _tag: M.is("A", "B"), a: M.number }, (_) => E.right(_._tag)),
       M.when({ _tag: M.string, a: M.string }, (_) => E.right(_._tag)),
       M.when({ b: M.number }, (_) => E.left(_._tag)),
       M.orElse((_) => {
