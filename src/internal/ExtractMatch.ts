@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 
-export type ExtractMatch<I, P> = ReplaceUnions<I, P> extends infer EI
+export type ExtractMatch<I, P> = [ReplaceUnions<I, P>] extends [infer EI]
   ? Extract<EI, P>
   : never
 
@@ -82,42 +82,3 @@ type ReplaceUnions<I, P> =
           : I[RK]
       }>
     : MaybeReplace<I, P>
-
-// type Equals<A, B> = A extends B ? (B extends A ? true : false) : false
-
-// type MaybeExclude<I, P> = Equals<I, P> extends true
-//   ? Fail
-//   : IsUnion<P> extends true
-//   ? I extends P
-//     ? Fail
-//     : I
-//   : Exclude<I, P> extends infer E
-//   ? [E] extends [never]
-//     ? Fail
-//     : I
-//   : never
-
-// type ReplaceUnionsExclude<I, P> =
-//   // unknown is a wildcard pattern
-//   unknown extends P
-//     ? Fail
-//     : IsUnion<I> extends true
-//     ? ListOf<I> extends infer L
-//       ? L extends Array<any>
-//         ? {
-//             [K in keyof L]: L[K] extends Record<string, any>
-//               ? {
-//                   [RK in keyof L[K]]: RK extends keyof P
-//                     ? ReplaceUnionsExclude<L[K][RK], P[RK]>
-//                     : L[K][RK]
-//                 }
-//               : MaybeExclude<L[K], P>
-//           }[number]
-//         : never
-//       : never
-//     : MaybeExclude<I, P>
-
-// type I = { _tag: "A"; a: number | string } | { _tag: "B"; b: number }
-// type P = { _tag: string; a: number }
-// type a = ReplaceUnions<I, P>
-//
