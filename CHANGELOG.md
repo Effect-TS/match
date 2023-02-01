@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.7
+
+### Patch Changes
+
+- [`df05182`](https://github.com/Effect-TS/match/commit/df05182667e1a4aa8de4322d417ba9b7766b0d4e) Thanks [@tim-smart](https://github.com/tim-smart)! - refactor match type extraction
+
 ## 0.0.6
 
 ### Patch Changes
