@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.9
+
+### Patch Changes
+
+- [#17](https://github.com/Effect-TS/match/pull/17) [`43e013c`](https://github.com/Effect-TS/match/commit/43e013c739fc0f0beb6b52362070b0297e2cc0e0) Thanks [@tim-smart](https://github.com/tim-smart)! - types refactor
+
 ## 0.0.8
 
 ### Patch Changes
