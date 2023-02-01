@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.8
+
+### Patch Changes
+
+- [`3cd71bd`](https://github.com/Effect-TS/match/commit/3cd71bdd24ff1ccb847eacce10ef52bde0812edb) Thanks [@tim-smart](https://github.com/tim-smart)! - fix match extract with union patterns and nesting
+
 ## 0.0.7
 
 ### Patch Changes
