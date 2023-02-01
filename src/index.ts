@@ -17,15 +17,15 @@ import * as S from "@fp-ts/schema/Schema"
  * @tsplus companion effect/match/Matcher.Ops
  * @since 1.0.0
  */
-export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
-  | TypeMatcher<Input, Remaining, RemainingApplied, Result>
-  | ValueMatcher<Input, Remaining, RemainingApplied, Result, Provided>
+export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
+  | TypeMatcher<Input, Filters, RemainingApplied, Result>
+  | ValueMatcher<Input, Filters, RemainingApplied, Result, Provided>
 
-class TypeMatcher<Input, Remaining, RemainingApplied, Result> {
+class TypeMatcher<Input, Filters, Remaining, Result> {
   readonly _tag = "TypeMatcher"
   readonly _input: (_: Input) => unknown = identity
+  readonly _filters: (_: never) => Filters = identity
   readonly _remaining: (_: never) => Remaining = identity
-  readonly _remainingApplied: (_: never) => RemainingApplied = identity
   readonly _result: (_: never) => Result = identity
 
   constructor(readonly cases: ReadonlyArray<Case>) {}
@@ -35,15 +35,15 @@ class TypeMatcher<Input, Remaining, RemainingApplied, Result> {
   }
 }
 
-class ValueMatcher<Input, Remaining, RemainingApplied, Result, Provided> {
+class ValueMatcher<Input, Filters, Remaining, Result, Provided> {
   readonly _tag = "ValueMatcher"
   readonly _input: (_: Input) => unknown = identity
-  readonly _remaining: (_: never) => Remaining = identity
+  readonly _filters: (_: never) => Filters = identity
   readonly _result: (_: never) => Result = identity
 
   constructor(
     readonly provided: Provided,
-    readonly value: E.Either<RemainingApplied, Provided>,
+    readonly value: E.Either<Remaining, Provided>,
   ) {}
 
   add<I, R, RA, A, Pr>(_case: Case): ValueMatcher<I, R, RA, A, Pr> {
@@ -122,7 +122,8 @@ const makeSchema = <I>(
  * @tsplus static effect/match/Matcher.Ops type
  * @since 1.0.0
  */
-export const type = <I>(): Matcher<I, I, I, never, never> => new TypeMatcher([])
+export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
+  new TypeMatcher([])
 
 /**
  * @category constructors
@@ -130,7 +131,7 @@ export const type = <I>(): Matcher<I, I, I, never, never> => new TypeMatcher([])
  * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
-export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
+export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
   new ValueMatcher(i, E.left(i))
 
 /**
@@ -139,28 +140,28 @@ export const value = <I>(i: I): Matcher<I, I, I, never, I> =>
  * @since 1.0.0
  */
 export const when: {
-  <RA, P extends PatternBase<RA>, B>(
+  <R, P extends PatternBase<R>, B>(
     pattern: Narrow<P>,
-    f: (_: WhenMatch<RA, P>) => B,
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
+    f: (_: WhenMatch<R, P>) => B,
+  ): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddWithout<R, SafeSchemaR<PredToSchema<P>>>,
-    ApplyFilters<AddWithout<R, SafeSchemaR<PredToSchema<P>>>>,
+    AddWithout<F, SafeSchemaR<PredToSchema<P>>>,
+    ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P>>>>,
     A | B,
     Pr
   >
 
-  <P, SR, RA, B>(
+  <P, SR, R, B>(
     schema: SafeSchema<P, SR>,
-    f: (_: WhenSchemaMatch<RA, P>) => B,
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
+    f: (_: WhenSchemaMatch<R, P>) => B,
+  ): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddWithout<R, WhenSchemaMatch<RA, P>>,
-    ApplyFilters<AddWithout<R, WhenSchemaMatch<RA, P>>>,
+    AddWithout<F, WhenSchemaMatch<R, P>>,
+    ApplyFilters<I, AddWithout<F, WhenSchemaMatch<R, P>>>,
     A | B,
     Pr
   >
@@ -173,15 +174,15 @@ export const when: {
  * @since 1.0.0
  */
 export const tag: {
-  <RA, P extends Tags<RA> & (string | number | symbol | object | {}), B>(
+  <R, P extends Tags<R> & (string | number | symbol | object | {}), B>(
     pattern: P,
-    f: (_: Extract<RA, { readonly _tag: P }>) => B,
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
+    f: (_: Extract<R, { readonly _tag: P }>) => B,
+  ): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddWithout<R, Extract<RA, { _tag: P }>>,
-    ApplyFilters<AddWithout<R, Extract<RA, { _tag: P }>>>,
+    AddWithout<F, Extract<R, { _tag: P }>>,
+    ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
     A | B,
     Pr
   >
@@ -200,28 +201,28 @@ export const tag: {
  * @since 1.0.0
  */
 export const not: {
-  <RA, P extends PatternBase<RA>, B>(
+  <R, P extends PatternBase<R>, B>(
     pattern: Narrow<P>,
-    f: (_: NotMatch<RA, P>) => B,
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
+    f: (_: NotMatch<R, P>) => B,
+  ): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddOnly<R, WhenMatch<RA, P>>,
-    ApplyFilters<AddOnly<R, WhenMatch<RA, P>>>,
+    AddOnly<F, WhenMatch<R, P>>,
+    ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
     A | B,
     Pr
   >
 
-  <P, SR, RA, B>(
+  <P, SR, R, B>(
     schema: SafeSchema<P, SR>,
-    f: (_: Exclude<RA, ExtractMatch<RA, SR>>) => B,
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
+    f: (_: Exclude<R, ExtractMatch<R, SR>>) => B,
+  ): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
-    AddOnly<R, ExtractMatch<RA, P>>,
-    ApplyFilters<AddOnly<R, ExtractMatch<RA, P>>>,
+    AddOnly<F, ExtractMatch<R, P>>,
+    ApplyFilters<I, AddOnly<F, ExtractMatch<R, P>>>,
     A | B,
     Pr
   >
@@ -377,9 +378,9 @@ export const orElse =
  * @tsplus getter effect/match/Matcher either
  * @since 1.0.0
  */
-export const either: <I, R, RA, A, Pr>(
-  self: Matcher<I, R, RA, A, Pr>,
-) => [Pr] extends [never] ? (input: I) => E.Either<RA, A> : E.Either<RA, A> = (<
+export const either: <I, F, R, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+) => [Pr] extends [never] ? (input: I) => E.Either<R, A> : E.Either<R, A> = (<
   I,
   R,
   RA,
@@ -415,8 +416,8 @@ export const either: <I, R, RA, A, Pr>(
  * @tsplus getter effect/match/Matcher option
  * @since 1.0.0
  */
-export const option: <I, R, RA, A, Pr>(
-  self: Matcher<I, R, RA, A, Pr>,
+export const option: <I, F, R, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
 ) => [Pr] extends [never] ? (input: I) => O.Option<A> : O.Option<A> = (<I, A>(
   self: Matcher<I, any, any, A, I>,
 ) => {
@@ -432,10 +433,10 @@ export const option: <I, R, RA, A, Pr>(
  * @tsplus getter effect/match/Matcher exhaustive
  * @since 1.0.0
  */
-export const exhaustive: <I, R, A, Pr>(
-  self: Matcher<I, R, never, A, Pr>,
-) => [Pr] extends [never] ? (u: I) => A : A = (<I, A>(
-  self: Matcher<I, any, never, A, I>,
+export const exhaustive: <I, F, A, Pr>(
+  self: Matcher<I, F, never, A, Pr>,
+) => [Pr] extends [never] ? (u: I) => A : A = (<I, F, A>(
+  self: Matcher<I, F, never, A, I>,
 ) => {
   const toEither = either(self as any)
 
@@ -520,38 +521,36 @@ type PatternBase<A> = A extends Record<string, any>
     }>
   : A | PredicateA<A> | SafeSchema<any>
 
-interface Without<A, X> {
+interface Without<X> {
   readonly _tag: "Without"
-  readonly _A: A
   readonly _X: X
 }
 
-interface Only<A, X> {
+interface Only<X> {
   readonly _tag: "Only"
-  readonly _A: A
   readonly _X: X
 }
 
-type AddWithout<A, X> = A extends Without<infer P, infer WX>
-  ? Without<P, X | WX>
-  : A extends Only<infer P, infer OX>
-  ? Only<P, Exclude<OX, X>>
-  : Without<A, X>
+type AddWithout<A, X> = [A] extends [Without<infer WX>]
+  ? Without<X | WX>
+  : [A] extends [Only<infer OX>]
+  ? Only<Exclude<OX, X>>
+  : never
 
-type AddOnly<A, X> = A extends Without<infer P, infer WX>
-  ? X extends WX
+type AddOnly<A, X> = [A] extends [Without<infer WX>]
+  ? [X] extends [WX]
     ? never
-    : Only<P, X>
-  : A extends Only<infer P, infer OX>
-  ? X extends OX
-    ? Only<P, X>
+    : Only<X>
+  : [A] extends [Only<infer OX>]
+  ? [X] extends [OX]
+    ? Only<X>
     : never
-  : Only<A, X>
+  : never
 
-type ApplyFilters<A> = A extends Only<any, infer X>
+type ApplyFilters<I, A> = A extends Only<infer X>
   ? X
-  : A extends Without<infer P, infer X>
-  ? Exclude<P, X>
-  : A
+  : A extends Without<infer X>
+  ? Exclude<I, X>
+  : never
 
 type Tags<P> = P extends { _tag: infer X } ? X : never
