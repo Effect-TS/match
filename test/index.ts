@@ -30,10 +30,10 @@ describe("Matcher", () => {
   it("schema exhaustive-literal", () => {
     const match = pipe(
       M.type<{ _tag: "A"; a: number | string } | { _tag: "B"; b: number }>(),
-      M.when({ _tag: "A", a: M.number }, (_) => E.right(_._tag)),
-      M.when({ _tag: "A", a: M.string }, (_) => E.right(_._tag)),
+      M.when({ _tag: M.string, a: M.number }, (_) => E.right(_._tag)),
+      M.when({ _tag: M.string, a: M.string }, (_) => E.right(_._tag)),
       M.when({ b: M.number }, (_) => E.left(_._tag)),
-      M.orElse(() => {
+      M.orElse((_) => {
         throw "absurd"
       }),
     )
@@ -45,8 +45,8 @@ describe("Matcher", () => {
   it("exhaustive literal with not", () => {
     const match = pipe(
       M.type<number>(),
-      M.when(1, () => true),
-      M.not(1, () => false),
+      M.when(1, (_) => true),
+      M.not(1, (_) => false),
       M.exhaustive,
     )
     expect(match(1)).toEqual(true)
@@ -119,7 +119,7 @@ describe("Matcher", () => {
     const match = pipe(
       M.type<string | number>(),
       M.not("hi", (_) => "a"),
-      M.orElse(() => "b"),
+      M.orElse((_) => "b"),
     )
     expect(match("hello")).toEqual("a")
     expect(match("hi")).toEqual("b")
@@ -128,7 +128,7 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah"], (_) => true),
+      M.when(["yeah", M.string], (_) => true),
       M.option,
     )
 

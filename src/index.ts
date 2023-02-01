@@ -551,7 +551,7 @@ type AddOnly<A, X> = A extends Without<infer P, infer WX>
 type ApplyFilters<A> = A extends Only<any, infer X>
   ? X
   : A extends Without<infer P, infer X>
-  ? Exclude<P, ExtractMatch<P, X>>
+  ? Exclude<P, X>
   : A
 
 type Tags<P> = P extends { _tag: infer X } ? X : never
