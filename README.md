@@ -63,7 +63,7 @@ const result = pipe(
 console.log(result) // "John is 30 years old"
 ```
 
-## Types of Matchers
+## Types of patterns
 
 ### Predicates
 
@@ -83,7 +83,7 @@ console.log(match({ age: 5 })) // "Age: 5"
 console.log(match({ age: 4 })) // "4 is too young"
 ```
 
-### `Matcher.not`
+### `not` patterns
 
 `not` lets you match on everything but a specific value or Schema.
 
@@ -101,29 +101,31 @@ console.log(match("hello")) // "a"
 console.log(match("hi")) // "b"
 ```
 
-### `Matcher.tag`
+### `tag` patterns
 
 Matches against the tag in a [Discriminated Union](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions)
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@fp-ts/core/Either";
+import * as E from "@fp-ts/core/Either"
 import { pipe } from "@fp-ts/core/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
-const result = pipe(
-  Match.value(E.right(0)), 
+const match = pipe(
+  Match.type<E.Either<string, number>>(),
   Match.tag("Right", (_) => _.right),
   Match.tag("Left", (_) => _.left),
   Match.exhaustive,
 )
 
-console.log(match(E.right("a"))) // "a"
+console.log(match(E.right(123))) // 123
 ```
 
-### `Matcher.option`
+## Evaluating a `Matcher`
 
-A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-ts/core/blob/main/Option.md). 
+### `option`
+
+A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-ts/core/blob/main/Option.md).
 
 ```ts
 import * as Match from "@effect/match"
@@ -133,14 +135,25 @@ import { pipe } from "@fp-ts/core/Function"
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
 // type Option<T> = { _tag: "Some", value: T } | { _tag: "None" }
 const result = pipe(
-  E.right(0),
-  Match.value,
+  Match.value(E.right(0)),
   Match.when({ _tag: "Right" }, (_) => _.right),
   Match.option,
 )
 
 console.log(result) // { _tag: "Some", value: 0 }
 ```
+
+### `exhaustive`
+
+**TODO**
+
+### `orElse`
+
+**TODO**
+
+### `either`
+
+**TODO**
 
 ## Credits
 
