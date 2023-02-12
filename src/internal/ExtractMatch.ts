@@ -36,12 +36,13 @@ type IsUnion<T, U extends T = T> = (
 const Fail = Symbol.for("ReplaceUnions/Fail")
 type Fail = typeof Fail
 
-type Replace<A, B> = A extends Record<string | number, any>
+type Replace<A, B> = A extends Function
+  ? A
+  : A extends Record<string | number, any>
   ? { [K in keyof A]: K extends keyof B ? Replace<A[K], B[K]> : A[K] }
-  : {
-      0: A
-      1: B
-    }[[B] extends [A] ? 1 : 0]
+  : [B] extends [A]
+  ? B
+  : A
 
 type MaybeReplace<I, P> = [P] extends [I]
   ? P

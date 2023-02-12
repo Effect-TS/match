@@ -212,4 +212,22 @@ describe("Matcher", () => {
     expect(match({ age: 4 })).toEqual("Age: 4")
     expect(match({ age: 5 })).toEqual("5 is too old")
   })
+
+  it("predicate with functions", () => {
+    const match = pipe(
+      M.type<{
+        a: number
+        b: {
+          c: string
+          f?: (status: number) => Promise<string>
+        }
+      }>(),
+      M.when({ a: 400 }, (_) => "400"),
+      M.when({ b: (b) => b.c === "nested" }, (_) => _.b.c),
+      M.orElse(() => "fail"),
+    )
+
+    expect(match({ b: { c: "nested" }, a: 200 })).toEqual("nested")
+    expect(match({ b: { c: "nested" }, a: 400 })).toEqual("400")
+  })
 })
