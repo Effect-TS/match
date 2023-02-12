@@ -478,9 +478,13 @@ type Narrow<A> = NarrowRaw<A> | PredicateA<any>
 
 type NarrowRaw<A> =
   | (A extends [] ? [] : never)
-  | (A extends PredicateA<any> ? A : never)
+  | (A extends PredicateA<infer _P> ? A : never)
   | {
-      [K in keyof A]: A[K] extends SafeSchema<any> ? A[K] : NarrowRaw<A[K]>
+      [K in keyof A]: A[K] extends PredicateA<infer _P>
+        ? A[K]
+        : A[K] extends SafeSchema<any>
+        ? A[K]
+        : NarrowRaw<A[K]>
     }
   | (A extends Narrowable ? A : never)
 
@@ -488,12 +492,16 @@ type Narrowable = string | number | bigint | boolean
 
 type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? S
+  : A extends Function
+  ? A
   : A extends Record<string, any>
   ? { [K in keyof A]: SafeSchemaP<A[K]> }
   : A
 
 type SafeSchemaR<A> = A extends SafeSchema<infer _, infer R>
   ? R
+  : A extends Function
+  ? A
   : A extends Record<string, any>
   ? { [K in keyof A]: SafeSchemaR<A[K]> }
   : A
