@@ -125,11 +125,11 @@ console.log(match(E.right(123))) // 123
 
 ### `option`
 
-A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-ts/core/blob/main/Option.md).
+A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-ts/core/blob/main/guides/Option.md).
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from '@fp-ts/core/Either;
+import * as E from "@fp-ts/core/Either";
 import { pipe } from "@fp-ts/core/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
@@ -145,15 +145,60 @@ console.log(result) // { _tag: "Some", value: 0 }
 
 ### `exhaustive`
 
-**TODO**
+A Matcher that marks the end of the matching process and checks if all possible matches were made. Returns the match (for `Match.value`) or the evaluation function (for `Match.type`).
+
+```ts
+import * as Match from "@effect/match"
+import * as E from "@fp-ts/core/Either";
+import { pipe } from "@fp-ts/core/Function"
+
+// type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
+const result = pipe(
+  Match.value(E.right(0)),
+  Match.when({ _tag: "Right" }, (_) => _.right),
+  Match.exhaustive, // TypeError! { _tag: "left", left: never } is not assignable to never
+)
+
+```
 
 ### `orElse`
 
-**TODO**
+A Matcher that marks the end of the matcher and allows to provide a fallback value if no patterns match. Returns the match (for `Match.value`) or the evaluation function (for `Match.type`).
+
+```ts
+import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
+
+const match = pipe(
+  Match.type<string | number>(),
+  Match.when("hi", (_) => "hello"),
+  Match.orElse(() => "I literally do not understand"),
+)
+
+console.log(match("hello")) // "I literally do not understand"
+console.log(match("hi")) // "hello"
+```
+
 
 ### `either`
 
-**TODO**
+A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-ts/core/blob/main/guides/Either.md) in the shape of `Either<NoMatchResult, MatchResult>`.
+
+```ts
+import * as Match from "@effect/match"
+import { pipe } from "@fp-ts/core/Function"
+
+
+const match = pipe(
+  Match.type<string>(),
+  Match.when("hi", (_) => "hello"),
+  Match.either,
+)
+
+// type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
+console.log(match("hi")) // { _tag: "Right", value: "hello" }
+console.log(match("shigidigi")) // { _tag: "Left", value: "shigidigi" }
+```
 
 ## Credits
 
