@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.0.10
+
+### Patch Changes
+
+- [#20](https://github.com/Effect-TS/match/pull/20) [`9c06f4c`](https://github.com/Effect-TS/match/commit/9c06f4cd8e54cb385e595b60b1de750f6c7e0343) Thanks [@tim-smart](https://github.com/tim-smart)! - fix match types for inputs with functions
+
 ## 0.0.9
 
 ### Patch Changes
