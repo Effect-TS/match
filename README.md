@@ -145,7 +145,7 @@ console.log(result) // { _tag: "Some", value: 0 }
 
 ### `exhaustive`
 
-A Matcher that marks the end of the matching process and checks if all possible matches were made. Returns the match.
+A Matcher that marks the end of the matching process and checks if all possible matches were made. Returns the match (for `Match.value`) or the evaluation function (for `Match.type`).
 
 ```ts
 import * as Match from "@effect/match"
@@ -156,14 +156,14 @@ import { pipe } from "@fp-ts/core/Function"
 const result = pipe(
   Match.value(E.right(0)),
   Match.when({ _tag: "Right" }, (_) => _.right),
-  Match.exhastive, // TypeError! { _tag: "left", left: never } is not assignable to never
+  Match.exhaustive, // TypeError! { _tag: "left", left: never } is not assignable to never
 )
 
 ```
 
 ### `orElse`
 
-A Matcher that marks the end of the matcher and allows to provide a fallback value if a no matchers hit. Returns the match.
+A Matcher that marks the end of the matcher and allows to provide a fallback value if no patterns match. Returns the match (for `Match.value`) or the evaluation function (for `Match.type`).
 
 ```ts
 import * as Match from "@effect/match"
@@ -182,7 +182,7 @@ console.log(match("hi")) // "hello"
 
 ### `either`
 
-A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-ts/core/blob/main/guides/Either.md) in the shape of `Either<OriginalInput, MatchResult>`.
+A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-ts/core/blob/main/guides/Either.md) in the shape of `Either<NoMatchResult, MatchResult>`.
 
 ```ts
 import * as Match from "@effect/match"
