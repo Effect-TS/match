@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.0.11
+
+### Patch Changes
+
+- [`42337eb`](https://github.com/Effect-TS/match/commit/42337ebe67c63b0dc976e759ceb3925efe7e01a1) Thanks [@tim-smart](https://github.com/tim-smart)! - update README with missing docs
+
+- [#23](https://github.com/Effect-TS/match/pull/23) [`975ae71`](https://github.com/Effect-TS/match/commit/975ae71a247cf94eea9e8bf8f32cacb6b0291410) Thanks [@tim-smart](https://github.com/tim-smart)! - allow predicate at the root level
+
 ## 0.0.10
 
 ### Patch Changes
