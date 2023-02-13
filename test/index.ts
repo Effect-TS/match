@@ -230,4 +230,25 @@ describe("Matcher", () => {
     expect(match({ b: { c: "nested" }, a: 200 })).toEqual("nested")
     expect(match({ b: { c: "nested" }, a: 400 })).toEqual("400")
   })
+
+  it("predicate at root level", () => {
+    const match = pipe(
+      M.type<{
+        a: number
+        b: {
+          c: string
+          f?: (status: number) => Promise<string>
+        }
+      }>(),
+      M.when(
+        (_) => _.a === 400,
+        (_) => "400",
+      ),
+      M.when({ b: (b) => b.c === "nested" }, (_) => _.b.c),
+      M.orElse(() => "fail"),
+    )
+
+    expect(match({ b: { c: "nested" }, a: 200 })).toEqual("nested")
+    expect(match({ b: { c: "nested" }, a: 400 })).toEqual("400")
+  })
 })
