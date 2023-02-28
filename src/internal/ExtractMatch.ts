@@ -33,7 +33,7 @@ type IsUnion<T, U extends T = T> = (
   ? false
   : true
 
-const Fail = Symbol.for("ReplaceUnions/Fail")
+const Fail = Symbol.for("@effect/match/Fail")
 type Fail = typeof Fail
 
 type Replace<A, B> = A extends Function
@@ -50,7 +50,9 @@ type MaybeReplace<I, P> = [P] extends [I]
   ? Replace<I, P>
   : Fail
 
-type FlattenRecordFails<R, D = Fail> = Fail extends R[keyof R] ? D : R
+type FlattenRecordFails<R, D = Fail> = Extract<R[keyof R], Fail> extends never
+  ? R
+  : D
 type FlattenUnionFails<U> = [U] extends [Fail] ? Fail : Exclude<U, Fail>
 
 type BuiltInObjects =

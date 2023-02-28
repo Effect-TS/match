@@ -251,4 +251,19 @@ describe("Matcher", () => {
     expect(match({ b: { c: "nested" }, a: 200 })).toEqual("nested")
     expect(match({ b: { c: "nested" }, a: 400 })).toEqual("400")
   })
+
+  it("symbols", () => {
+    const thing = {
+      symbol: Symbol(),
+      name: "thing",
+    } as const
+
+    const match = pipe(
+      M.value(thing),
+      M.when({ name: "thing" }, (_) => _.name),
+      M.orElse(() => "fail"),
+    )
+
+    expect(match).toEqual("thing")
+  })
 })
