@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.1.0
+
+### Minor Changes
+
+- [#25](https://github.com/Effect-TS/match/pull/25) [`ea89a49`](https://github.com/Effect-TS/match/commit/ea89a49b95a762983b7d84f2b19bc4961d05c3d5) Thanks [@pigoz](https://github.com/pigoz)! - chore: update dependencies
+
 ## 0.0.11
 
 ### Patch Changes
