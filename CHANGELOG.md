@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.1.1
+
+### Patch Changes
+
+- [#27](https://github.com/Effect-TS/match/pull/27) [`cff45b8`](https://github.com/Effect-TS/match/commit/cff45b82a8352066c43fb258ee433b0f65bf3aaf) Thanks [@tim-smart](https://github.com/tim-smart)! - fix matching types with symbols
+
 ## 0.1.0
 
 ### Minor Changes
