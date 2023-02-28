@@ -30,7 +30,7 @@ For example:
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 const match = pipe(
   Match.type<{ a: number } | { b: string }>(),
@@ -49,7 +49,7 @@ For example:
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 const result = pipe(
   Match.value({ name: "John", age: 30 }),
@@ -71,7 +71,7 @@ Values can be tested against arbitrary functions.
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 const match = pipe(
   Match.type<{ age: number }>(),
@@ -89,7 +89,7 @@ console.log(match({ age: 4 })) // "4 is too young"
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 const match = pipe(
   Match.type<string | number>(),
@@ -107,8 +107,8 @@ Matches against the tag in a [Discriminated Union](https://www.typescriptlang.or
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@fp-ts/core/Either"
-import { pipe } from "@fp-ts/core/Function"
+import * as E from "@effect/data/Either"
+import { pipe } from "@effect/data/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
 const match = pipe(
@@ -129,8 +129,8 @@ A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@fp-ts/core/Either";
-import { pipe } from "@fp-ts/core/Function"
+import * as E from "@effect/data/Either";
+import { pipe } from "@effect/data/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
 // type Option<T> = { _tag: "Some", value: T } | { _tag: "None" }
@@ -149,8 +149,8 @@ A Matcher that marks the end of the matching process and checks if all possible 
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@fp-ts/core/Either";
-import { pipe } from "@fp-ts/core/Function"
+import * as E from "@effect/data/Either";
+import { pipe } from "@effect/data/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
 const result = pipe(
@@ -167,7 +167,7 @@ A Matcher that marks the end of the matcher and allows to provide a fallback val
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 const match = pipe(
   Match.type<string | number>(),
@@ -186,7 +186,7 @@ A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-
 
 ```ts
 import * as Match from "@effect/match"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 
 const match = pipe(

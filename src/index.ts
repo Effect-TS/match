@@ -2,11 +2,11 @@
  * @since 1.0.0
  */
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
-import * as E from "@fp-ts/core/Either"
-import { flow, identity } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as RA from "@fp-ts/core/ReadonlyArray"
+import * as E from "@effect/data/Either"
+import { flow, identity } from "@effect/data/Function"
+import * as O from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
+import * as RA from "@effect/data/ReadonlyArray"
 import type * as AST from "@fp-ts/schema/AST"
 import * as P from "@fp-ts/schema/Parser"
 import * as S from "@fp-ts/schema/Schema"
@@ -99,7 +99,7 @@ const makeSchema = <I>(
   if (typeof pattern === "function") {
     return S.filter(pattern as any)(S.any) as any
   } else if (Array.isArray(pattern)) {
-    return RA.isNonEmpty(pattern)
+    return RA.isNonEmptyArray(pattern)
       ? S.tuple(...pattern.map(makeSchema))
       : (S.array(S.any) as any)
   } else if (pattern !== null && typeof pattern === "object") {
