@@ -18,7 +18,7 @@ importers:
       '@effect-ts/core': ^0.60.5
       '@effect/data': ^0.2.0
       '@effect/language-service': ^0.0.19
-      '@fp-ts/schema': ^0.3.2
+      '@effect/schema': ~0.0.1
       '@types/benchmark': ^2.1.2
       '@types/chai': ^4.3.4
       '@types/glob': ^8.1.0
@@ -56,7 +56,7 @@ importers:
       vitest: 0.29.2
     dependencies:
       '@effect/data': 0.2.0
-      '@fp-ts/schema': 0.3.2
+      '@effect/schema': 0.0.1
     devDependencies:
       '@babel/cli': 7.21.0_@babel+core@7.21.0
       '@babel/core': 7.21.0
@@ -639,12 +639,23 @@ packages:
     resolution: {integrity: sha512-1hSNjR0LX3zsGxCB8wykSNZ4OHXoA9NjeWlxgjmxcCOkYyMH+3exxJu/9GbkXt/35zaZE0KDFyMwfvrr20zRKw==}
     dev: false
 
+  /@effect/data/0.3.1:
+    resolution: {integrity: sha512-nhejSMWUHBGz53bAW9VioaffJGrNYABD2Cpvi244E88WMPQRHZWay+KhXtQrQh/IzOiNmgaQqPcgGMmetW3BYA==}
+    dev: false
+
   /@effect/language-service/0.0.19:
     resolution: {integrity: sha512-sKNVo031dkwLfe1jHZzdTiF1UXgLq1lAYd2JG7q416dlmMoxRcMXrZWyw6a/SxIDM0hyIJAEmrz5iUkQPcPdBQ==}
     dependencies:
       '@fp-ts/core': 0.0.11
       '@fp-ts/data': 0.0.41
     dev: true
+
+  /@effect/schema/0.0.1:
+    resolution: {integrity: sha512-F5wqyg7ogydeLJpnu/8NAZRBBmEutdfnzNwba1YKlU0Wag7yJo95VPnGrqRyQzY6hP+yNyjYWOr9KvgtHsOSQA==}
+    dependencies:
+      '@effect/data': 0.3.1
+      fast-check: 3.7.0
+    dev: false
 
   /@esbuild/android-arm/0.16.17:
     resolution: {integrity: sha512-N9x1CMXVhtWEAMS7pNNONyA14f71VPQN9Cnavj1XQh6T7bskqiLLrSca4O0Vr8Wdcga943eThxnVp3JLnBMYtw==}
@@ -884,13 +895,6 @@ packages:
     dependencies:
       '@fp-ts/core': 0.0.11
     dev: true
-
-  /@fp-ts/schema/0.3.2:
-    resolution: {integrity: sha512-DTWpgptOjnqEJxiif4Q8DDE6/8k7dx8Q+bJe/PMs+EiSvn62CXli4I6jBZHymL9+YJ35ezeK9zHa9Y2cQIOYwQ==}
-    dependencies:
-      '@effect/data': 0.2.0
-      fast-check: 3.7.0
-    dev: false
 
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
