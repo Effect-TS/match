@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.2.0
+
+### Minor Changes
+
+- [#29](https://github.com/Effect-TS/match/pull/29) [`a62b429`](https://github.com/Effect-TS/match/commit/a62b429600e6beefad54721aa2299e666181e001) Thanks [@jessekelly881](https://github.com/jessekelly881)! - replace fp-ts/schema with effect/schema
+
 ## 0.1.1
 
 ### Patch Changes
