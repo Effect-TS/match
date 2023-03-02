@@ -200,12 +200,6 @@ console.log(match("hi")) // { _tag: "Right", value: "hello" }
 console.log(match("shigidigi")) // { _tag: "Left", value: "shigidigi" }
 ```
 
-## Credits
-
-This library is built upon the great work of:
-
-- [@fp-ts/schema](https://github.com/fp-ts/schema).
-
 ## License
 
 The MIT License (MIT)

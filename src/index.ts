@@ -1,15 +1,15 @@
 /**
  * @since 1.0.0
  */
-import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
 import * as E from "@effect/data/Either"
 import { flow, identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
-import type * as AST from "@fp-ts/schema/AST"
-import * as P from "@fp-ts/schema/Parser"
-import * as S from "@fp-ts/schema/Schema"
+import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
+import type * as AST from "@effect/schema/AST"
+import * as P from "@effect/schema/Parser"
+import * as S from "@effect/schema/Schema"
 
 /**
  * @category model
@@ -344,19 +344,7 @@ export const boolean = safe(S.boolean)
  * @since 1.0.0
  */
 export const _undefined = safe(S.undefined)
-export {
-  /**
-   * @category predicates
-   * @since 1.0.0
-   */
-  _undefined as undefined,
-}
-
-/**
- * @tsplus static effect/match/Matcher.Ops null
- * @since 1.0.0
- */
-export const _null = safe(S.null)
+export { _undefined as undefined }
 export {
   /**
    * @category predicates
@@ -364,6 +352,12 @@ export {
    */
   _null as null,
 }
+
+/**
+ * @tsplus static effect/match/Matcher.Ops null
+ * @since 1.0.0
+ */
+export const _null = safe(S.null)
 
 /**
  * @category predicates
