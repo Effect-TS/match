@@ -344,13 +344,12 @@ export const boolean = safe(S.boolean)
  * @since 1.0.0
  */
 export const _undefined = safe(S.undefined)
-export { _undefined as undefined }
 export {
   /**
    * @category predicates
    * @since 1.0.0
    */
-  _null as null,
+  _undefined as undefined,
 }
 
 /**
@@ -358,6 +357,13 @@ export {
  * @since 1.0.0
  */
 export const _null = safe(S.null)
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _null as null,
+}
 
 /**
  * @category predicates
