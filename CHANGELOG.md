@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.2.1
+
+### Patch Changes
+
+- [#31](https://github.com/Effect-TS/match/pull/31) [`852bc2e`](https://github.com/Effect-TS/match/commit/852bc2eb84a697f27ab5e8f84fe1a0b1a3eca0cd) Thanks [@tim-smart](https://github.com/tim-smart)! - fix jsdoc + exports
+
 ## 0.2.0
 
 ### Minor Changes
