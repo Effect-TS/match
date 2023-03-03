@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.3.0
+
+### Minor Changes
+
+- [#33](https://github.com/Effect-TS/match/pull/33) [`8e7970a`](https://github.com/Effect-TS/match/commit/8e7970af2e9b53ad51fb79d73e65502826b47843) Thanks [@tim-smart](https://github.com/tim-smart)! - update effect/data
+
 ## 0.2.1
 
 ### Patch Changes
