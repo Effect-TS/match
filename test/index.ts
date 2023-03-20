@@ -2,7 +2,7 @@ import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import * as M from "@effect/match"
-import * as S from "@effect/schema"
+import * as S from "@effect/schema/Schema"
 
 describe("Matcher", () => {
   it("exhaustive", () => {
