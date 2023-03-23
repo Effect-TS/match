@@ -132,7 +132,7 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
  * @since 1.0.0
  */
 export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
-  new ValueMatcher(i, E.left(i))
+  new ValueMatcher(maybeAddGetters(i), E.left(i))
 
 /**
  * @category combinators
@@ -393,6 +393,8 @@ export const either: <I, F, R, A, Pr>(
 
   const len = self.cases.length
   return (input: I): E.Either<RA, A> => {
+    input = maybeAddGetters(input)
+
     for (let i = 0; i < len; i++) {
       const _case = self.cases[i]
       if (_case._tag === "When" && _case.guard(input)) {
@@ -454,6 +456,30 @@ export const exhaustive: <I, F, A, Pr>(
     throw "absurd"
   }
 }) as any
+
+/** @internal */
+function maybeAddGetters<I>(input: I): I {
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    !Array.isArray(input) &&
+    "__proto__" in input &&
+    input.__proto__ !== Object.prototype
+  ) {
+    const getters = Object.entries(
+      Object.getOwnPropertyDescriptors(input.__proto__),
+    )
+      .filter(([, d]) => !!d.get)
+      .reduce((acc, [k]) => ({ ...acc, [k]: (input.__proto__ as any)[k] }), {})
+
+    return {
+      ...input,
+      ...getters,
+    }
+  }
+
+  return input
+}
 
 // type helpers
 

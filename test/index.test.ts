@@ -406,4 +406,20 @@ describe("Matcher", () => {
     expect(match({ abc: O.some({ _tag: "B" }) })).toEqual("no match")
     expect(match({ abc: O.none() })).toEqual("no match")
   })
+
+  it("getters", () => {
+    class Thing {
+      get name() {
+        return "thing"
+      }
+    }
+
+    const match = pipe(
+      M.value(new Thing()),
+      M.when({ name: "thing" }, (_) => _.name),
+      M.orElse(() => "fail"),
+    )
+
+    expect(match).toEqual("thing")
+  })
 })
