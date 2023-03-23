@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.5.1
+
+### Patch Changes
+
+- [#40](https://github.com/Effect-TS/match/pull/40) [`38d3b65`](https://github.com/Effect-TS/match/commit/38d3b65edeb815da3bf4917626143f04391555c3) Thanks [@tim-smart](https://github.com/tim-smart)! - Update dependencies
+
 ## 0.5.0
 
 ### Minor Changes
