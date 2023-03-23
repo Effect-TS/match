@@ -14,7 +14,7 @@ importers:
       '@babel/plugin-transform-modules-commonjs': ^7.21.2
       '@changesets/changelog-github': ^0.4.8
       '@changesets/cli': ^2.26.0
-      '@effect-ts/build-utils': 0.40.5
+      '@effect-ts/build-utils': 0.40.7
       '@effect-ts/core': ^0.60.5
       '@effect/data': ^0.5.0
       '@effect/language-service': ^0.0.19
@@ -63,7 +63,7 @@ importers:
       '@babel/plugin-transform-modules-commonjs': 7.21.2_@babel+core@7.21.3
       '@changesets/changelog-github': 0.4.8
       '@changesets/cli': 2.26.0
-      '@effect-ts/build-utils': 0.40.5_4tiomhbv3rbbenpw35oypunhgu
+      '@effect-ts/build-utils': 0.40.7_4tiomhbv3rbbenpw35oypunhgu
       '@effect-ts/core': 0.60.5
       '@effect/language-service': 0.0.19
       '@types/benchmark': 2.1.2
@@ -638,8 +638,8 @@ packages:
       is-negated-glob: 1.0.0
     dev: true
 
-  /@effect-ts/build-utils/0.40.5_4tiomhbv3rbbenpw35oypunhgu:
-    resolution: {integrity: sha512-5gWxbnxhqcDydsTSgTG1e0bOHADfk0lm3cv97yjgeLeqVhO1RxJ4R7RM0alF5MeRsismMW/mInLR8Gn82TU+7Q==}
+  /@effect-ts/build-utils/0.40.7_4tiomhbv3rbbenpw35oypunhgu:
+    resolution: {integrity: sha512-shABJprKL9xm5asIeHCuBP4V1FlqoO1TCc5yeiTSxx6VmLbRnNE2GEO7nY+GYF1Fzc0U6hT7h8pVKXm20S0Y/A==}
     hasBin: true
     peerDependencies:
       '@effect-ts/core': '>= 0.28.9'
@@ -3764,7 +3764,7 @@ packages:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
     engines: {node: '>=6 <7 || >=8'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
     dev: true
@@ -4686,7 +4686,7 @@ packages:
       '@jest/types': 26.6.2
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 4.0.5
       pretty-format: 26.6.2
       slash: 3.0.0
@@ -4796,7 +4796,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /kind-of/3.2.2:
@@ -4869,7 +4869,7 @@ packages:
     resolution: {integrity: sha512-OfCBkGEw4nN6JLtgRidPX6QxjBQGQf72q3si2uvqyFEMbycSFFHwAZeXx6cJgFM9wmLrf9zBwCP3Ivqa+LLZPw==}
     engines: {node: '>=6'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       js-yaml: 3.14.1
       pify: 4.0.1
       strip-bom: 3.0.0
@@ -5952,7 +5952,7 @@ packages:
     resolution: {integrity: sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA==}
     engines: {node: '>=6'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       js-yaml: 3.14.1
       pify: 4.0.1
       strip-bom: 3.0.0
@@ -5995,7 +5995,7 @@ packages:
     resolution: {integrity: sha512-1JU/8q+VgFZyxwrJ+SVIOsh+KywWGpds3NTqikiKpDMZWScmAYyKIgqkO+ARvNWJfXeXR1zxz7aHF4u4CyH6vQ==}
     engines: {node: '>=0.10'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 3.1.10
       readable-stream: 2.3.7
     transitivePeerDependencies:
