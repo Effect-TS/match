@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combinators](#combinators)
+  - [discriminator](#discriminator)
   - [not](#not)
   - [tag](#tag)
   - [when](#when)
@@ -47,29 +48,53 @@ Added in v1.0.0
 
 # combinators
 
+## discriminator
+
+**Signature**
+
+```ts
+export declare const discriminator: <D extends string>(
+  field: D
+) => <
+  R,
+  P extends
+    | (Tags<D, R> & string)
+    | (Tags<D, R> & number)
+    | (Tags<D, R> & symbol)
+    | (Tags<D, R> & object)
+    | (Tags<D, R> & {}),
+  B
+>(
+  first: P,
+  ...values: (P | ((_: Extract<R, { readonly _tag: P }>) => B))[]
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, Extract<R, { _tag: P }>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
+  B | A,
+  Pr
+>
+```
+
+Added in v1.0.0
+
 ## not
 
 **Signature**
 
 ```ts
 export declare const not: {
-  <RA, P extends PatternBase<RA>, B>(pattern: Narrow<P>, f: (_: Exclude<RA, SafeSchemaR<PredToSchema<P>>>) => B): <
-    I,
-    R,
-    A,
-    Pr
-  >(
-    self: Matcher<I, R, RA, A, Pr>
-  ) => Matcher<
-    I,
-    AddOnly<R, SafeSchemaP<ResolvePred<P>>>,
-    ApplyFilters<AddOnly<R, SafeSchemaP<ResolvePred<P>>>>,
-    B | A,
-    Pr
-  >
-  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<RA, SR>) => B): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>
-  ) => Matcher<I, AddOnly<R, P>, ApplyFilters<AddOnly<R, P>>, B | A, Pr>
+  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
+  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
+  <R, P extends PatternBase<R>, B>(pattern: Narrow<P>, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
+  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
+  <P, SR, R, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
+  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
 }
 ```
 
@@ -80,19 +105,15 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tag: <
-  RA,
-  P extends (Tags<RA> & string) | (Tags<RA> & number) | (Tags<RA> & symbol) | (Tags<RA> & object) | (Tags<RA> & {}),
-  B
->(
-  pattern: P,
-  f: (_: Extract<RA, { readonly _tag: P }>) => B
-) => <I, R, A, Pr>(
-  self: Matcher<I, R, RA, A, Pr>
+export declare const tag: <R, P, B>(
+  first: P,
+  ...values: (P | ((_: Extract<R, { readonly _tag: P }>) => B))[]
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<R, Extract<RA, { _tag: P }>>,
-  ApplyFilters<AddWithout<R, Extract<RA, { _tag: P }>>>,
+  AddWithout<F, Extract<R, { _tag: P }>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
   B | A,
   Pr
 >
@@ -106,21 +127,27 @@ Added in v1.0.0
 
 ```ts
 export declare const when: {
-  <RA, P extends PatternBase<RA>, B>(
-    pattern: Narrow<P>,
-    f: (_: Replace<TryExtract<RA, SafeSchemaP<ResolvePred<P>>>, SafeSchemaP<ResolvePred<P>>>) => B
-  ): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>
+  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: any) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
   ) => Matcher<
     I,
-    AddWithout<R, SafeSchemaR<PredToSchema<P>>>,
-    ApplyFilters<AddWithout<R, SafeSchemaR<PredToSchema<P>>>>,
+    AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>,
+    ApplyFilters<I, AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>>,
     B | A,
     Pr
   >
-  <P, SR, RA, B>(schema: SafeSchema<P, SR>, f: (_: Replace<TryExtract<RA, P>, P>) => B): <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>
-  ) => Matcher<I, AddWithout<R, P>, ApplyFilters<AddWithout<R, SR>>, B | A, Pr>
+  <R, P extends PatternBase<R>, B>(pattern: Narrow<P>, f: (_: any) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
+  ) => Matcher<
+    I,
+    AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>,
+    ApplyFilters<I, AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>>,
+    B | A,
+    Pr
+  >
+  <P, SR, R, B>(schema: SafeSchema<P, SR>, f: (_: any) => B): <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>
+  ) => Matcher<I, AddWithout<F, any>, ApplyFilters<I, AddWithout<F, any>>, B | A, Pr>
 }
 ```
 
@@ -133,7 +160,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const type: <I>() => Matcher<I, I, I, never, never>
+export declare const type: <I>() => Matcher<I, Without<never>, I, never, never>
 ```
 
 Added in v1.0.0
@@ -143,7 +170,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const value: <I>(i: I) => Matcher<I, I, I, never, I>
+export declare const value: <I>(i: I) => Matcher<I, Without<never>, I, never, I>
 ```
 
 Added in v1.0.0
@@ -155,9 +182,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const either: <I, R, RA, A, Pr>(
-  self: Matcher<I, R, RA, A, Pr>
-) => [Pr] extends [never] ? (input: I) => E.Either<RA, A> : E.Either<RA, A>
+export declare const either: <I, F, R, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => [Pr] extends [never] ? (input: I) => E.Either<R, A> : E.Either<R, A>
 ```
 
 Added in v1.0.0
@@ -167,8 +194,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const exhaustive: <I, R, A, Pr>(
-  self: Matcher<I, R, never, A, Pr>
+export declare const exhaustive: <I, F, A, Pr>(
+  self: Matcher<I, F, never, A, Pr>
 ) => [Pr] extends [never] ? (u: I) => A : A
 ```
 
@@ -179,8 +206,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const option: <I, R, RA, A, Pr>(
-  self: Matcher<I, R, RA, A, Pr>
+export declare const option: <I, F, R, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
 ) => [Pr] extends [never] ? (input: I) => O.Option<A> : O.Option<A>
 ```
 
@@ -205,9 +232,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Matcher<Input, Remaining, RemainingApplied, Result, Provided> =
-  | TypeMatcher<Input, Remaining, RemainingApplied, Result>
-  | ValueMatcher<Input, Remaining, RemainingApplied, Result, Provided>
+export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
+  | TypeMatcher<Input, Filters, RemainingApplied, Result>
+  | ValueMatcher<Input, Filters, RemainingApplied, Result, Provided>
 ```
 
 Added in v1.0.0
@@ -273,7 +300,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const is: <Literals extends readonly AST.LiteralValue[]>(
+export declare const is: <Literals extends readonly LiteralValue[]>(
   ...a: Literals
 ) => SafeSchema<Literals[number], Literals[number]>
 ```
@@ -308,7 +335,7 @@ contain refinements that could make the pattern not match.
 **Signature**
 
 ```ts
-export declare const safe: <A, R = A>(schema: S.Schema<A>) => SafeSchema<A, R>
+export declare const safe: <A>(schema: S.Schema<A, A>) => SafeSchema<A, A>
 ```
 
 Added in v1.0.0
@@ -341,7 +368,7 @@ refinements that could make the pattern not match.
 **Signature**
 
 ```ts
-export declare const unsafe: <A>(schema: S.Schema<A>) => SafeSchema<A, never>
+export declare const unsafe: <A>(schema: S.Schema<A, A>) => SafeSchema<A, never>
 ```
 
 Added in v1.0.0
