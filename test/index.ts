@@ -157,6 +157,25 @@ describe("Matcher", () => {
     expect(result).toEqual(true)
   })
 
+  it("discriminator", () => {
+    const result = pipe(
+      M.value(E.right(0)),
+      M.discriminator("_tag")("Right", (_) => _.right),
+      M.discriminator("_tag")("Left", (_) => _.left),
+      M.exhaustive,
+    )
+    expect(result).toEqual(0)
+  })
+
+  it("discriminator multiple", () => {
+    const result = pipe(
+      M.value(E.right(0)),
+      M.discriminator("_tag")("Right", "Left", (_) => "match"),
+      M.exhaustive,
+    )
+    expect(result).toEqual("match")
+  })
+
   it("nested", () => {
     const match = pipe(
       M.type<

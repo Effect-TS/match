@@ -183,30 +183,47 @@ export const when: {
 
 /**
  * @category combinators
+ * @since 1.0.0
+ */
+export const discriminator =
+  <D extends string>(field: D) =>
+  <R, P extends Tags<D, R> & (string | number | symbol | object | {}), B>(
+    ...pattern: [
+      first: P,
+      ...values: Array<P>,
+      f: (_: Extract<R, { readonly _tag: P }>) => B,
+    ]
+  ) => {
+    const f = pattern[pattern.length - 1]
+    const values: Array<P> = pattern.slice(0, -1) as any
+
+    return <I, F, A, Pr>(
+      self: Matcher<I, F, R, A, Pr>,
+    ): Matcher<
+      I,
+      AddWithout<F, Extract<R, { _tag: P }>>,
+      ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
+      A | B,
+      Pr
+    > =>
+      (self as any).add(
+        new When(
+          (_) =>
+            typeof _ === "object" &&
+            _ != null &&
+            field in _ &&
+            values.includes((_ as any)[field]),
+          f as any,
+        ),
+      ) as any
+  }
+
+/**
+ * @category combinators
  * @tsplus pipeable effect/match/Matcher tag
  * @since 1.0.0
  */
-export const tag: {
-  <R, P extends Tags<R> & (string | number | symbol | object | {}), B>(
-    pattern: P,
-    f: (_: Extract<R, { readonly _tag: P }>) => B,
-  ): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
-    I,
-    AddWithout<F, Extract<R, { _tag: P }>>,
-    ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
-    A | B,
-    Pr
-  >
-} = (pattern, f) => (self: any) =>
-  self.add(
-    new When(
-      (_) =>
-        typeof _ === "object" && _ != null && "_tag" in _ && _._tag === pattern,
-      f as any,
-    ),
-  )
+export const tag = discriminator("_tag")
 
 /**
  * @category combinators
@@ -601,4 +618,4 @@ type ApplyFilters<I, A> = A extends Only<infer X>
   ? Exclude<I, X>
   : never
 
-type Tags<P> = P extends { _tag: infer X } ? X : never
+type Tags<D extends string, P> = P extends Record<D, infer X> ? X : never
