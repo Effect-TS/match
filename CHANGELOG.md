@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.7.0
+
+### Minor Changes
+
+- [#46](https://github.com/Effect-TS/match/pull/46) [`de8577a`](https://github.com/Effect-TS/match/commit/de8577a6ddeaaf7d94f0664195666adfac05414f) Thanks [@tim-smart](https://github.com/tim-smart)! - add ADT and TaggedEnum modules
+
+- [#44](https://github.com/Effect-TS/match/pull/44) [`e75a4a9`](https://github.com/Effect-TS/match/commit/e75a4a9d06c528689496c8a150d2955745070454) Thanks [@tim-smart](https://github.com/tim-smart)! - add discriminator combinator
+
 ## 0.6.0
 
 ### Minor Changes
