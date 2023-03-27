@@ -7,8 +7,6 @@ import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
-import type * as AST from "@effect/schema/AST"
-import * as P from "@effect/schema/Parser"
 import * as S from "@effect/schema/Schema"
 
 /**
@@ -52,18 +50,12 @@ class ValueMatcher<Input, Filters, Remaining, Result, Provided> {
       return this
     }
 
-    if (
-      _case._tag === "When" &&
-      _case.guard(this.provided, { isUnexpectedAllowed: true })
-    ) {
+    if (_case._tag === "When" && _case.guard(this.provided)) {
       return new ValueMatcher(
         this.provided,
         E.right(_case.evaluate(this.provided)),
       )
-    } else if (
-      _case._tag === "Not" &&
-      !_case.guard(this.provided, { isUnexpectedAllowed: true })
-    ) {
+    } else if (_case._tag === "Not" && !_case.guard(this.provided)) {
       return new ValueMatcher(
         this.provided,
         E.right(_case.evaluate(this.provided)),
@@ -80,7 +72,7 @@ type Case = When | Not
 class When {
   readonly _tag = "When"
   constructor(
-    readonly guard: (u: unknown, opts: AST.ParseOptions) => boolean,
+    readonly guard: (u: unknown) => boolean,
     readonly evaluate: (input: unknown) => any,
   ) {}
 }
@@ -88,7 +80,7 @@ class When {
 class Not {
   readonly _tag = "Not"
   constructor(
-    readonly guard: (u: unknown, opts: AST.ParseOptions) => boolean,
+    readonly guard: (u: unknown) => boolean,
     readonly evaluate: (input: unknown) => any,
   ) {}
 }
@@ -115,6 +107,12 @@ const makeSchema = <I>(
   }
 
   return S.literal(pattern as any) as any
+}
+
+const isUnexpectedAllowed = { isUnexpectedAllowed: true }
+const makeGuard = <P>(pattern: P) => {
+  const validate = S.validateEither(makeSchema(pattern) as any)
+  return (u: unknown) => validate(u, isUnexpectedAllowed)._tag === "Right"
 }
 
 /**
@@ -181,7 +179,7 @@ export const when: {
     Pr
   >
 } = (pattern: any, f: Function) => (self: any) =>
-  self.add(new When(P.is(makeSchema(pattern)), f as any))
+  self.add(new When(makeGuard(pattern), f as any))
 
 /**
  * @category combinators
@@ -259,7 +257,7 @@ export const not: {
 } =
   (pattern: any, f: (_: never) => any) =>
   (self: any): any =>
-    self.add(new Not(P.is(makeSchema(pattern)), f as any))
+    self.add(new Not(makeGuard(pattern), f as any))
 
 /**
  * @category model
@@ -302,7 +300,8 @@ export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
  * @tsplus static effect/match/Matcher.Ops safe
  * @since 1.0.0
  */
-export const safe = <A>(schema: S.Schema<A>): SafeSchema<A, A> => schema as any
+export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
+  schema as any
 
 /**
  * @category predicates
@@ -424,15 +423,9 @@ export const either: <I, F, R, A, Pr>(
 
   return (input: I): E.Either<RA, A> => {
     for (const _case of self.cases) {
-      if (
-        _case._tag === "When" &&
-        _case.guard(input, { isUnexpectedAllowed: true })
-      ) {
+      if (_case._tag === "When" && _case.guard(input)) {
         return E.right(_case.evaluate(input))
-      } else if (
-        _case._tag === "Not" &&
-        !_case.guard(input, { isUnexpectedAllowed: true })
-      ) {
+      } else if (_case._tag === "Not" && !_case.guard(input)) {
         return E.right(_case.evaluate(input))
       }
     }
