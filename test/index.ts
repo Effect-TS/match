@@ -76,7 +76,7 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah"], (_) => true),
+      M.when(["yeah", M.string], (_) => true),
       M.option,
     )
 
