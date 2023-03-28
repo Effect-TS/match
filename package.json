@@ -74,9 +74,9 @@
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.10",
     "@types/prettier": "2.7.2",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "@vitest/coverage-c8": "^0.29.7",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "@vitest/coverage-c8": "^0.29.8",
     "ajv": "^8.12.0",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "benchmark": "^2.1.4",
@@ -102,7 +102,7 @@
     "typescript": "https://cdn.jsdelivr.net/npm/@tsplus/installer@0.0.168/compiler/typescript.tgz",
     "ultra-runner": "^3.10.5",
     "vite": "^4.2.1",
-    "vitest": "0.29.7"
+    "vitest": "0.29.8"
   },
   "pnpm": {
     "patchedDependencies": {
@@ -110,7 +110,7 @@
     }
   },
   "dependencies": {
-    "@effect/data": "^0.7.1",
-    "@effect/schema": "~0.7.0"
+    "@effect/data": "^0.7.4",
+    "@effect/schema": "~0.8.0"
   }
 }

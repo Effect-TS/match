@@ -7,6 +7,7 @@ import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
+import type { ParseOptions } from "@effect/schema/AST"
 import * as S from "@effect/schema/Schema"
 
 /**
@@ -109,10 +110,10 @@ const makeSchema = <I>(
   return S.literal(pattern as any) as any
 }
 
-const isUnexpectedAllowed = { isUnexpectedAllowed: true }
+const guardParseOptions: ParseOptions = { onExcessProperty: "ignore" }
 const makeGuard = <P>(pattern: P) => {
   const validate = S.validateEither(makeSchema(pattern) as any)
-  return (u: unknown) => validate(u, isUnexpectedAllowed)._tag === "Right"
+  return (u: unknown) => validate(u, guardParseOptions)._tag === "Right"
 }
 
 /**
@@ -277,11 +278,21 @@ export const not: {
     self.add(new Not(makeGuard(pattern), f as any))
 
 /**
+ * @since 1.0.0
+ */
+export const SafeSchemaId = Symbol.for("@effect/match/SafeSchema")
+
+/**
+ * @since 1.0.0
+ */
+export type SafeSchemaId = typeof SafeSchemaId
+
+/**
  * @category model
  * @since 1.0.0
  */
 export interface SafeSchema<A, R = A> {
-  readonly _tag: "SafeSchema"
+  readonly [SafeSchemaId]: SafeSchemaId
   readonly _A: A
   readonly _R: R
 }
@@ -512,17 +523,17 @@ type PForMatch<P> = RemoveInvalidPatterns<SafeSchemaP<ResolvePred<P>>>
 type PForExclude<P> = RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>
 
 // utilities
-type PredicateA<A> = Predicate<A> | Refinement<A, any>
+type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
-type Narrow<A> = NarrowRaw<A> | PredicateA<any>
+type Narrow<A> = NarrowRaw<A>
 
 type NarrowRaw<A> =
   | (A extends [] ? [] : never)
-  | (A extends PredicateA<infer _P> ? A : never)
+  | (A extends Function ? A : never)
   | {
-      [K in keyof A]: A[K] extends PredicateA<infer _P>
+      [K in keyof A]: A[K] extends Function
         ? A[K]
-        : A[K] extends SafeSchema<any>
+        : A[K] extends SafeSchema<infer _P>
         ? A[K]
         : NarrowRaw<A[K]>
     }
