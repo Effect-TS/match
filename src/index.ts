@@ -443,8 +443,10 @@ export const either: <I, F, R, A, Pr>(
     return self.value
   }
 
+  const len = self.cases.length
   return (input: I): E.Either<RA, A> => {
-    for (const _case of self.cases) {
+    for (let i = 0; i < len; i++) {
+      const _case = self.cases[i]
       if (_case._tag === "When" && _case.guard(input)) {
         return E.right(_case.evaluate(input))
       } else if (_case._tag === "Not" && !_case.guard(input)) {
