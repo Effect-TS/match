@@ -197,6 +197,10 @@ export const discriminator =
   ) => {
     const f = pattern[pattern.length - 1]
     const values: Array<P> = pattern.slice(0, -1) as any
+    const pred =
+      values.length === 1
+        ? (_: any) => _[field] === values[0]
+        : (_: any) => values.includes(_[field])
 
     return <I, F, A, Pr>(
       self: Matcher<I, F, R, A, Pr>,
@@ -206,17 +210,7 @@ export const discriminator =
       ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
       A | B,
       Pr
-    > =>
-      (self as any).add(
-        new When(
-          (_) =>
-            typeof _ === "object" &&
-            _ != null &&
-            field in _ &&
-            values.includes((_ as any)[field]),
-          f as any,
-        ),
-      ) as any
+    > => (self as any).add(new When(pred, f as any)) as any
   }
 
 /**
@@ -449,8 +443,10 @@ export const either: <I, F, R, A, Pr>(
     return self.value
   }
 
+  const len = self.cases.length
   return (input: I): E.Either<RA, A> => {
-    for (const _case of self.cases) {
+    for (let i = 0; i < len; i++) {
+      const _case = self.cases[i]
       if (_case._tag === "When" && _case.guard(input)) {
         return E.right(_case.evaluate(input))
       } else if (_case._tag === "Not" && !_case.guard(input)) {
