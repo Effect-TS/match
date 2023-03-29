@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.8.1
+
+### Patch Changes
+
+- [#49](https://github.com/Effect-TS/match/pull/49) [`ec164b3`](https://github.com/Effect-TS/match/commit/ec164b39703b5128883415703109378d7faf7186) Thanks [@tim-smart](https://github.com/tim-smart)! - improve perf of Match.type
+
+- [#49](https://github.com/Effect-TS/match/pull/49) [`ec164b3`](https://github.com/Effect-TS/match/commit/ec164b39703b5128883415703109378d7faf7186) Thanks [@tim-smart](https://github.com/tim-smart)! - improve performance of Match.tag
+
 ## 0.8.0
 
 ### Minor Changes
