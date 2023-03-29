@@ -30,7 +30,7 @@ const ifElseMatch = (abc: ABC) => {
   }
 }
 
-const abc = ABC("A")({ a: 1 }) as ABC
+const abc = ABC("C")({ c: 1 }) as ABC
 
 benny.suite(
   "comparison",

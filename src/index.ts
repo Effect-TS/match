@@ -443,20 +443,17 @@ export const either: <I, F, R, A, Pr>(
     return self.value
   }
 
-  return Function(
-    "E",
-    "cases",
-    `return function(input) {
-        ${self.cases
-          .map((_, i) =>
-            _._tag === "When"
-              ? `if (cases[${i}].guard(input)) return E.right(cases[${i}].evaluate(input));`
-              : `if (!cases[${i}].guard(input)) return E.right(cases[${i}].evaluate(input));`,
-          )
-          .join("\nelse ")}
-        return E.left(input);
-      }`,
-  )(E, self.cases)
+  return (input: I): E.Either<RA, A> => {
+    for (const _case of self.cases) {
+      if (_case._tag === "When" && _case.guard(input)) {
+        return E.right(_case.evaluate(input))
+      } else if (_case._tag === "Not" && !_case.guard(input)) {
+        return E.right(_case.evaluate(input))
+      }
+    }
+
+    return E.left(input as any)
+  }
 }) as any
 
 /**
