@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.8.2
+
+### Patch Changes
+
+- [#51](https://github.com/Effect-TS/match/pull/51) [`55834f9`](https://github.com/Effect-TS/match/commit/55834f900ee021d0c3baac929700904e11493619) Thanks [@tim-smart](https://github.com/tim-smart)! - fix discriminator
+
 ## 0.8.1
 
 ### Patch Changes
