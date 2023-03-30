@@ -192,7 +192,7 @@ export const discriminator =
     ...pattern: [
       first: P,
       ...values: Array<P>,
-      f: (_: Extract<R, { readonly _tag: P }>) => B,
+      f: (_: Extract<R, Record<D, P>>) => B,
     ]
   ) => {
     const f = pattern[pattern.length - 1]
@@ -206,8 +206,8 @@ export const discriminator =
       self: Matcher<I, F, R, A, Pr>,
     ): Matcher<
       I,
-      AddWithout<F, Extract<R, { _tag: P }>>,
-      ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
+      AddWithout<F, Extract<R, Record<D, P>>>,
+      ApplyFilters<I, AddWithout<F, Extract<R, Record<D, P>>>>,
       A | B,
       Pr
     > => (self as any).add(new When(pred, f as any)) as any
