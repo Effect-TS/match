@@ -158,13 +158,13 @@ describe("Matcher", () => {
   })
 
   it("discriminator", () => {
-    const result = pipe(
-      M.value(E.right(0)),
-      M.discriminator("_tag")("Right", (_) => _.right),
-      M.discriminator("_tag")("Left", (_) => _.left),
+    const match = pipe(
+      M.type<{ type: "A" } | { type: "B" }>(),
+      M.discriminator("type")("A", (_) => _.type),
+      M.discriminator("type")("B", (_) => _.type),
       M.exhaustive,
     )
-    expect(result).toEqual(0)
+    expect(match({ type: "B" })).toEqual("B")
   })
 
   it("discriminator multiple", () => {
