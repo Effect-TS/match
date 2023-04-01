@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.9.0
+
+### Minor Changes
+
+- [#54](https://github.com/Effect-TS/match/pull/54) [`015e8df`](https://github.com/Effect-TS/match/commit/015e8df71031f5e866bd6deb0db6278975cc70e4) Thanks [@tim-smart](https://github.com/tim-smart)! - update dependencies
+
 ## 0.8.2
 
 ### Patch Changes
