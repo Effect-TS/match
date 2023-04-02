@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.10.0
+
+### Minor Changes
+
+- [#59](https://github.com/Effect-TS/match/pull/59) [`7ee0a72`](https://github.com/Effect-TS/match/commit/7ee0a72ccf8685300e9b99a562e20e2b8177c8a9) Thanks [@tim-smart](https://github.com/tim-smart)! - update /data
+
+- [#59](https://github.com/Effect-TS/match/pull/59) [`7ee0a72`](https://github.com/Effect-TS/match/commit/7ee0a72ccf8685300e9b99a562e20e2b8177c8a9) Thanks [@tim-smart](https://github.com/tim-smart)! - simplify ExtractMatch and fix circular types
+
 ## 0.9.0
 
 ### Minor Changes
