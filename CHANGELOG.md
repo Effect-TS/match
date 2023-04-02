@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.10.1
+
+### Patch Changes
+
+- [#61](https://github.com/Effect-TS/match/pull/61) [`0e4c9bb`](https://github.com/Effect-TS/match/commit/0e4c9bbd1f4ce6ae4cb9a0f2f5a520794990a9c3) Thanks [@tim-smart](https://github.com/tim-smart)! - restore previous ExtractMatch
+
 ## 0.10.0
 
 ### Minor Changes
