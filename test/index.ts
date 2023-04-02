@@ -280,7 +280,7 @@ describe("Matcher", () => {
     const match = pipe(
       M.value(thing),
       M.when({ name: "thing" }, (_) => _.name),
-      M.orElse(() => "fail"),
+      M.exhaustive,
     )
 
     expect(match).toEqual("thing")
