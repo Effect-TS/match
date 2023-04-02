@@ -80,7 +80,7 @@ describe("Matcher", () => {
       M.option,
     )
 
-    expect(match(["yeah", "a"])).toEqual({ _tag: "Some", value: true })
+    expect(match(["yeah", "a"])).toEqual(O.some(true))
   })
 
   it("literals", () => {
@@ -132,7 +132,7 @@ describe("Matcher", () => {
       M.option,
     )
 
-    expect(match(["yeah", "a"])).toEqual({ _tag: "Some", value: true })
+    expect(match(["yeah", "a"])).toEqual(O.some(true))
   })
 
   it("literals", () => {
