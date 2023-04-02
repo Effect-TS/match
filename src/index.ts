@@ -6,6 +6,7 @@ import { flow, identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
+import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
 import type { ParseOptions } from "@effect/schema/AST"
 import * as S from "@effect/schema/Schema"
 
@@ -518,8 +519,6 @@ type PForMatch<P> = RemoveInvalidPatterns<SafeSchemaP<ResolvePred<P>>>
 type PForExclude<P> = RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>
 
 // utilities
-type ExtractMatch<I, P> = [P] extends [infer EI] ? Extract<EI, P> & I : never
-
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
 type Narrow<A> = NarrowRaw<A>
