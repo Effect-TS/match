@@ -15,7 +15,7 @@ specifiers:
   '@effect-ts/core': ^0.60.5
   '@effect/data': ^0.10.2
   '@effect/language-service': ^0.0.19
-  '@effect/schema': ~0.9.0
+  '@effect/schema': ~0.10.0
   '@types/benchmark': ^2.1.2
   '@types/chai': ^4.3.4
   '@types/glob': ^8.1.0
@@ -56,7 +56,7 @@ specifiers:
 
 dependencies:
   '@effect/data': 0.10.2
-  '@effect/schema': 0.9.0
+  '@effect/schema': 0.10.0
 
 devDependencies:
   '@babel/cli': 7.21.0_@babel+core@7.21.4
@@ -651,14 +651,14 @@ packages:
     resolution: {integrity: sha512-ozoTc7M2MdM0AtM+oZw2Iuf/8rR4Yw4oCCanJuwQi1TMl+++XT7AkHAeqiWpvxpsIGAGoUxh/wSm9IQ/Rz+DqA==}
     dev: false
 
-  /@effect/data/0.9.1:
-    resolution: {integrity: sha512-kUbdMZhauO75wqxOLBFsDYkQOLRr8WPKF0QvUVVRDFYmWM7vIdI3emrHxnjM/Lm3KtnBcB3b2CaZbVNVbrBhBA==}
+  /@effect/data/0.10.3:
+    resolution: {integrity: sha512-D3T43FOiCDeYYQCfjR4ra1apgL78GS4T85wMMZ4A2UZ3SmKWeM0CP66jnysUoRW4f9Q6xnk4BfbU8eyUQo8oZw==}
     dev: false
 
-  /@effect/io/0.16.2:
-    resolution: {integrity: sha512-f4g4ZPvzkf1HNr3M4Fp7ZKl1gxXdcx9kxL5ugdbYskKl67ESiNslmsvkbr9STr9oAST7KO7+tL4quXFDsYvHYw==}
+  /@effect/io/0.17.0:
+    resolution: {integrity: sha512-dJX3jaRksA3BXt3pmvjyBVvWsRJ7UVuw69BglWsDATn+7wPK+jTQSpZvtPehUknGm3aow095KsxCC+ruQ/7NnQ==}
     dependencies:
-      '@effect/data': 0.9.1
+      '@effect/data': 0.10.3
     dev: false
 
   /@effect/language-service/0.0.19:
@@ -668,11 +668,11 @@ packages:
       '@fp-ts/data': 0.0.41
     dev: true
 
-  /@effect/schema/0.9.0:
-    resolution: {integrity: sha512-oEy1WQvTfZ80tT8yIliATExktcmbeYHO7aeBMQC4dxow6bxfbEGhQrjy/cWM9VrVREvUTSCZqZjTvsayluvC5g==}
+  /@effect/schema/0.10.0:
+    resolution: {integrity: sha512-QLFVT8WAEQ9i9BkZd4s850eXrQPbV9k6Vr2SPMvnJ0lf4vX7OnldEvPQ8TrKvcaMET8qPV8rk/6jzcz+z2Ia1w==}
     dependencies:
-      '@effect/data': 0.9.1
-      '@effect/io': 0.16.2
+      '@effect/data': 0.10.3
+      '@effect/io': 0.17.0
       fast-check: 3.8.0
     dev: false
 
