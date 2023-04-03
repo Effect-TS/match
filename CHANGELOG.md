@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.11.0
+
+### Minor Changes
+
+- [#63](https://github.com/Effect-TS/match/pull/63) [`4ebc6e4`](https://github.com/Effect-TS/match/commit/4ebc6e426da267d21f437e1810a764025e092b6a) Thanks [@kristiannotari](https://github.com/kristiannotari)! - update dependencies (schema)
+
 ## 0.10.1
 
 ### Patch Changes
