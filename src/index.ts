@@ -9,6 +9,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
 import type { ParseOptions } from "@effect/schema/AST"
 import * as S from "@effect/schema/Schema"
+import type { Unify } from "@effect/data/Unify"
 
 /**
  * @category model
@@ -409,7 +410,7 @@ export const orElse =
   <RA, B>(f: (b: RA) => B) =>
   <I, R, A, Pr>(
     self: Matcher<I, R, RA, A, Pr>,
-  ): [Pr] extends [never] ? (input: I) => A | B : A | B => {
+  ): [Pr] extends [never] ? (input: I) => Unify<A | B> : Unify<A | B> => {
     const result = either(self)
 
     if (E.isEither(result)) {
@@ -431,14 +432,9 @@ export const orElse =
  */
 export const either: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>,
-) => [Pr] extends [never] ? (input: I) => E.Either<R, A> : E.Either<R, A> = (<
-  I,
-  R,
-  RA,
-  A,
->(
-  self: Matcher<I, R, RA, A, I>,
-) => {
+) => [Pr] extends [never]
+  ? (input: I) => E.Either<R, Unify<A>>
+  : E.Either<R, Unify<A>> = (<I, R, RA, A>(self: Matcher<I, R, RA, A, I>) => {
   if (self._tag === "ValueMatcher") {
     return self.value
   }
@@ -465,9 +461,9 @@ export const either: <I, F, R, A, Pr>(
  */
 export const option: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>,
-) => [Pr] extends [never] ? (input: I) => O.Option<A> : O.Option<A> = (<I, A>(
-  self: Matcher<I, any, any, A, I>,
-) => {
+) => [Pr] extends [never]
+  ? (input: I) => O.Option<Unify<A>>
+  : O.Option<Unify<A>> = (<I, A>(self: Matcher<I, any, any, A, I>) => {
   const toEither = either(self)
   if (E.isEither(toEither)) {
     return O.fromEither(toEither)
@@ -482,7 +478,7 @@ export const option: <I, F, R, A, Pr>(
  */
 export const exhaustive: <I, F, A, Pr>(
   self: Matcher<I, F, never, A, Pr>,
-) => [Pr] extends [never] ? (u: I) => A : A = (<I, F, A>(
+) => [Pr] extends [never] ? (u: I) => Unify<A> : Unify<A> = (<I, F, A>(
   self: Matcher<I, F, never, A, I>,
 ) => {
   const toEither = either(self as any)

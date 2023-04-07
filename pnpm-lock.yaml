@@ -13,9 +13,9 @@ specifiers:
   '@changesets/cli': ^2.26.1
   '@effect-ts/build-utils': 0.40.3
   '@effect-ts/core': ^0.60.5
-  '@effect/data': ^0.11.1
+  '@effect/data': ^0.11.5
   '@effect/language-service': ^0.0.19
-  '@effect/schema': ~0.11.0
+  '@effect/schema': ^0.11.1
   '@types/benchmark': ^2.1.2
   '@types/chai': ^4.3.4
   '@types/glob': ^8.1.0
@@ -55,8 +55,8 @@ specifiers:
   vitest: 0.29.8
 
 dependencies:
-  '@effect/data': 0.11.1
-  '@effect/schema': 0.11.0
+  '@effect/data': 0.11.5
+  '@effect/schema': 0.11.1
 
 devDependencies:
   '@babel/cli': 7.21.0_@babel+core@7.21.4
@@ -647,14 +647,14 @@ packages:
     resolution: {integrity: sha512-/crHGujo0xnuHIYNc1VgP0HGJGFSoSqq88JFXe6FmFyXPpWt8Xu39LyLg7rchsxfXFeEdA9CrIZvLV5eswXV5g==}
     dev: true
 
-  /@effect/data/0.11.1:
-    resolution: {integrity: sha512-HjsZIwrT9M0GqOGbM/NHL7bDt3n2mPsC8Lv9YOt76JW/R08s6UexIfmFn2+B1VB/aELY7hXqDlyUlk0QcDs9TQ==}
+  /@effect/data/0.11.5:
+    resolution: {integrity: sha512-IRnimtB3/Z3VC9iQUfu3xm9njHXozrTyhOY0nK+0K1XqF/ZcXvONEm4AQ48kjXZTSHFkrKqUn9XwwtmikLCPvA==}
     dev: false
 
-  /@effect/io/0.19.0:
-    resolution: {integrity: sha512-jdXf0GF361ruzpp40bOUGbbizDOsw7pmTtASGWqxPtZ4g/nGLIJ5TzvhQJX7+sg9VGyvo6Rri1cMIKno66tpLA==}
+  /@effect/io/0.19.1:
+    resolution: {integrity: sha512-IyQZTAoczdHPmhqf2zd8hQCS6a2VkOtwz8mQlmwEXT4thOoNnzc6rxw5sYpyQ+awtA5UvieuNKjdx65tvQmozw==}
     dependencies:
-      '@effect/data': 0.11.1
+      '@effect/data': 0.11.5
     dev: false
 
   /@effect/language-service/0.0.19:
@@ -664,11 +664,11 @@ packages:
       '@fp-ts/data': 0.0.41
     dev: true
 
-  /@effect/schema/0.11.0:
-    resolution: {integrity: sha512-iqGlRgkOBMoZc19qSo17tnZl+POqOiEprbGUmHo7TZTV/mBaeYc1R99ImLdCwUeZo1EscC03L+py3Nj1kwTK1Q==}
+  /@effect/schema/0.11.1:
+    resolution: {integrity: sha512-DDnSGzHRmtq4mFXe2bFGlsXrZj6/yQWsj8rpmh/7SgHecVS0Ea2hRyYRNtKr64XXuiYjF1Yesovy4hfQT/TYfA==}
     dependencies:
-      '@effect/data': 0.11.1
-      '@effect/io': 0.19.0
+      '@effect/data': 0.11.5
+      '@effect/io': 0.19.1
       fast-check: 3.8.0
     dev: false
 
@@ -2856,7 +2856,7 @@ packages:
     dependencies:
       debug: 3.2.7
       is-core-module: 2.11.0
-      resolve: 1.22.1
+      resolve: 1.22.2
     transitivePeerDependencies:
       - supports-color
     dev: true
