@@ -285,4 +285,15 @@ describe("Matcher", () => {
 
     expect(match).toEqual("thing")
   })
+
+  it("unify", () => {
+    const match = pipe(
+      M.type<{ readonly _tag: "A" } | { readonly _tag: "B" }>(),
+      M.tag("A", () => E.right("a") as E.Either<number, string>),
+      M.tag("B", () => E.right(123) as E.Either<string, number>),
+      M.exhaustive,
+    )
+
+    expect(match({ _tag: "B" })).toEqual(E.right(123))
+  })
 })
