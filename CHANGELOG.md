@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.12.1
+
+### Patch Changes
+
+- [#68](https://github.com/Effect-TS/match/pull/68) [`f8f5e11`](https://github.com/Effect-TS/match/commit/f8f5e1168214d7663331cdfcef51fb9cb5d9143d) Thanks [@tim-smart](https://github.com/tim-smart)! - add unify
+
 ## 0.12.0
 
 ### Minor Changes
