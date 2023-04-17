@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.14.0
+
+### Minor Changes
+
+- [#72](https://github.com/Effect-TS/match/pull/72) [`8c7a163`](https://github.com/Effect-TS/match/commit/8c7a163d94e197fd38f9f9dde12322253069ede1) Thanks [@datner](https://github.com/datner)! - update packages
+
 ## 0.13.0
 
 ### Minor Changes
