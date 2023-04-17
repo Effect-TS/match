@@ -15,7 +15,7 @@ specifiers:
   '@effect-ts/core': ^0.60.5
   '@effect/data': ^0.12.2
   '@effect/language-service': ^0.0.19
-  '@effect/schema': ^0.12.1
+  '@effect/schema': ^0.13.1
   '@types/benchmark': ^2.1.2
   '@types/chai': ^4.3.4
   '@types/glob': ^8.1.0
@@ -56,7 +56,7 @@ specifiers:
 
 dependencies:
   '@effect/data': 0.12.2
-  '@effect/schema': 0.12.1
+  '@effect/schema': 0.13.1
 
 devDependencies:
   '@babel/cli': 7.21.0_@babel+core@7.21.4
@@ -651,8 +651,8 @@ packages:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
     dev: false
 
-  /@effect/io/0.20.0:
-    resolution: {integrity: sha512-6ECG566e0ZjvDQO5/KbZtQpplZiSTT+ERnxd7dEC1WjC5cF6uIICMBGWljgL5hBOEpV8p/UHs00anKxTlYomXg==}
+  /@effect/io/0.21.1:
+    resolution: {integrity: sha512-2y362S35gIP1YhkXPjCU/osnumcPEjk+WMik+vLbQsQf+YFdlgzwDMJZAsmLUZWj+D//dHByvL9n8VuDarvIDA==}
     dependencies:
       '@effect/data': 0.12.2
     dev: false
@@ -664,11 +664,11 @@ packages:
       '@fp-ts/data': 0.0.41
     dev: true
 
-  /@effect/schema/0.12.1:
-    resolution: {integrity: sha512-ZW2+d4wIJChhpWKh3NUZpwC/GRllQSFjmOXMz3SL0XryoVt+xVosYZmowd5ufrPvttxk9BNZy/u41RjeFXp3GA==}
+  /@effect/schema/0.13.1:
+    resolution: {integrity: sha512-bs9uCVkC70GUMgAenOUJGhQcrADgcp4OE8oF+td9cNxIQ5aAFVEI5lrxeb9UKRRtODkUj0vDHqB5Zf/0p5Fv8Q==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.20.0
+      '@effect/io': 0.21.1
       fast-check: 3.8.0
     dev: false
 
@@ -2936,7 +2936,7 @@ packages:
     dependencies:
       debug: 3.2.7
       is-core-module: 2.11.0
-      resolve: 1.22.2
+      resolve: 1.22.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3401,7 +3401,7 @@ packages:
       is-relative-path: 1.0.2
       module-definition: 3.4.0
       module-lookup-amd: 7.0.1
-      resolve: 1.22.2
+      resolve: 1.22.3
       resolve-dependency-path: 2.0.0
       sass-lookup: 3.0.0
       stylus-lookup: 3.0.2
@@ -5158,7 +5158,7 @@ packages:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 5.7.1
       validate-npm-package-license: 3.0.4
     dev: true
@@ -5884,6 +5884,15 @@ packages:
 
   /resolve/1.22.2:
     resolution: {integrity: sha512-Sb+mjNHOULsBv818T40qSPeRiuWLyaGMa5ewydRLFimneixmVy2zdivRl+AF6jaYPC8ERxGDmFSiqui6SfPd+g==}
+    hasBin: true
+    dependencies:
+      is-core-module: 2.12.0
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+    dev: true
+
+  /resolve/1.22.3:
+    resolution: {integrity: sha512-P8ur/gp/AmbEzjr729bZnLjXK5Z+4P0zhIJgBgzqRih7hL7BOukHGtSTA3ACMY467GRFz3duQsi0bDZdR7DKdw==}
     hasBin: true
     dependencies:
       is-core-module: 2.12.0
@@ -6635,7 +6644,7 @@ packages:
       js-yaml: 3.14.1
       minimatch: 3.1.2
       mkdirp: 0.5.6
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 5.7.1
       tslib: 1.14.1
       tsutils: 2.29.0_typescript@4.9.5

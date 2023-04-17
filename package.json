@@ -114,6 +114,6 @@
   },
   "dependencies": {
     "@effect/data": "^0.12.2",
-    "@effect/schema": "^0.12.1"
+    "@effect/schema": "^0.13.1"
   }
 }
