@@ -399,7 +399,7 @@ export const bigint = safe(S.bigint)
  * @tsplus static effect/match/Matcher.Ops date
  * @since 1.0.0
  */
-export const date = safe(S.date)
+export const date = safe(S.DateFromSelf)
 
 /**
  * @category conversions
