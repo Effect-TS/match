@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.15.0
+
+### Minor Changes
+
+- [#74](https://github.com/Effect-TS/match/pull/74) [`6079f9f`](https://github.com/Effect-TS/match/commit/6079f9fa0fb3e62d73d94dcb214c2a48af9e07cc) Thanks [@tim-smart](https://github.com/tim-smart)! - update dependencies
+
 ## 0.14.0
 
 ### Minor Changes
