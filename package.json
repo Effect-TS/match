@@ -73,7 +73,7 @@
     "@types/chai": "^4.3.4",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.1",
-    "@types/node": "^18.15.13",
+    "@types/node": "^18.16.0",
     "@types/prettier": "2.7.2",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
@@ -86,7 +86,7 @@
     "cpx": "^1.5.0",
     "docs-ts": "^0.7.2",
     "dtslint": "github:gcanti/dtslint",
-    "eslint": "^8.38.0",
+    "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-codegen": "0.17.0",
@@ -94,10 +94,10 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
-    "glob": "^10.2.1",
+    "glob": "^10.2.2",
     "madge": "^6.0.0",
     "picocolors": "^1.0.0",
-    "prettier": "^2.8.7",
+    "prettier": "^2.8.8",
     "rimraf": "^5.0.0",
     "ts-node": "^10.9.1",
     "ts-pattern": "^4.2.2",
@@ -114,6 +114,6 @@
   },
   "dependencies": {
     "@effect/data": "^0.12.2",
-    "@effect/schema": "^0.15.0"
+    "@effect/schema": "^0.16.0"
   }
 }
