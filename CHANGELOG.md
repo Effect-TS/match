@@ -1,5 +1,15 @@
 # @effect/match
 
+## 0.18.0
+
+### Minor Changes
+
+- [#80](https://github.com/Effect-TS/match/pull/80) [`2e3d80b`](https://github.com/Effect-TS/match/commit/2e3d80bca0a22e0f8d2f489e66f87a9f702a2220) Thanks [@tim-smart](https://github.com/tim-smart)! - update deps
+
+### Patch Changes
+
+- [#80](https://github.com/Effect-TS/match/pull/80) [`2e3d80b`](https://github.com/Effect-TS/match/commit/2e3d80bca0a22e0f8d2f489e66f87a9f702a2220) Thanks [@tim-smart](https://github.com/tim-smart)! - fix optional keys not matching
+
 ## 0.17.0
 
 ### Minor Changes
