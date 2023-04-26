@@ -296,4 +296,15 @@ describe("Matcher", () => {
 
     expect(match({ _tag: "B" })).toEqual(E.right(123))
   })
+
+  it("optional props", () => {
+    const match = pipe(
+      M.type<{ readonly user?: { readonly name: string } }>(),
+      M.when({ user: M.any }, (_) => _.user.name),
+      M.orElse(() => "no user"),
+    )
+
+    expect(match({})).toEqual("no user")
+    expect(match({ user: { name: "Tim" } })).toEqual("Tim")
+  })
 })
