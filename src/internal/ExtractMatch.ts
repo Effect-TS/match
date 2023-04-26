@@ -80,7 +80,7 @@ type ReplaceUnions<I, P> =
       : never
     : IsPlainObject<I> extends true
     ? FlattenRecordFails<{
-        [RK in keyof I]: RK extends keyof P
+        [RK in keyof I]-?: RK extends keyof P
           ? ReplaceUnions<I[RK], P[RK]>
           : I[RK]
       }>
