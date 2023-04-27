@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.18.1
+
+### Patch Changes
+
+- [#82](https://github.com/Effect-TS/match/pull/82) [`3952b7b`](https://github.com/Effect-TS/match/commit/3952b7b8f4b0fe54ee12cb21dff6bb04c3f21cf5) Thanks [@tim-smart](https://github.com/tim-smart)! - add nonEmptyString
+
 ## 0.18.0
 
 ### Minor Changes
