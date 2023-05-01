@@ -349,6 +349,16 @@ export const number = safe(S.number)
 
 /**
  * @category predicates
+ * @tsplus static effect/match/Matcher.Ops array
+ * @since 1.0.0
+ */
+export const array = <T>(
+  schema: S.Schema<T, T> | SafeSchema<T, T>,
+): SafeSchema<ReadonlyArray<T>, ReadonlyArray<T>> =>
+  safe(S.array(schema as any))
+
+/**
+ * @category predicates
  * @tsplus static effect/match/Matcher.Ops any
  * @since 1.0.0
  */

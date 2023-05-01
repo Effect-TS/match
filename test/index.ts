@@ -296,4 +296,16 @@ describe("Matcher", () => {
 
     expect(match({ _tag: "B" })).toEqual(E.right(123))
   })
+
+  it("array", () => {
+    const match = pipe(
+      M.type<Array<string> | Array<number>>(),
+      M.when(M.array(M.string), (_) => "is string"),
+      M.when(M.array(M.number), (_) => "is number"),
+      M.exhaustive,
+    )
+
+    expect(match(["a", "b"])).toEqual("is string")
+    expect(match([1, 2])).toEqual("is number")
+  })
 })
