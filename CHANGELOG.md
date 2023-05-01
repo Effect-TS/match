@@ -1,5 +1,33 @@
 # @effect/match
 
+## 0.18.1
+
+### Patch Changes
+
+- [#82](https://github.com/Effect-TS/match/pull/82) [`3952b7b`](https://github.com/Effect-TS/match/commit/3952b7b8f4b0fe54ee12cb21dff6bb04c3f21cf5) Thanks [@tim-smart](https://github.com/tim-smart)! - add nonEmptyString
+
+## 0.18.0
+
+### Minor Changes
+
+- [#80](https://github.com/Effect-TS/match/pull/80) [`2e3d80b`](https://github.com/Effect-TS/match/commit/2e3d80bca0a22e0f8d2f489e66f87a9f702a2220) Thanks [@tim-smart](https://github.com/tim-smart)! - update deps
+
+### Patch Changes
+
+- [#80](https://github.com/Effect-TS/match/pull/80) [`2e3d80b`](https://github.com/Effect-TS/match/commit/2e3d80bca0a22e0f8d2f489e66f87a9f702a2220) Thanks [@tim-smart](https://github.com/tim-smart)! - fix optional keys not matching
+
+## 0.17.0
+
+### Minor Changes
+
+- [#78](https://github.com/Effect-TS/match/pull/78) [`3ac755f`](https://github.com/Effect-TS/match/commit/3ac755fe82dff0007dcb78e23b15415288eab96d) Thanks [@tim-smart](https://github.com/tim-smart)! - update dependencies
+
+## 0.16.0
+
+### Minor Changes
+
+- [#76](https://github.com/Effect-TS/match/pull/76) [`73333f0`](https://github.com/Effect-TS/match/commit/73333f08ff2968cd8dccd13c74122070cd8891bc) Thanks [@tim-smart](https://github.com/tim-smart)! - update deps
+
 ## 0.15.0
 
 ### Minor Changes

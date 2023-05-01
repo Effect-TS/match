@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as E from "@effect/data/Either"
-import { flow, identity } from "@effect/data/Function"
+import { flow, identity, pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
@@ -294,6 +294,7 @@ export interface SafeSchema<A, R = A> {
 
 /**
  * @since 1.0.0
+ * @tsplus type effect/match/SafeSchema
  */
 export namespace SafeSchema {
   /**
@@ -325,6 +326,15 @@ export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
  */
 export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
   schema as any
+
+/**
+ * @category predicates
+ * @tsplus getter effect/match/SafeSchema nonEmpty
+ * @since 1.0.0
+ */
+export const nonEmptyString: SafeSchema<string, never> = unsafe(
+  pipe(S.string, S.nonEmpty()),
+)
 
 /**
  * @category predicates
