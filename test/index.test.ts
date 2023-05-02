@@ -2,6 +2,7 @@ import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import * as M from "@effect/match"
+import { typeEquals } from "@effect/match/test/utils/typeEquals"
 import * as S from "@effect/schema/Schema"
 
 describe("Matcher", () => {
@@ -183,10 +184,10 @@ describe("Matcher", () => {
         | { foo: { bar: { baz: { qux: number } } } }
         | { foo: { bar: null } }
       >(),
-      M.when(
-        { foo: { bar: { baz: { qux: 2 } } } },
-        (_) => `literal ${_.foo.bar.baz.qux}`,
-      ),
+      M.when({ foo: { bar: { baz: { qux: 2 } } } }, (_) => {
+        typeEquals(_)<{ foo: { bar: { baz: { qux: 2 } } } }>() satisfies true
+        return `literal ${_.foo.bar.baz.qux}`
+      }),
       M.when(
         { foo: { bar: { baz: { qux: "b" } } } },
         (_) => `literal ${_.foo.bar.baz.qux}`,
@@ -208,6 +209,18 @@ describe("Matcher", () => {
     expect(match({ foo: { bar: { baz: { qux: "a" } } } })).toEqual("a")
     expect(match({ foo: { bar: { baz: { qux: "b" } } } })).toEqual("literal b")
     expect(match({ foo: { bar: null } })).toEqual(null)
+  })
+
+  it("nested Option", () => {
+    const match = pipe(
+      M.type<{ user: O.Option<{ readonly name: string }> }>(),
+      M.when({ user: { _tag: "Some" } }, (_) => _.user.value.name),
+      (_) => _,
+      M.orElse((_) => "fail"),
+    )
+
+    expect(match({ user: O.some({ name: "a" }) })).toEqual("a")
+    expect(match({ user: O.none() })).toEqual("fail")
   })
 
   it("predicate", () => {

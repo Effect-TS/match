@@ -4,17 +4,16 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   test: {
-    include: ["./test/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["./src/index.ts", "./test/**/util.ts"],
+    include: ["./test/**/*.test.ts"],
     globals: true,
     coverage: {
-      provider: "c8"
-    }
+      provider: "c8",
+    },
   },
   resolve: {
     alias: {
       "@effect/match/test": path.resolve(__dirname, "/test"),
-      "@effect/match": path.resolve(__dirname, "/src")
-    }
-  }
+      "@effect/match": path.resolve(__dirname, "/src"),
+    },
+  },
 })
