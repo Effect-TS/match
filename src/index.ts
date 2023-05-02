@@ -140,12 +140,10 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
  * @since 1.0.0
  */
 export const when: {
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: WhenMatch<R, P>) => B): <
-    I,
-    F,
-    A,
-    Pr,
-  >(
+  <R, P extends PatternBase<R>, B>(
+    pattern: Narrow<P>,
+    f: (_: WhenMatch<R, P>) => B,
+  ): <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
@@ -155,10 +153,12 @@ export const when: {
     Pr
   >
 
-  <R, P extends PatternBase<R>, B>(
-    pattern: Narrow<P>,
-    f: (_: WhenMatch<R, P>) => B,
-  ): <I, F, A, Pr>(
+  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: WhenMatch<R, P>) => B): <
+    I,
+    F,
+    A,
+    Pr,
+  >(
     self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
@@ -227,12 +227,10 @@ export const tag = discriminator("_tag")
  * @since 1.0.0
  */
 export const not: {
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: NotMatch<R, P>) => B): <
-    I,
-    F,
-    A,
-    Pr,
-  >(
+  <R, P extends PatternBase<R>, B>(
+    pattern: Narrow<P>,
+    f: (_: NotMatch<R, P>) => B,
+  ): <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
@@ -242,10 +240,12 @@ export const not: {
     Pr
   >
 
-  <R, P extends PatternBase<R>, B>(
-    pattern: Narrow<P>,
-    f: (_: NotMatch<R, P>) => B,
-  ): <I, F, A, Pr>(
+  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: NotMatch<R, P>) => B): <
+    I,
+    F,
+    A,
+    Pr,
+  >(
     self: Matcher<I, F, R, A, Pr>,
   ) => Matcher<
     I,
