@@ -50,7 +50,10 @@ type MaybeReplace<I, P> = [P] extends [I]
   ? Replace<I, P>
   : Fail
 
-type FlattenRecordFails<R, D = Fail> = Extract<R[keyof R], Fail> extends never
+type FlattenRecordFails<R, D = Fail> = Extract<
+  R[Extract<keyof R, string>],
+  Fail
+> extends never
   ? R
   : D
 type FlattenUnionFails<U> = [U] extends [Fail] ? Fail : Exclude<U, Fail>
