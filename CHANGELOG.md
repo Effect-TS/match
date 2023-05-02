@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.18.2
+
+### Patch Changes
+
+- [#86](https://github.com/Effect-TS/match/pull/86) [`4aec8b2`](https://github.com/Effect-TS/match/commit/4aec8b2f26c7b010523281dcfba6b2650070538f) Thanks [@tim-smart](https://github.com/tim-smart)! - fix type completion in when/not
+
 ## 0.18.1
 
 ### Patch Changes
