@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.18.3
+
+### Patch Changes
+
+- [#88](https://github.com/Effect-TS/match/pull/88) [`c381f88`](https://github.com/Effect-TS/match/commit/c381f88373a2e9e660203eda1e55db10fe85ad0a) Thanks [@tim-smart](https://github.com/tim-smart)! - fix for symbol keys
+
 ## 0.18.2
 
 ### Patch Changes
