@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.19.0
+
+### Minor Changes
+
+- [#94](https://github.com/Effect-TS/match/pull/94) [`1e3ffc5`](https://github.com/Effect-TS/match/commit/1e3ffc5b7d2f25b2c9024f44ac3e7694b58adeaf) Thanks [@tim-smart](https://github.com/tim-smart)! - simplify patterns - fixes type recursion issues
+
+  Drops support for TS <5
+
 ## 0.18.5
 
 ### Patch Changes
