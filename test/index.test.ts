@@ -120,7 +120,10 @@ describe("Matcher", () => {
   it("not literal", () => {
     const match = pipe(
       M.type<string | number>(),
-      M.not("hi", (_) => "a"),
+      M.not("hi", (_) => {
+        typeEquals(_)<string | number>() satisfies true
+        return "a"
+      }),
       M.orElse((_) => "b"),
     )
     expect(match("hello")).toEqual("a")
@@ -130,7 +133,10 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah", M.string], (_) => true),
+      M.when(["yeah", M.string], (_) => {
+        typeEquals(_)<["yeah", string]>() satisfies true
+        return true
+      }),
       M.option,
     )
 
@@ -140,7 +146,10 @@ describe("Matcher", () => {
   it("literals", () => {
     const match = pipe(
       M.type<string>(),
-      M.when("yeah", (_) => _ === "yeah"),
+      M.when("yeah", (_) => {
+        typeEquals(_)<"yeah">() satisfies true
+        return _ === "yeah"
+      }),
       M.orElse(() => "nah"),
     )
 
@@ -189,10 +198,10 @@ describe("Matcher", () => {
         typeEquals(_)<{ foo: { bar: { baz: { qux: 2 } } } }>() satisfies true
         return `literal ${_.foo.bar.baz.qux}`
       }),
-      M.when(
-        { foo: { bar: { baz: { qux: "b" } } } },
-        (_) => `literal ${_.foo.bar.baz.qux}`,
-      ),
+      M.when({ foo: { bar: { baz: { qux: "b" } } } }, (_) => {
+        typeEquals(_)<{ foo: { bar: { baz: { qux: "b" } } } }>() satisfies true
+        return `literal ${_.foo.bar.baz.qux}`
+      }),
       M.when(
         { foo: { bar: { baz: { qux: M.number } } } },
         (_) => _.foo.bar.baz.qux,
@@ -322,31 +331,52 @@ describe("Matcher", () => {
     expect(match({ user: { name: "Tim" } })).toEqual("Tim")
   })
 
-  it("recursive", () => {
-    type A = string | null | B
+  it("deep recursive", () => {
+    type A =
+      | null
+      | Uint8Array
+      | string
+      | number
+      | B
+      | { [K in string]: A }
+      | Set<Uint8Array>
+      | Set<string>
+      | Set<number>
     type B = Array<A>
 
     const match = pipe(
       M.type<A>(),
-      M.when(Predicate.isNull, (_) => _),
-      M.orElse((_) => "orElse" as const),
+      M.when(Predicate.isNull, (_) => {
+        typeEquals(_)<null>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isBoolean, (_) => {
+        typeEquals(_)<never>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isNumber, (_) => {
+        typeEquals(_)<number>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isString, (_) => {
+        typeEquals(_)<string>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isRecord, (_) => {
+        typeEquals(_)<Record<string, A>>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isSymbol, (_) => {
+        typeEquals(_)<never>() satisfies true
+        return _
+      }),
+      M.when(Predicate.isReadonlyRecord, (_) => {
+        typeEquals(_)<never>() satisfies true
+        return _
+      }),
+      M.orElse((_) => "no match"),
     )
 
     expect(match(null)).toEqual(null)
-    expect(match([""])).toEqual("orElse")
-  })
-
-  it("recursive string predicate", () => {
-    type A = string | null | B
-    type B = Array<A>
-
-    const match = pipe(
-      M.type<A>(),
-      M.when(Predicate.isString, (_) => _),
-      M.orElse((_) => "orElse" as const),
-    )
-
-    expect(match("hello")).toEqual("hello")
-    expect(match(null)).toEqual("orElse")
   })
 })
