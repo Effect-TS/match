@@ -139,49 +139,21 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
  * @tsplus pipeable effect/match/Matcher when
  * @since 1.0.0
  */
-export const when: {
-  <R, P extends PatternBase<R>, B>(
-    pattern: Narrow<P>,
+export const when =
+  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+    pattern: P,
     f: (_: WhenMatch<R, P>) => B,
-  ): <I, F, A, Pr>(
+  ) =>
+  <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
+  ): Matcher<
     I,
     AddWithout<F, PForExclude<P>>,
     ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
     A | B,
     Pr
-  >
-
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: WhenMatch<R, P>) => B): <
-    I,
-    F,
-    A,
-    Pr,
-  >(
-    self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
-    I,
-    AddWithout<F, PForExclude<P>>,
-    ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
-    A | B,
-    Pr
-  >
-
-  <P, SR, R, B>(
-    schema: SafeSchema<P, SR>,
-    f: (_: WhenSchemaMatch<R, P>) => B,
-  ): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
-    I,
-    AddWithout<F, WhenSchemaMatch<R, P>>,
-    ApplyFilters<I, AddWithout<F, WhenSchemaMatch<R, P>>>,
-    A | B,
-    Pr
-  >
-} = (pattern: any, f: Function) => (self: any) =>
-  self.add(new When(makeGuard(pattern), f as any))
+  > =>
+    (self as any).add(new When(makeGuard(pattern), f as any))
 
 /**
  * @category combinators
@@ -226,51 +198,21 @@ export const tag = discriminator("_tag")
  * @tsplus pipeable effect/match/Matcher not
  * @since 1.0.0
  */
-export const not: {
-  <R, P extends PatternBase<R>, B>(
-    pattern: Narrow<P>,
+export const not =
+  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+    pattern: P,
     f: (_: NotMatch<R, P>) => B,
-  ): <I, F, A, Pr>(
+  ) =>
+  <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
+  ): Matcher<
     I,
     AddOnly<F, WhenMatch<R, P>>,
     ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
     A | B,
     Pr
-  >
-
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: NotMatch<R, P>) => B): <
-    I,
-    F,
-    A,
-    Pr,
-  >(
-    self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
-    I,
-    AddOnly<F, WhenMatch<R, P>>,
-    ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
-    A | B,
-    Pr
-  >
-
-  <P, SR, R, B>(
-    schema: SafeSchema<P, SR>,
-    f: (_: Exclude<R, ExtractMatch<R, SR>>) => B,
-  ): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ) => Matcher<
-    I,
-    AddOnly<F, ExtractMatch<R, P>>,
-    ApplyFilters<I, AddOnly<F, ExtractMatch<R, P>>>,
-    A | B,
-    Pr
-  >
-} =
-  (pattern: any, f: (_: never) => any) =>
-  (self: any): any =>
-    self.add(new Not(makeGuard(pattern), f as any))
+  > =>
+    (self as any).add(new Not(makeGuard(pattern), f as any))
 
 /**
  * @since 1.0.0
@@ -517,8 +459,6 @@ export const exhaustive: <I, F, A, Pr>(
 
 // combinations
 type WhenMatch<R, P> = ExtractMatch<R, PForMatch<P>>
-type WhenSchemaMatch<R, P> = ExtractMatch<R, P>
-
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 
 type PForMatch<P> = RemoveInvalidPatterns<SafeSchemaP<ResolvePred<P>>>
@@ -526,22 +466,6 @@ type PForExclude<P> = RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
-
-type Narrow<A> = NarrowRaw<A>
-
-type NarrowRaw<A> =
-  | (A extends [] ? [] : never)
-  | (A extends Function ? A : never)
-  | {
-      [K in keyof A]: A[K] extends Function
-        ? A[K]
-        : A[K] extends SafeSchema<infer _P>
-        ? A[K]
-        : NarrowRaw<A[K]>
-    }
-  | (A extends Narrowable ? A : never)
-
-type Narrowable = string | number | bigint | boolean
 
 type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? S
@@ -579,13 +503,23 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: PredToSchema<A[K]> }
   : A
 
-type PatternBase<A> = A extends Array<infer T>
-  ? Array<T | PredicateA<T> | SafeSchema<any>>
+type PatternBase<A> = A extends Array<infer _T>
+  ? any // TODO: improve array inference
   : A extends Record<string, any>
   ? Partial<{
-      [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | SafeSchema<any>
+      [K in keyof A]: PatternPrimitive<A[K]> | InnerPattern<A[K]>
     }>
-  : A | PredicateA<A> | SafeSchema<any>
+  : A
+
+type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
+
+type InnerPattern<A> = A extends Array<infer _T>
+  ? any // TODO: improve array inference
+  : A extends Record<string, any>
+  ? Partial<{
+      [K in keyof A]: InnerPattern<A[K]> | PatternPrimitive<A[K]>
+    }>
+  : never
 
 type RemoveInvalidPatterns<P> = ValidPattern<P> extends true ? P : never
 
