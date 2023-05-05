@@ -78,7 +78,13 @@ type ReplaceUnions<I, P> =
     : IsUnion<I> extends true
     ? ListOf<I> extends infer L
       ? L extends Array<any>
-        ? FlattenUnionFails<{ [K in keyof L]: ReplaceUnions<L[K], P> }[number]>
+        ? FlattenUnionFails<
+            {
+              [K in keyof L]: L[K] extends Array<I>
+                ? L[K]
+                : ReplaceUnions<L[K], P>
+            }[number]
+          >
         : never
       : never
     : IsPlainObject<I> extends true

@@ -335,4 +335,18 @@ describe("Matcher", () => {
     expect(match(null)).toEqual(null)
     expect(match([""])).toEqual("orElse")
   })
+
+  it("recursive string predicate", () => {
+    type A = string | null | B
+    type B = Array<A>
+
+    const match = pipe(
+      M.type<A>(),
+      M.when(Predicate.isString, (_) => _),
+      M.orElse((_) => "orElse" as const),
+    )
+
+    expect(match("hello")).toEqual("hello")
+    expect(match(null)).toEqual("orElse")
+  })
 })
