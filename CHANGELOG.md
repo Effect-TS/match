@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.18.4
+
+### Patch Changes
+
+- [#90](https://github.com/Effect-TS/match/pull/90) [`9ed8ef8`](https://github.com/Effect-TS/match/commit/9ed8ef8c91228ec383f6827fe739f841090da9e9) Thanks [@tim-smart](https://github.com/tim-smart)! - fix recursive array types
+
 ## 0.18.3
 
 ### Patch Changes
