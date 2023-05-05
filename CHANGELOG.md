@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.18.5
+
+### Patch Changes
+
+- [#92](https://github.com/Effect-TS/match/pull/92) [`e2ad274`](https://github.com/Effect-TS/match/commit/e2ad27432db11eb823cbd56f9fcebc15b0c2cb34) Thanks [@tim-smart](https://github.com/tim-smart)! - fix deep types with string predicate
+
 ## 0.18.4
 
 ### Patch Changes
