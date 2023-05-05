@@ -1,6 +1,7 @@
 import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
+import * as Predicate from "@effect/data/Predicate"
 import * as M from "@effect/match"
 import { typeEquals } from "@effect/match/test/utils/typeEquals"
 import * as S from "@effect/schema/Schema"
@@ -319,5 +320,19 @@ describe("Matcher", () => {
 
     expect(match({})).toEqual("no user")
     expect(match({ user: { name: "Tim" } })).toEqual("Tim")
+  })
+
+  it("recursive", () => {
+    type A = string | null | B
+    type B = Array<A>
+
+    const match = pipe(
+      M.type<A>(),
+      M.when(Predicate.isNull, (_) => _),
+      M.orElse((_) => "orElse" as const),
+    )
+
+    expect(match(null)).toEqual(null)
+    expect(match([""])).toEqual("orElse")
   })
 })

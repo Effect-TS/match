@@ -579,7 +579,9 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: PredToSchema<A[K]> }
   : A
 
-type PatternBase<A> = A extends Record<string, any>
+type PatternBase<A> = A extends Array<infer T>
+  ? Array<T | PredicateA<T> | SafeSchema<any>>
+  : A extends Record<string, any>
   ? Partial<{
       [K in keyof A]: PatternBase<A[K]> | PredicateA<A[K]> | SafeSchema<any>
     }>
