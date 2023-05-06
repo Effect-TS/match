@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.19.1
+
+### Patch Changes
+
+- [#96](https://github.com/Effect-TS/match/pull/96) [`c516aa7`](https://github.com/Effect-TS/match/commit/c516aa742078b7887e59b5d4d9dea013c187db53) Thanks [@tim-smart](https://github.com/tim-smart)! - improve match extraction
+
 ## 0.19.0
 
 ### Minor Changes
