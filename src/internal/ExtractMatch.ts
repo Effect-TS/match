@@ -91,15 +91,11 @@ type ExtractAndNarrow<I, P> =
             ? ExtractAndNarrow<I[RK], P[RK]>
             : I[RK]
         } extends infer R
-      ? [{}] extends [RemoveFails<PickKeys<R, P>>]
-        ? never
-        : R
+      ? [keyof P] extends [keyof RemoveFails<R>]
+        ? R
+        : never
       : never
     : MaybeReplace<I, P>
-
-type PickKeys<A, B> = {
-  [K in keyof A]: K extends keyof B ? A[K] : never
-}
 
 type RemoveFails<A> = {
   [K in keyof A]: A[K] extends Fail ? never : K
