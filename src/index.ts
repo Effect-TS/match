@@ -503,23 +503,15 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: PredToSchema<A[K]> }
   : A
 
-type PatternBase<A> = A extends Array<infer _T>
+type PatternBase<A> = A extends ReadonlyArray<infer _T>
   ? any // TODO: improve array inference
   : A extends Record<string, any>
   ? Partial<{
-      [K in keyof A]: PatternPrimitive<A[K]> | InnerPattern<A[K]>
-    }>
-  : A
-
-type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
-
-type InnerPattern<A> = A extends Array<infer _T>
-  ? any // TODO: improve array inference
-  : A extends Record<string, any>
-  ? Partial<{
-      [K in keyof A]: InnerPattern<A[K]> | PatternPrimitive<A[K]>
+      [K in keyof A]: PatternPrimitive<A[K]> | PatternBase<A[K]>
     }>
   : never
+
+type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
 
 type RemoveInvalidPatterns<P> = ValidPattern<P> extends true ? P : never
 

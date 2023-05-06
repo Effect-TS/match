@@ -32,8 +32,14 @@ describe("Matcher", () => {
   it("schema exhaustive-literal", () => {
     const match = pipe(
       M.type<{ _tag: "A"; a: number | string } | { _tag: "B"; b: number }>(),
-      M.when({ _tag: M.is("A", "B"), a: M.number }, (_) => E.right(_._tag)),
-      M.when({ _tag: M.string, a: M.string }, (_) => E.right(_._tag)),
+      M.when({ _tag: M.is("A", "B"), a: M.number }, (_) => {
+        typeEquals(_)<{ _tag: "A"; a: number }>() satisfies true
+        return E.right(_._tag)
+      }),
+      M.when({ _tag: M.string, a: M.string }, (_) => {
+        typeEquals(_)<{ _tag: "A"; a: string }>() satisfies true
+        return E.right(_._tag)
+      }),
       M.when({ b: M.number }, (_) => E.left(_._tag)),
       M.orElse((_) => {
         throw "absurd"
@@ -78,7 +84,10 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah", M.string], (_) => true),
+      M.when(["yeah", M.string], (_) => {
+        typeEquals(_)<readonly ["yeah", string]>() satisfies true
+        return true
+      }),
       M.option,
     )
 
@@ -134,7 +143,7 @@ describe("Matcher", () => {
     const match = pipe(
       M.type<[string, string]>(),
       M.when(["yeah", M.string], (_) => {
-        typeEquals(_)<["yeah", string]>() satisfies true
+        typeEquals(_)<readonly ["yeah", string]>() satisfies true
         return true
       }),
       M.option,
@@ -378,5 +387,23 @@ describe("Matcher", () => {
     )
 
     expect(match(null)).toEqual(null)
+  })
+
+  it("nested option", () => {
+    type ABC =
+      | { readonly _tag: "A" }
+      | { readonly _tag: "B" }
+      | { readonly _tag: "C" }
+
+    const match = pipe(
+      M.type<{ readonly abc: O.Option<ABC> }>(),
+      M.when({ abc: { value: { _tag: "A" } } }, (_) => _.abc.value._tag),
+      M.orElse((_) => "no match"),
+    )
+
+    // TODO: getters
+    // expect(match({ abc: O.some({ _tag: "A" }) })).toEqual("A")
+    expect(match({ abc: O.some({ _tag: "B" }) })).toEqual("no match")
+    expect(match({ abc: O.none() })).toEqual("no match")
   })
 })
