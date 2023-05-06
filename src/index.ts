@@ -466,16 +466,19 @@ function maybeAddGetters<I>(input: I): I {
     "__proto__" in input &&
     input.__proto__ !== Object.prototype
   ) {
-    const getters = Object.entries(
-      Object.getOwnPropertyDescriptors(input.__proto__),
+    const out = { ...input } as I
+    Object.entries(Object.getOwnPropertyDescriptors(input.__proto__)).forEach(
+      ([k, d]) => {
+        if (!d.get) return
+        Object.defineProperty(out, k, {
+          get() {
+            return (input as any)[k]
+          },
+        })
+      },
     )
-      .filter(([, d]) => !!d.get)
-      .reduce((acc, [k]) => ({ ...acc, [k]: (input.__proto__ as any)[k] }), {})
 
-    return {
-      ...input,
-      ...getters,
-    }
+    return out
   }
 
   return input
