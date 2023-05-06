@@ -379,4 +379,13 @@ describe("Matcher", () => {
 
     expect(match(null)).toEqual(null)
   })
+
+  it("nested option", () => {
+    type ABC =
+      | { readonly _tag: "A" }
+      | { readonly _tag: "B" }
+      | { readonly _tag: "C" }
+    pipe(M.type<{ readonly abc: O.Option<ABC> }>(),
+        M.when({ abc: { value: { _tag: "A" } } }, (_, __) => _.abc.value._tag),
+  })
 })

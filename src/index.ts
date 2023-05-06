@@ -142,7 +142,7 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
 export const when =
   <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
     pattern: P,
-    f: (_: WhenMatch<R, P>) => B,
+    f: (_: WhenMatch<R, P>, __: P) => B,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,

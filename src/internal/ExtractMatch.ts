@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 
 export type ExtractMatch<I, P> = [ReplaceUnions<I, P>] extends [infer EI]
-  ? Extract<EI, P>
+  ? [EI, P]
   : never
 
 type IntersectOf<U extends unknown> = (
@@ -78,19 +78,27 @@ type ReplaceUnions<I, P> =
     : IsUnion<I> extends true
     ? ListOf<I> extends infer L
       ? L extends Array<any>
-        ? FlattenUnionFails<
-            {
-              [K in keyof L]: L[K] extends Array<I>
-                ? L[K]
-                : ReplaceUnions<L[K], P>
-            }[number]
-          >
+        ? {
+            [K in keyof L]: L[K] extends Array<I>
+              ? L[K]
+              : ReplaceUnions<L[K], P>
+          }[number]
         : never
       : never
     : IsPlainObject<I> extends true
-    ? FlattenRecordFails<{
-        [RK in keyof I]-?: RK extends keyof P
-          ? ReplaceUnions<I[RK], P[RK]>
-          : I[RK]
-      }>
+    ? RemoveFails<{
+        [RK in Extract<keyof I, keyof P>]-?: ReplaceUnions<I[RK], P[RK]>
+      }> extends infer R
+      ? [{}] extends [R]
+        ? never
+        : R
+      : never
     : MaybeReplace<I, P>
+
+type RemoveFails<A> = {
+  [K in keyof A]: A[K] extends Fail ? never : K
+}[keyof A] extends infer K
+  ? [K] extends [keyof A]
+    ? { [RK in K]: A[RK] }
+    : never
+  : never
