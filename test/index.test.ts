@@ -78,7 +78,10 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah", M.string], (_) => true),
+      M.when(["yeah", M.string], (_) => {
+        typeEquals(_)<readonly ["yeah", string]>() satisfies true
+        return true
+      }),
       M.option,
     )
 
@@ -134,7 +137,7 @@ describe("Matcher", () => {
     const match = pipe(
       M.type<[string, string]>(),
       M.when(["yeah", M.string], (_) => {
-        typeEquals(_)<["yeah", string]>() satisfies true
+        typeEquals(_)<readonly ["yeah", string]>() satisfies true
         return true
       }),
       M.option,
@@ -385,7 +388,16 @@ describe("Matcher", () => {
       | { readonly _tag: "A" }
       | { readonly _tag: "B" }
       | { readonly _tag: "C" }
-    pipe(M.type<{ readonly abc: O.Option<ABC> }>(),
-        M.when({ abc: { value: { _tag: "A" } } }, (_, __) => _.abc.value._tag),
+
+    const match = pipe(
+      M.type<{ readonly abc: O.Option<ABC> }>(),
+      M.when({ abc: { value: { _tag: "A" } } }, (_) => _.abc.value._tag),
+      M.orElse((_) => "no match"),
+    )
+
+    // TODO: getters
+    // expect(match({ abc: O.some({ _tag: "A" }) })).toEqual("A")
+    expect(match({ abc: O.some({ _tag: "B" }) })).toEqual("no match")
+    expect(match({ abc: O.none() })).toEqual("no match")
   })
 })

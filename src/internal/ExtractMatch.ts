@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 
-export type ExtractMatch<I, P> = [ReplaceUnions<I, P>] extends [infer EI]
-  ? [EI, P]
+export type ExtractMatch<I, P> = [ExtractAndNarrow<I, P>] extends [infer EI]
+  ? EI
   : never
 
 type IntersectOf<U extends unknown> = (
@@ -50,14 +50,6 @@ type MaybeReplace<I, P> = [P] extends [I]
   ? Replace<I, P>
   : Fail
 
-type FlattenRecordFails<R, D = Fail> = Extract<
-  R[Extract<keyof R, string>],
-  Fail
-> extends never
-  ? R
-  : D
-type FlattenUnionFails<U> = [U] extends [Fail] ? Fail : Exclude<U, Fail>
-
 type BuiltInObjects =
   | Function
   | Date
@@ -71,29 +63,43 @@ type IsPlainObject<T> = T extends BuiltInObjects
   ? true
   : false
 
-type ReplaceUnions<I, P> =
+type ExtractAndNarrow<I, P> =
   // unknown is a wildcard pattern
   unknown extends P
     ? I
     : IsUnion<I> extends true
     ? ListOf<I> extends infer L
       ? L extends Array<any>
-        ? {
-            [K in keyof L]: L[K] extends Array<I>
-              ? L[K]
-              : ReplaceUnions<L[K], P>
-          }[number]
+        ? Exclude<{ [K in keyof L]: ExtractAndNarrow<L[K], P> }[number], Fail>
         : never
       : never
+    : I extends ReadonlyArray<any>
+    ? P extends Readonly<I>
+      ? P
+      : never
     : IsPlainObject<I> extends true
-    ? RemoveFails<{
-        [RK in Extract<keyof I, keyof P>]-?: ReplaceUnions<I[RK], P[RK]>
-      }> extends infer R
-      ? [{}] extends [R]
+    ? string extends keyof I
+      ? I extends P
+        ? I
+        : never
+      : symbol extends keyof I
+      ? I extends P
+        ? I
+        : never
+      : {
+          [RK in keyof I]-?: RK extends keyof P
+            ? ExtractAndNarrow<I[RK], P[RK]>
+            : I[RK]
+        } extends infer R
+      ? [{}] extends [RemoveFails<PickKeys<R, P>>]
         ? never
         : R
       : never
     : MaybeReplace<I, P>
+
+type PickKeys<A, B> = {
+  [K in keyof A]: K extends keyof B ? A[K] : never
+}
 
 type RemoveFails<A> = {
   [K in keyof A]: A[K] extends Fail ? never : K

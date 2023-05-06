@@ -142,7 +142,7 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
 export const when =
   <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
     pattern: P,
-    f: (_: WhenMatch<R, P>, __: P) => B,
+    f: (_: WhenMatch<R, P>) => B,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -503,23 +503,15 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: PredToSchema<A[K]> }
   : A
 
-type PatternBase<A> = A extends Array<infer _T>
+type PatternBase<A> = A extends ReadonlyArray<infer _T>
   ? any // TODO: improve array inference
   : A extends Record<string, any>
   ? Partial<{
-      [K in keyof A]: PatternPrimitive<A[K]> | InnerPattern<A[K]>
-    }>
-  : A
-
-type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
-
-type InnerPattern<A> = A extends Array<infer _T>
-  ? any // TODO: improve array inference
-  : A extends Record<string, any>
-  ? Partial<{
-      [K in keyof A]: InnerPattern<A[K]> | PatternPrimitive<A[K]>
+      [K in keyof A]: PatternPrimitive<A[K]> | PatternBase<A[K]>
     }>
   : never
+
+type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
 
 type RemoveInvalidPatterns<P> = ValidPattern<P> extends true ? P : never
 
