@@ -20,6 +20,23 @@ const matchEval = pipe(
   Match.exhaustive,
 )
 
+const matchPatternEval = pipe(
+  Match.type<ABC>(),
+  Match.when({ _tag: "A" }, (_) => _.a),
+  Match.when({ _tag: "B" }, (_) => _.b),
+  Match.when({ _tag: "C" }, (_) => _.c),
+  Match.exhaustive,
+)
+
+const matchPatternValue = (abc: ABC) =>
+  pipe(
+    Match.value(abc),
+    Match.when({ _tag: "A" }, (_) => _.a),
+    Match.when({ _tag: "B" }, (_) => _.b),
+    Match.when({ _tag: "C" }, (_) => _.c),
+    Match.exhaustive,
+  )
+
 const tspEval = (abc: ABC) =>
   match(abc)
     .with({ _tag: "A" }, (_) => _.a)
@@ -41,7 +58,9 @@ const abc = ABC("C")({ c: 1 }) as ABC
 
 benny.suite(
   "comparison",
-  benny.add("@effect/match", () => matchEval(abc)),
+  benny.add("@effect/match Match.type/tag", () => matchEval(abc)),
+  benny.add("@effect/match Match.type/when", () => matchPatternEval(abc)),
+  benny.add("@effect/match Match.value/when", () => matchPatternValue(abc)),
   benny.add("ts-pattern", () => tspEval(abc)),
   benny.add("if/else", () => ifElseEval(abc)),
   benny.cycle(),

@@ -2,13 +2,14 @@
  * @since 1.0.0
  */
 import * as E from "@effect/data/Either"
-import { flow, identity, pipe } from "@effect/data/Function"
+import { identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as P from "@effect/data/Predicate"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
 import * as S from "@effect/schema/Schema"
 import type { Unify } from "@effect/data/Unify"
+import { LiteralValue } from "@effect/schema/AST"
 
 /**
  * @category model
@@ -152,7 +153,7 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
  * @since 1.0.0
  */
 export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
-  new ValueMatcher(maybeAddGetters(i), E.left(i))
+  new ValueMatcher(i, E.left(i))
 
 /**
  * @category combinators
@@ -294,16 +295,27 @@ export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
  * @tsplus getter effect/match/SafeSchema nonEmpty
  * @since 1.0.0
  */
-export const nonEmpty: SafeSchema<string, never> = unsafe(
-  pipe(S.string, S.nonEmpty()),
-)
+export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
+  typeof u === "string" && u.length > 0) as any
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops is
  * @since 1.0.0
  */
-export const is = flow(S.literal, safe)
+export const is: <Literals extends readonly LiteralValue[]>(
+  ...literals: Literals
+) => Refinement<unknown, Literals[number]> = (...literals): any => {
+  const len = literals.length
+  return (u: unknown) => {
+    for (let i = 0; i < len; i++) {
+      if (u === literals[i]) {
+        return true
+      }
+    }
+    return false
+  }
+}
 
 /**
  * @category predicates
@@ -317,27 +329,27 @@ export const string: Refinement<unknown, string> = P.isString
  * @tsplus static effect/match/Matcher.Ops number
  * @since 1.0.0
  */
-export const number: Predicate<number> = P.isNumber
+export const number: Refinement<unknown, number> = P.isNumber
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops any
  * @since 1.0.0
  */
-export const any: SafeSchema<unknown, any> = safe(S.any)
+export const any: SafeSchema<unknown, any> = (() => true) as any
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops boolean
  * @since 1.0.0
  */
-export const boolean: Predicate<boolean> = P.isBoolean
+export const boolean: Refinement<unknown, boolean> = P.isBoolean
 
 /**
  * @tsplus static effect/match/Matcher.Ops undefined
  * @since 1.0.0
  */
-export const _undefined: Predicate<undefined> = P.isUndefined
+export const _undefined: Refinement<unknown, undefined> = P.isUndefined
 export {
   /**
    * @category predicates
@@ -350,7 +362,7 @@ export {
  * @tsplus static effect/match/Matcher.Ops null
  * @since 1.0.0
  */
-export const _null = safe(S.null)
+export const _null: Refinement<unknown, null> = P.isNull
 export {
   /**
    * @category predicates
@@ -364,14 +376,14 @@ export {
  * @tsplus static effect/match/Matcher.Ops bigint
  * @since 1.0.0
  */
-export const bigint = safe(S.bigint)
+export const bigint: Refinement<unknown, bigint> = P.isBigint
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops date
  * @since 1.0.0
  */
-export const date = safe(S.DateFromSelf)
+export const date: Refinement<unknown, Date> = P.isDate
 
 /**
  * @category conversions
@@ -413,8 +425,6 @@ export const either: <I, F, R, A, Pr>(
 
   const len = self.cases.length
   return (input: I): E.Either<RA, A> => {
-    input = maybeAddGetters(input)
-
     for (let i = 0; i < len; i++) {
       const _case = self.cases[i]
       if (_case._tag === "When" && _case.guard(input)) {
@@ -476,33 +486,6 @@ export const exhaustive: <I, F, A, Pr>(
     throw "absurd"
   }
 }) as any
-
-/** @internal */
-function maybeAddGetters<I>(input: I): I {
-  if (
-    typeof input === "object" &&
-    input !== null &&
-    !Array.isArray(input) &&
-    "__proto__" in input &&
-    input.__proto__ !== Object.prototype
-  ) {
-    const out = { ...input } as I
-    Object.entries(Object.getOwnPropertyDescriptors(input.__proto__)).forEach(
-      ([k, d]) => {
-        if (!d.get) return
-        Object.defineProperty(out, k, {
-          get() {
-            return (input as any)[k]
-          },
-        })
-      },
-    )
-
-    return out
-  }
-
-  return input
-}
 
 // type helpers
 

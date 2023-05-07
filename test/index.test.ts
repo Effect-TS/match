@@ -401,8 +401,7 @@ describe("Matcher", () => {
       M.orElse((_) => "no match"),
     )
 
-    // TODO: getters
-    // expect(match({ abc: O.some({ _tag: "A" }) })).toEqual("A")
+    expect(match({ abc: O.some({ _tag: "A" }) })).toEqual("A")
     expect(match({ abc: O.some({ _tag: "B" }) })).toEqual("no match")
     expect(match({ abc: O.none() })).toEqual("no match")
   })
