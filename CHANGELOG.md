@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.20.2
+
+### Patch Changes
+
+- [#102](https://github.com/Effect-TS/match/pull/102) [`756bcc3`](https://github.com/Effect-TS/match/commit/756bcc3dd0c437f803def20ade172db341d7581f) Thanks [@tim-smart](https://github.com/tim-smart)! - fix record matching
+
 ## 0.20.1
 
 ### Patch Changes
