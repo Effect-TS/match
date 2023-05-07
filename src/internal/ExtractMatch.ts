@@ -95,7 +95,11 @@ type ExtractAndNarrow<I, P> =
         ? R
         : never
       : never
-    : MaybeReplace<I, P>
+    : MaybeReplace<I, P> extends infer R
+    ? [I] extends [R]
+      ? I
+      : R
+    : never
 
 type RemoveFails<A> = {
   [K in keyof A]: A[K] extends Fail ? never : K

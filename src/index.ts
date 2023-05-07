@@ -52,12 +52,12 @@ class ValueMatcher<Input, Filters, Remaining, Result, Provided> {
       return this
     }
 
-    if (_case._tag === "When" && _case.guard(this.provided)) {
+    if (_case._tag === "When" && _case.guard(this.provided) === true) {
       return new ValueMatcher(
         this.provided,
         E.right(_case.evaluate(this.provided)),
       )
-    } else if (_case._tag === "Not" && !_case.guard(this.provided)) {
+    } else if (_case._tag === "Not" && _case.guard(this.provided) === false) {
       return new ValueMatcher(
         this.provided,
         E.right(_case.evaluate(this.provided)),
@@ -103,7 +103,7 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
       }
 
       for (let i = 0; i < len; i++) {
-        if (!predicates[i](u[i])) {
+        if (predicates[i](u[i]) === false) {
           return false
         }
       }
@@ -129,7 +129,7 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
 
       for (let i = 0; i < len; i++) {
         const [key, predicate] = keysAndPredicates[i]
-        if (!(key in u) || !predicate((u as any)[key])) {
+        if (!(key in u) || predicate((u as any)[key]) === false) {
           return false
         }
       }
@@ -389,6 +389,19 @@ export const bigint: Refinement<unknown, bigint> = P.isBigint
 export const date: Refinement<unknown, Date> = P.isDate
 
 /**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops record
+ * @since 1.0.0
+ */
+export const record: Refinement<
+  unknown,
+  {
+    [k: string]: any
+    [k: symbol]: any
+  }
+> = P.isRecord
+
+/**
  * @category conversions
  * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
@@ -430,9 +443,9 @@ export const either: <I, F, R, A, Pr>(
   return (input: I): E.Either<RA, A> => {
     for (let i = 0; i < len; i++) {
       const _case = self.cases[i]
-      if (_case._tag === "When" && _case.guard(input)) {
+      if (_case._tag === "When" && _case.guard(input) === true) {
         return E.right(_case.evaluate(input))
-      } else if (_case._tag === "Not" && !_case.guard(input)) {
+      } else if (_case._tag === "Not" && _case.guard(input) === false) {
         return E.right(_case.evaluate(input))
       }
     }
@@ -496,8 +509,8 @@ export const exhaustive: <I, F, A, Pr>(
 type WhenMatch<R, P> = ExtractMatch<R, PForMatch<P>>
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 
-type PForMatch<P> = RemoveInvalidPatterns<SafeSchemaP<ResolvePred<P>>>
-type PForExclude<P> = RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>
+type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
+type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
@@ -547,28 +560,6 @@ type PatternBase<A> = A extends ReadonlyArray<infer _T>
   : never
 
 type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
-
-type RemoveInvalidPatterns<P> = ValidPattern<P> extends true ? P : never
-
-type ValidPattern<P, Checked = never> = P extends SafeSchema<any>
-  ? false
-  : P extends Array<infer R>
-  ? [R] extends [Checked]
-    ? true
-    : ValidPattern<R, Checked | R>
-  : P extends Record<string, any>
-  ? [
-      {
-        [K in keyof P]: [P[K]] extends [Checked]
-          ? true
-          : ValidPattern<P[K], Checked | P[K]>
-      } extends infer R
-        ? Extract<R[keyof R], false>
-        : never,
-    ] extends [never]
-    ? true
-    : false
-  : true
 
 interface Without<X> {
   readonly _tag: "Without"
