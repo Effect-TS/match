@@ -2,14 +2,14 @@
  * @since 1.0.0
  */
 import * as E from "@effect/data/Either"
-import { flow, identity, pipe } from "@effect/data/Function"
+import { identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
-import * as RA from "@effect/data/ReadonlyArray"
+import * as P from "@effect/data/Predicate"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
-import type { ParseOptions } from "@effect/schema/AST"
 import * as S from "@effect/schema/Schema"
 import type { Unify } from "@effect/data/Unify"
+import { LiteralValue } from "@effect/schema/AST"
 
 /**
  * @category model
@@ -87,34 +87,55 @@ class Not {
   ) {}
 }
 
-const makeSchema = <I>(
-  pattern: I,
-): I extends SafeSchema<any> ? I : SafeSchema<I> => {
+const makePredicate = (pattern: unknown): Predicate<unknown> => {
   if (typeof pattern === "function") {
-    return S.filter(pattern as any)(S.any) as any
+    return pattern as Predicate<unknown>
   } else if (Array.isArray(pattern)) {
-    return RA.isNonEmptyArray(pattern)
-      ? S.tuple(...pattern.map(makeSchema))
-      : (S.array(S.any) as any)
+    const predicates = pattern.map(makePredicate)
+    const len = predicates.length
+
+    return (u: unknown) => {
+      if (!Array.isArray(u)) {
+        return false
+      }
+
+      for (let i = 0; i < len; i++) {
+        if (!predicates[i](u[i])) {
+          return false
+        }
+      }
+
+      return true
+    }
   } else if (pattern !== null && typeof pattern === "object") {
     if ("ast" in pattern) {
-      return pattern as any
+      const validate = S.validateEither(pattern as any)
+      return (u: unknown) =>
+        validate(u, { onExcessProperty: "ignore" })._tag === "Right"
     }
 
-    return S.struct(
-      Object.fromEntries(
-        Object.entries(pattern).map(([k, v]) => [k, makeSchema(v)]),
-      ) as Record<string, S.Schema<any>>,
-    ) as any
+    const keysAndPredicates = Object.entries(pattern).map(
+      ([k, p]) => [k, makePredicate(p)] as const,
+    )
+    const len = keysAndPredicates.length
+
+    return (u: unknown) => {
+      if (typeof u !== "object" || u === null) {
+        return false
+      }
+
+      for (let i = 0; i < len; i++) {
+        const [key, predicate] = keysAndPredicates[i]
+        if (!(key in u) || !predicate((u as any)[key])) {
+          return false
+        }
+      }
+
+      return true
+    }
   }
 
-  return S.literal(pattern as any) as any
-}
-
-const guardParseOptions: ParseOptions = { onExcessProperty: "ignore" }
-const makeGuard = <P>(pattern: P) => {
-  const validate = S.validateEither(makeSchema(pattern) as any)
-  return (u: unknown) => validate(u, guardParseOptions)._tag === "Right"
+  return (u: unknown) => u === pattern
 }
 
 /**
@@ -153,7 +174,7 @@ export const when =
     A | B,
     Pr
   > =>
-    (self as any).add(new When(makeGuard(pattern), f as any))
+    (self as any).add(new When(makePredicate(pattern), f as any))
 
 /**
  * @category combinators
@@ -212,7 +233,7 @@ export const not =
     A | B,
     Pr
   > =>
-    (self as any).add(new Not(makeGuard(pattern), f as any))
+    (self as any).add(new Not(makePredicate(pattern), f as any))
 
 /**
  * @since 1.0.0
@@ -274,50 +295,61 @@ export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
  * @tsplus getter effect/match/SafeSchema nonEmpty
  * @since 1.0.0
  */
-export const nonEmptyString: SafeSchema<string, never> = unsafe(
-  pipe(S.string, S.nonEmpty()),
-)
+export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
+  typeof u === "string" && u.length > 0) as any
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops is
  * @since 1.0.0
  */
-export const is = flow(S.literal, safe)
+export const is: <Literals extends readonly LiteralValue[]>(
+  ...literals: Literals
+) => Refinement<unknown, Literals[number]> = (...literals): any => {
+  const len = literals.length
+  return (u: unknown) => {
+    for (let i = 0; i < len; i++) {
+      if (u === literals[i]) {
+        return true
+      }
+    }
+    return false
+  }
+}
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops string
  * @since 1.0.0
  */
-export const string = safe(S.string)
+export const string: Refinement<unknown, string> = P.isString
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops number
  * @since 1.0.0
  */
-export const number = safe(S.number)
+export const number: Refinement<unknown, number> = P.isNumber
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops any
  * @since 1.0.0
  */
-export const any: SafeSchema<unknown, any> = safe(S.any)
+export const any: SafeSchema<unknown, any> = (() => true) as any
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops boolean
  * @since 1.0.0
  */
-export const boolean = safe(S.boolean)
+export const boolean: Refinement<unknown, boolean> = P.isBoolean
 
 /**
  * @tsplus static effect/match/Matcher.Ops undefined
  * @since 1.0.0
  */
-export const _undefined = safe(S.undefined)
+export const _undefined: Refinement<unknown, undefined> = P.isUndefined
 export {
   /**
    * @category predicates
@@ -330,7 +362,7 @@ export {
  * @tsplus static effect/match/Matcher.Ops null
  * @since 1.0.0
  */
-export const _null = safe(S.null)
+export const _null: Refinement<unknown, null> = P.isNull
 export {
   /**
    * @category predicates
@@ -344,14 +376,14 @@ export {
  * @tsplus static effect/match/Matcher.Ops bigint
  * @since 1.0.0
  */
-export const bigint = safe(S.bigint)
+export const bigint: Refinement<unknown, bigint> = P.isBigint
 
 /**
  * @category predicates
  * @tsplus static effect/match/Matcher.Ops date
  * @since 1.0.0
  */
-export const date = safe(S.DateFromSelf)
+export const date: Refinement<unknown, Date> = P.isDate
 
 /**
  * @category conversions
