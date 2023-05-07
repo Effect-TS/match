@@ -6,10 +6,10 @@ import { identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as P from "@effect/data/Predicate"
-import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
-import * as S from "@effect/schema/Schema"
 import type { Unify } from "@effect/data/Unify"
-import { LiteralValue } from "@effect/schema/AST"
+import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
+import type { LiteralValue } from "@effect/schema/AST"
+import * as S from "@effect/schema/Schema"
 
 /**
  * @category model
@@ -87,6 +87,9 @@ class Not {
   ) {}
 }
 
+const isSchema = (u: object): u is S.Schema<unknown, unknown> =>
+  "ast" in u && P.isObject(u.ast) && "annotations" in u.ast
+
 const makePredicate = (pattern: unknown): Predicate<unknown> => {
   if (typeof pattern === "function") {
     return pattern as Predicate<unknown>
@@ -108,8 +111,8 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
       return true
     }
   } else if (pattern !== null && typeof pattern === "object") {
-    if ("ast" in pattern) {
-      const validate = S.validateEither(pattern as any)
+    if (isSchema(pattern)) {
+      const validate = S.validateEither(pattern)
       return (u: unknown) =>
         validate(u, { onExcessProperty: "ignore" })._tag === "Right"
     }
@@ -350,19 +353,7 @@ export const boolean: Refinement<unknown, boolean> = P.isBoolean
  * @since 1.0.0
  */
 export const _undefined: Refinement<unknown, undefined> = P.isUndefined
-export {
-  /**
-   * @category predicates
-   * @since 1.0.0
-   */
-  _undefined as undefined,
-}
-
-/**
- * @tsplus static effect/match/Matcher.Ops null
- * @since 1.0.0
- */
-export const _null: Refinement<unknown, null> = P.isNull
+export { _undefined as undefined }
 export {
   /**
    * @category predicates
@@ -370,6 +361,12 @@ export {
    */
   _null as null,
 }
+
+/**
+ * @tsplus static effect/match/Matcher.Ops null
+ * @since 1.0.0
+ */
+export const _null: Refinement<unknown, null> = P.isNull
 
 /**
  * @category predicates
