@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.20.1
+
+### Patch Changes
+
+- [#99](https://github.com/Effect-TS/match/pull/99) [`ad9ac08`](https://github.com/Effect-TS/match/commit/ad9ac08eab7ff9cac359287bcee23bb10dead167) Thanks [@tim-smart](https://github.com/tim-smart)! - stricter schema detection
+
 ## 0.20.0
 
 ### Minor Changes
