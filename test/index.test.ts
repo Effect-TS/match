@@ -234,7 +234,6 @@ describe("Matcher", () => {
     const match = pipe(
       M.type<{ user: O.Option<{ readonly name: string }> }>(),
       M.when({ user: { _tag: "Some" } }, (_) => _.user.value.name),
-      (_) => _,
       M.orElse((_) => "fail"),
     )
 
@@ -357,36 +356,47 @@ describe("Matcher", () => {
       M.type<A>(),
       M.when(Predicate.isNull, (_) => {
         typeEquals(_)<null>() satisfies true
-        return _
+        return "null"
       }),
       M.when(Predicate.isBoolean, (_) => {
         typeEquals(_)<never>() satisfies true
-        return _
+        return "boolean"
       }),
       M.when(Predicate.isNumber, (_) => {
         typeEquals(_)<number>() satisfies true
-        return _
+        return "number"
       }),
       M.when(Predicate.isString, (_) => {
         typeEquals(_)<string>() satisfies true
-        return _
+        return "string"
       }),
-      M.when(Predicate.isRecord, (_) => {
-        typeEquals(_)<Record<string, A>>() satisfies true
-        return _
+      M.when(M.record, (_) => {
+        typeEquals(_)<
+          | Record<string, A>
+          | Uint8Array
+          | Set<Uint8Array>
+          | Set<string>
+          | Set<number>
+        >() satisfies true
+        return "record"
       }),
       M.when(Predicate.isSymbol, (_) => {
         typeEquals(_)<never>() satisfies true
-        return _
+        return "symbol"
       }),
       M.when(Predicate.isReadonlyRecord, (_) => {
         typeEquals(_)<never>() satisfies true
-        return _
+        return "readonlyrecord"
       }),
-      M.orElse((_) => "no match"),
+      M.exhaustive,
     )
 
-    expect(match(null)).toEqual(null)
+    expect(match(null)).toEqual("null")
+    expect(match(123)).toEqual("number")
+    expect(match("hi")).toEqual("string")
+    expect(match({})).toEqual("record")
+    expect(match(new Uint8Array())).toEqual("record")
+    expect(match(new Set<string>())).toEqual("record")
   })
 
   it("nested option", () => {
