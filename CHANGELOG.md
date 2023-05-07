@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.20.0
+
+### Minor Changes
+
+- [#39](https://github.com/Effect-TS/match/pull/39) [`edc6297`](https://github.com/Effect-TS/match/commit/edc6297670e67f271480f19d50d5340470f4374d) Thanks [@tim-smart](https://github.com/tim-smart)! - refactor to predicates
+
 ## 0.19.1
 
 ### Patch Changes
