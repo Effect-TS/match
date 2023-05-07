@@ -141,6 +141,23 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
   return (u: unknown) => u === pattern
 }
 
+const makeOrPredicate = (
+  patterns: ReadonlyArray<unknown>,
+): Predicate<unknown> => {
+  const predicates = patterns.map(makePredicate)
+  const len = predicates.length
+
+  return (u: unknown) => {
+    for (let i = 0; i < len; i++) {
+      if (predicates[i](u) === true) {
+        return true
+      }
+    }
+
+    return false
+  }
+}
+
 /**
  * @category constructors
  * @tsplus static effect/match/Matcher.Ops type
@@ -178,6 +195,27 @@ export const when =
     Pr
   > =>
     (self as any).add(new When(makePredicate(pattern), f as any))
+
+/**
+ * @category combinators
+ * @tsplus pipeable effect/match/Matcher whenOr
+ * @since 1.0.0
+ */
+export const whenOr =
+  <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
+    patterns: P,
+    f: (_: WhenMatch<R, P[number]>) => B,
+  ) =>
+  <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
+  ): Matcher<
+    I,
+    AddWithout<F, PForExclude<P[number]>>,
+    ApplyFilters<I, AddWithout<F, PForExclude<P[number]>>>,
+    A | B,
+    Pr
+  > =>
+    (self as any).add(new When(makeOrPredicate(patterns), f as any))
 
 /**
  * @category combinators
@@ -513,7 +551,7 @@ type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
 type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
 
 // utilities
-type PredicateA<A> = Predicate<A> | Refinement<A, A>
+type PredicateA<A> = Predicate<A> | Refinement<A, any>
 
 type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? S
