@@ -353,13 +353,12 @@ export const boolean: Refinement<unknown, boolean> = P.isBoolean
  * @since 1.0.0
  */
 export const _undefined: Refinement<unknown, undefined> = P.isUndefined
-export { _undefined as undefined }
 export {
   /**
    * @category predicates
    * @since 1.0.0
    */
-  _null as null,
+  _undefined as undefined,
 }
 
 /**
@@ -367,6 +366,13 @@ export {
  * @since 1.0.0
  */
 export const _null: Refinement<unknown, null> = P.isNull
+export {
+  /**
+   * @category predicates
+   * @since 1.0.0
+   */
+  _null as null,
+}
 
 /**
  * @category predicates
