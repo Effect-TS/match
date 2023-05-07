@@ -431,4 +431,18 @@ describe("Matcher", () => {
 
     expect(match).toEqual("thing")
   })
+
+  it("whenOr", () => {
+    const match = pipe(
+      M.type<
+        { _tag: "A"; a: number } | { _tag: "B"; b: number } | { _tag: "C" }
+      >(),
+      M.whenOr([{ _tag: "A" }, { _tag: "B" }], (_) => "A or B"),
+      M.when({ _tag: "C" }, (_) => "C"),
+      M.exhaustive,
+    )
+    expect(match({ _tag: "A", a: 0 })).toEqual("A or B")
+    expect(match({ _tag: "B", b: 1 })).toEqual("A or B")
+    expect(match({ _tag: "C" })).toEqual("C")
+  })
 })
