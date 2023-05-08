@@ -331,11 +331,24 @@ describe("Matcher", () => {
   it("optional props", () => {
     const match = pipe(
       M.type<{ readonly user?: { readonly name: string } }>(),
-      M.when({ user: M.any }, (_) => _.user.name),
+      M.when({ user: M.any }, (_) => _.user?.name),
       M.orElse(() => "no user"),
     )
 
     expect(match({})).toEqual("no user")
+    expect(match({ user: undefined })).toEqual(undefined)
+    expect(match({ user: { name: "Tim" } })).toEqual("Tim")
+  })
+
+  it("optional props defined", () => {
+    const match = pipe(
+      M.type<{ readonly user?: { readonly name: string } }>(),
+      M.when({ user: M.defined }, (_) => _.user.name),
+      M.orElse(() => "no user"),
+    )
+
+    expect(match({})).toEqual("no user")
+    expect(match({ user: undefined })).toEqual("no user")
     expect(match({ user: { name: "Tim" } })).toEqual("Tim")
   })
 
@@ -456,5 +469,94 @@ describe("Matcher", () => {
     expect(match({ a: [{ name: "Tim" }] })).toEqual("match 1")
     expect(match({ a: [] })).toEqual("no match")
     expect(match({})).toEqual("no match")
+  })
+
+  it("whenAnd", () => {
+    const match = pipe(
+      M.type<
+        { _tag: "A"; a: number } | { _tag: "B"; b: number } | { _tag: "C" }
+      >(),
+      M.whenAnd([{ _tag: "A" }, { a: M.number }], (_) => "A"),
+      M.whenAnd([{ _tag: "B" }, { b: M.number }], (_) => "B"),
+      M.when({ _tag: "C" }, (_) => "C"),
+      M.exhaustive,
+    )
+    expect(match({ _tag: "A", a: 0 })).toEqual("A")
+    expect(match({ _tag: "B", b: 1 })).toEqual("B")
+    expect(match({ _tag: "C" })).toEqual("C")
+  })
+
+  it("whenAnd nested", () => {
+    const match = pipe(
+      M.type<{
+        status: number
+        user?: {
+          name: string
+          manager?: {
+            name: string
+          }
+        }
+        company?: {
+          name: string
+        }
+      }>(),
+      M.whenAnd(
+        [
+          { status: 200 },
+          { user: { name: M.string } },
+          { user: { manager: { name: M.string } } },
+          { company: { name: M.string } },
+        ],
+        (_) =>
+          [_.status, _.user.name, _.user.manager.name, _.company.name].join(
+            ", ",
+          ),
+      ),
+      M.whenAnd(
+        [
+          { status: 200 },
+          { user: { name: M.string } },
+          { company: { name: M.string } },
+        ],
+        (_) => [_.status, _.user.name, _.company.name].join(", "),
+      ),
+      M.whenAnd([{ status: 200 }, { user: { name: M.string } }], (_) =>
+        [_.status, _.user.name].join(", "),
+      ),
+      M.whenAnd([{ status: M.number }, { user: { name: M.string } }], (_) =>
+        ["number", _.user.name].join(", "),
+      ),
+      M.when({ status: M.number }, (_) => "number"),
+      M.exhaustive,
+    )
+    expect(
+      match({
+        status: 200,
+        user: { name: "Tim", manager: { name: "Joe" } },
+        company: { name: "Apple" },
+      }),
+    ).toEqual("200, Tim, Joe, Apple")
+    expect(
+      match({
+        status: 200,
+        user: { name: "Tim" },
+        company: { name: "Apple" },
+      }),
+    ).toEqual("200, Tim, Apple")
+    expect(
+      match({
+        status: 200,
+        user: { name: "Tim" },
+        company: { name: "Apple" },
+      }),
+    ).toEqual("200, Tim, Apple")
+    expect(
+      match({
+        status: 200,
+        user: { name: "Tim" },
+      }),
+    ).toEqual("200, Tim")
+    expect(match({ status: 100, user: { name: "Tim" } })).toEqual("number, Tim")
+    expect(match({ status: 100 })).toEqual("number")
   })
 })

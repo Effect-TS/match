@@ -158,6 +158,23 @@ const makeOrPredicate = (
   }
 }
 
+const makeAndPredicate = (
+  patterns: ReadonlyArray<unknown>,
+): Predicate<unknown> => {
+  const predicates = patterns.map(makePredicate)
+  const len = predicates.length
+
+  return (u: unknown) => {
+    for (let i = 0; i < len; i++) {
+      if (predicates[i](u) === false) {
+        return false
+      }
+    }
+
+    return true
+  }
+}
+
 /**
  * @category constructors
  * @tsplus static effect/match/Matcher.Ops type
@@ -216,6 +233,27 @@ export const whenOr =
     Pr
   > =>
     (self as any).add(new When(makeOrPredicate(patterns), f as any))
+
+/**
+ * @category combinators
+ * @tsplus pipeable effect/match/Matcher whenAnd
+ * @since 1.0.0
+ */
+export const whenAnd =
+  <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
+    patterns: P,
+    f: (_: WhenMatch<R, ArrayToIntersection<P>>) => B,
+  ) =>
+  <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
+  ): Matcher<
+    I,
+    AddWithout<F, PForExclude<ArrayToIntersection<P>>>,
+    ApplyFilters<I, AddWithout<F, PForExclude<ArrayToIntersection<P>>>>,
+    A | B,
+    Pr
+  > =>
+    (self as any).add(new When(makeAndPredicate(patterns), f as any))
 
 /**
  * @category combinators
@@ -344,7 +382,7 @@ export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
  * @tsplus static effect/match/Matcher.Ops is
  * @since 1.0.0
  */
-export const is: <Literals extends readonly LiteralValue[]>(
+export const is: <Literals extends ReadonlyArray<LiteralValue>>(
   ...literals: Literals
 ) => Refinement<unknown, Literals[number]> = (...literals): any => {
   const len = literals.length
@@ -378,6 +416,14 @@ export const number: Refinement<unknown, number> = P.isNumber
  * @since 1.0.0
  */
 export const any: SafeSchema<unknown, any> = (() => true) as any
+
+/**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops defined
+ * @since 1.0.0
+ */
+export const defined = <A>(u: unknown): Refinement<A, A & {}> =>
+  (u !== undefined) as any
 
 /**
  * @category predicates
@@ -553,7 +599,9 @@ type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
-type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
+type SafeSchemaP<A> = A extends never
+  ? never
+  : A extends SafeSchema<infer S, infer _>
   ? S
   : A extends Function
   ? A
@@ -561,7 +609,9 @@ type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? { [K in keyof A]: SafeSchemaP<A[K]> }
   : A
 
-type SafeSchemaR<A> = A extends SafeSchema<infer _, infer R>
+type SafeSchemaR<A> = A extends never
+  ? never
+  : A extends SafeSchema<infer _, infer R>
   ? R
   : A extends Function
   ? A
@@ -569,7 +619,9 @@ type SafeSchemaR<A> = A extends SafeSchema<infer _, infer R>
   ? { [K in keyof A]: SafeSchemaR<A[K]> }
   : A
 
-type ResolvePred<A> = A extends Refinement<any, infer P>
+type ResolvePred<A> = A extends never
+  ? never
+  : A extends Refinement<any, infer P>
   ? P
   : A extends Predicate<infer P>
   ? P
@@ -579,7 +631,9 @@ type ResolvePred<A> = A extends Refinement<any, infer P>
   ? { [K in keyof A]: ResolvePred<A[K]> }
   : A
 
-type PredToSchema<A> = A extends Refinement<any, infer P>
+type PredToSchema<A> = A extends never
+  ? never
+  : A extends Refinement<any, infer P>
   ? SafeSchema<P, P>
   : A extends Predicate<infer P>
   ? SafeSchema<P, never>
@@ -632,3 +686,13 @@ type ApplyFilters<I, A> = A extends Only<infer X>
   : never
 
 type Tags<D extends string, P> = P extends Record<D, infer X> ? X : never
+
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
+  x: infer R,
+) => any
+  ? R
+  : never
+
+type ArrayToIntersection<A extends ReadonlyArray<any>> = UnionToIntersection<
+  A[number]
+>

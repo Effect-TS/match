@@ -63,6 +63,8 @@ type IsPlainObject<T> = T extends BuiltInObjects
   ? true
   : false
 
+type Simplify<A> = { [K in keyof A]: A[K] } & {}
+
 type ExtractAndNarrow<I, P> =
   // unknown is a wildcard pattern
   unknown extends P
@@ -94,11 +96,11 @@ type ExtractAndNarrow<I, P> =
       ? I extends P
         ? I
         : never
-      : {
-          [RK in keyof I]-?: RK extends keyof P
-            ? ExtractAndNarrow<I[RK], P[RK]>
-            : I[RK]
-        } extends infer R
+      : Simplify<
+          {
+            [RK in Extract<keyof I, keyof P>]-?: ExtractAndNarrow<I[RK], P[RK]>
+          } & Omit<I, keyof P>
+        > extends infer R
       ? [keyof P] extends [keyof RemoveFails<R>]
         ? R
         : never
@@ -110,9 +112,9 @@ type ExtractAndNarrow<I, P> =
     : never
 
 type RemoveFails<A> = {
-  [K in keyof A]: A[K] extends Fail ? never : K
+  [K in keyof A & {}]: A[K] extends Fail ? never : K
 }[keyof A] extends infer K
   ? [K] extends [keyof A]
     ? { [RK in K]: A[RK] }
-    : never
-  : never
+    : {}
+  : {}
