@@ -450,7 +450,7 @@ describe("Matcher", () => {
       M.type<
         { _tag: "A"; a: number } | { _tag: "B"; b: number } | { _tag: "C" }
       >(),
-      M.whenOr([{ _tag: "A" }, { _tag: "B" }], (_) => "A or B"),
+      M.whenOr({ _tag: "A" }, { _tag: "B" }, (_) => "A or B"),
       M.when({ _tag: "C" }, (_) => "C"),
       M.exhaustive,
     )
@@ -476,8 +476,8 @@ describe("Matcher", () => {
       M.type<
         { _tag: "A"; a: number } | { _tag: "B"; b: number } | { _tag: "C" }
       >(),
-      M.whenAnd([{ _tag: "A" }, { a: M.number }], (_) => "A"),
-      M.whenAnd([{ _tag: "B" }, { b: M.number }], (_) => "B"),
+      M.whenAnd({ _tag: "A" }, { a: M.number }, (_) => "A"),
+      M.whenAnd({ _tag: "B" }, { b: M.number }, (_) => "B"),
       M.when({ _tag: "C" }, (_) => "C"),
       M.exhaustive,
     )
@@ -501,29 +501,25 @@ describe("Matcher", () => {
         }
       }>(),
       M.whenAnd(
-        [
-          { status: 200 },
-          { user: { name: M.string } },
-          { user: { manager: { name: M.string } } },
-          { company: { name: M.string } },
-        ],
+        { status: 200 },
+        { user: { name: M.string } },
+        { user: { manager: { name: M.string } } },
+        { company: { name: M.string } },
         (_) =>
           [_.status, _.user.name, _.user.manager.name, _.company.name].join(
             ", ",
           ),
       ),
       M.whenAnd(
-        [
-          { status: 200 },
-          { user: { name: M.string } },
-          { company: { name: M.string } },
-        ],
+        { status: 200 },
+        { user: { name: M.string } },
+        { company: { name: M.string } },
         (_) => [_.status, _.user.name, _.company.name].join(", "),
       ),
-      M.whenAnd([{ status: 200 }, { user: { name: M.string } }], (_) =>
+      M.whenAnd({ status: 200 }, { user: { name: M.string } }, (_) =>
         [_.status, _.user.name].join(", "),
       ),
-      M.whenAnd([{ status: M.number }, { user: { name: M.string } }], (_) =>
+      M.whenAnd({ status: M.number }, { user: { name: M.string } }, (_) =>
         ["number", _.user.name].join(", "),
       ),
       M.when({ status: M.number }, (_) => "number"),
