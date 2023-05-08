@@ -1,4 +1,4 @@
-remote_theme: mikearnaldi/just-the-docs
+remote_theme: just-the-docs/just-the-docs
 
 # Enable or disable the site search
 search_enabled: true

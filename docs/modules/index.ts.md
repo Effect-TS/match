@@ -17,6 +17,8 @@ Added in v1.0.0
   - [not](#not)
   - [tag](#tag)
   - [when](#when)
+  - [whenAnd](#whenand)
+  - [whenOr](#whenor)
 - [constructors](#constructors)
   - [type](#type)
   - [value](#value)
@@ -33,14 +35,19 @@ Added in v1.0.0
   - [bigint](#bigint)
   - [boolean](#boolean)
   - [date](#date)
+  - [defined](#defined)
   - [is](#is)
+  - [nonEmptyString](#nonemptystring)
   - [null](#null)
   - [number](#number)
+  - [record](#record)
   - [safe](#safe)
   - [string](#string)
   - [undefined](#undefined)
   - [unsafe](#unsafe)
 - [utils](#utils)
+  - [SafeSchemaId](#safeschemaid)
+  - [SafeSchemaId (type alias)](#safeschemaid-type-alias)
   - [\_null](#_null)
   - [\_undefined](#_undefined)
 
@@ -66,13 +73,13 @@ export declare const discriminator: <D extends string>(
   B
 >(
   first: P,
-  ...values: (P | ((_: Extract<R, { readonly _tag: P }>) => B))[]
+  ...values: (P | ((_: Extract<R, Record<D, P>>) => B))[]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<F, Extract<R, { _tag: P }>>,
-  ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
+  AddWithout<F, Extract<R, Record<D, P>>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, Record<D, P>>>>,
   B | A,
   Pr
 >
@@ -85,17 +92,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const not: {
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
-  <R, P extends PatternBase<R>, B>(pattern: Narrow<P>, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
-  <P, SR, R, B>(schema: SafeSchema<P, SR>, f: (_: Exclude<R, any>) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<I, AddOnly<F, any>, ApplyFilters<I, AddOnly<F, any>>, B | A, Pr>
-}
+export declare const not: any
 ```
 
 Added in v1.0.0
@@ -107,13 +104,13 @@ Added in v1.0.0
 ```ts
 export declare const tag: <R, P, B>(
   first: P,
-  ...values: (P | ((_: Extract<R, { readonly _tag: P }>) => B))[]
+  ...values: (P | ((_: Extract<R, Record<'_tag', P>>) => B))[]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<F, Extract<R, { _tag: P }>>,
-  ApplyFilters<I, AddWithout<F, Extract<R, { _tag: P }>>>,
+  AddWithout<F, Extract<R, Record<'_tag', P>>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, Record<'_tag', P>>>>,
   B | A,
   Pr
 >
@@ -126,29 +123,27 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const when: {
-  <R, P extends PredicateA<R>, B>(pattern: P, f: (_: any) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<
-    I,
-    AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>,
-    ApplyFilters<I, AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>>,
-    B | A,
-    Pr
-  >
-  <R, P extends PatternBase<R>, B>(pattern: Narrow<P>, f: (_: any) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<
-    I,
-    AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>,
-    ApplyFilters<I, AddWithout<F, RemoveInvalidPatterns<SafeSchemaR<PredToSchema<P>>>>>,
-    B | A,
-    Pr
-  >
-  <P, SR, R, B>(schema: SafeSchema<P, SR>, f: (_: any) => B): <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>
-  ) => Matcher<I, AddWithout<F, any>, ApplyFilters<I, AddWithout<F, any>>, B | A, Pr>
-}
+export declare const when: any
+```
+
+Added in v1.0.0
+
+## whenAnd
+
+**Signature**
+
+```ts
+export declare const whenAnd: any
+```
+
+Added in v1.0.0
+
+## whenOr
+
+**Signature**
+
+```ts
+export declare const whenOr: any
 ```
 
 Added in v1.0.0
@@ -184,7 +179,7 @@ Added in v1.0.0
 ```ts
 export declare const either: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
-) => [Pr] extends [never] ? (input: I) => E.Either<R, A> : E.Either<R, A>
+) => [Pr] extends [never] ? (input: I) => E.Either<R, Unify<A>> : E.Either<R, Unify<A>>
 ```
 
 Added in v1.0.0
@@ -196,7 +191,7 @@ Added in v1.0.0
 ```ts
 export declare const exhaustive: <I, F, A, Pr>(
   self: Matcher<I, F, never, A, Pr>
-) => [Pr] extends [never] ? (u: I) => A : A
+) => [Pr] extends [never] ? (u: I) => Unify<A> : Unify<A>
 ```
 
 Added in v1.0.0
@@ -208,7 +203,7 @@ Added in v1.0.0
 ```ts
 export declare const option: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
-) => [Pr] extends [never] ? (input: I) => O.Option<A> : O.Option<A>
+) => [Pr] extends [never] ? (input: I) => O.Option<Unify<A>> : O.Option<Unify<A>>
 ```
 
 Added in v1.0.0
@@ -220,7 +215,7 @@ Added in v1.0.0
 ```ts
 export declare const orElse: <RA, B>(
   f: (b: RA) => B
-) => <I, R, A, Pr>(self: Matcher<I, R, RA, A, Pr>) => [Pr] extends [never] ? (input: I) => B | A : B | A
+) => <I, R, A, Pr>(self: Matcher<I, R, RA, A, Pr>) => [Pr] extends [never] ? (input: I) => Unify<B | A> : Unify<B | A>
 ```
 
 Added in v1.0.0
@@ -245,7 +240,7 @@ Added in v1.0.0
 
 ```ts
 export interface SafeSchema<A, R = A> {
-  readonly _tag: 'SafeSchema'
+  readonly [SafeSchemaId]: SafeSchemaId
   readonly _A: A
   readonly _R: R
 }
@@ -270,7 +265,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const bigint: SafeSchema<bigint, bigint>
+export declare const bigint: Refinement<unknown, bigint>
 ```
 
 Added in v1.0.0
@@ -280,7 +275,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const boolean: SafeSchema<boolean, boolean>
+export declare const boolean: Refinement<unknown, boolean>
 ```
 
 Added in v1.0.0
@@ -290,7 +285,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const date: SafeSchema<Date, Date>
+export declare const date: Refinement<unknown, Date>
+```
+
+Added in v1.0.0
+
+## defined
+
+**Signature**
+
+```ts
+export declare const defined: <A>(u: unknown) => Refinement<A, A & {}>
 ```
 
 Added in v1.0.0
@@ -301,8 +306,18 @@ Added in v1.0.0
 
 ```ts
 export declare const is: <Literals extends readonly LiteralValue[]>(
-  ...a: Literals
-) => SafeSchema<Literals[number], Literals[number]>
+  ...literals: Literals
+) => Refinement<unknown, Literals[number]>
+```
+
+Added in v1.0.0
+
+## nonEmptyString
+
+**Signature**
+
+```ts
+export declare const nonEmptyString: SafeSchema<string, never>
 ```
 
 Added in v1.0.0
@@ -312,7 +327,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const null: SafeSchema<null, null>
+export declare const null: Refinement<unknown, null>
 ```
 
 Added in v1.0.0
@@ -322,7 +337,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const number: SafeSchema<number, number>
+export declare const number: Refinement<unknown, number>
+```
+
+Added in v1.0.0
+
+## record
+
+**Signature**
+
+```ts
+export declare const record: Refinement<unknown, { [k: string]: any }>
 ```
 
 Added in v1.0.0
@@ -345,7 +370,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const string: SafeSchema<string, string>
+export declare const string: Refinement<unknown, string>
 ```
 
 Added in v1.0.0
@@ -355,7 +380,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const undefined: SafeSchema<undefined, undefined>
+export declare const undefined: Refinement<unknown, undefined>
 ```
 
 Added in v1.0.0
@@ -375,12 +400,32 @@ Added in v1.0.0
 
 # utils
 
+## SafeSchemaId
+
+**Signature**
+
+```ts
+export declare const SafeSchemaId: typeof SafeSchemaId
+```
+
+Added in v1.0.0
+
+## SafeSchemaId (type alias)
+
+**Signature**
+
+```ts
+export type SafeSchemaId = typeof SafeSchemaId
+```
+
+Added in v1.0.0
+
 ## \_null
 
 **Signature**
 
 ```ts
-export declare const _null: SafeSchema<null, null>
+export declare const _null: Refinement<unknown, null>
 ```
 
 Added in v1.0.0
@@ -390,7 +435,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const _undefined: SafeSchema<undefined, undefined>
+export declare const _undefined: Refinement<unknown, undefined>
 ```
 
 Added in v1.0.0
