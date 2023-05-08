@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.21.0
+
+### Minor Changes
+
+- [#110](https://github.com/Effect-TS/match/pull/110) [`8143f74`](https://github.com/Effect-TS/match/commit/8143f74ae30c3329ee3789e2ee3b56b473589f34) Thanks [@tim-smart](https://github.com/tim-smart)! - align whenOr/And apis to Match.tag
+
 ## 0.20.5
 
 ### Patch Changes
