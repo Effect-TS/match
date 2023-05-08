@@ -220,8 +220,7 @@ export const when =
  */
 export const whenOr =
   <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
-    patterns: P,
-    f: (_: WhenMatch<R, P[number]>) => B,
+    ...args: [...patterns: P, f: (_: WhenMatch<R, P[number]>) => B]
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -231,8 +230,11 @@ export const whenOr =
     ApplyFilters<I, AddWithout<F, PForExclude<P[number]>>>,
     A | B,
     Pr
-  > =>
-    (self as any).add(new When(makeOrPredicate(patterns), f as any))
+  > => {
+    const onMatch = args[args.length - 1] as any
+    const patterns = args.slice(0, -1) as unknown as P
+    return (self as any).add(new When(makeOrPredicate(patterns), onMatch))
+  }
 
 /**
  * @category combinators
@@ -241,8 +243,7 @@ export const whenOr =
  */
 export const whenAnd =
   <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
-    patterns: P,
-    f: (_: WhenMatch<R, ArrayToIntersection<P>>) => B,
+    ...args: [...patterns: P, f: (_: WhenMatch<R, ArrayToIntersection<P>>) => B]
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -252,8 +253,11 @@ export const whenAnd =
     ApplyFilters<I, AddWithout<F, PForExclude<ArrayToIntersection<P>>>>,
     A | B,
     Pr
-  > =>
-    (self as any).add(new When(makeAndPredicate(patterns), f as any))
+  > => {
+    const onMatch = args[args.length - 1] as any
+    const patterns = args.slice(0, -1) as unknown as P
+    return (self as any).add(new When(makeAndPredicate(patterns), onMatch))
+  }
 
 /**
  * @category combinators
