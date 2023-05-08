@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.20.5
+
+### Patch Changes
+
+- [#108](https://github.com/Effect-TS/match/pull/108) [`c6fbe64`](https://github.com/Effect-TS/match/commit/c6fbe6464ab9605261113b3aa3ad877023203197) Thanks [@tim-smart](https://github.com/tim-smart)! - add whenAnd
+
 ## 0.20.4
 
 ### Patch Changes

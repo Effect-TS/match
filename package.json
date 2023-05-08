@@ -1,6 +1,6 @@
 {
   "name": "@effect/match",
-  "version": "0.20.4",
+  "version": "0.20.5",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
