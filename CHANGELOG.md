@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.20.4
+
+### Patch Changes
+
+- [#106](https://github.com/Effect-TS/match/pull/106) [`d034062`](https://github.com/Effect-TS/match/commit/d0340629ac1c52f2937824490e83985def5f9949) Thanks [@tim-smart](https://github.com/tim-smart)! - better array / tuple support
+
 ## 0.20.3
 
 ### Patch Changes
