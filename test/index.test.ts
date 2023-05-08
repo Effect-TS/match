@@ -84,7 +84,7 @@ describe("Matcher", () => {
   it("tuples", () => {
     const match = pipe(
       M.type<[string, string]>(),
-      M.when(["yeah", M.string], (_) => {
+      M.when(["yeah"], (_) => {
         typeEquals(_)<readonly ["yeah", string]>() satisfies true
         return true
       }),
@@ -444,5 +444,17 @@ describe("Matcher", () => {
     expect(match({ _tag: "A", a: 0 })).toEqual("A or B")
     expect(match({ _tag: "B", b: 1 })).toEqual("A or B")
     expect(match({ _tag: "C" })).toEqual("C")
+  })
+
+  it("optional array", () => {
+    const match = pipe(
+      M.type<{ a?: ReadonlyArray<{ name: string }> }>(),
+      M.when({ a: (_) => _.length > 0 }, (_) => `match ${_.a.length}`),
+      M.orElse(() => "no match"),
+    )
+
+    expect(match({ a: [{ name: "Tim" }] })).toEqual("match 1")
+    expect(match({ a: [] })).toEqual("no match")
+    expect(match({})).toEqual("no match")
   })
 })

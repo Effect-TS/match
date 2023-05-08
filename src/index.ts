@@ -551,7 +551,7 @@ type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
 type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
 
 // utilities
-type PredicateA<A> = Predicate<A> | Refinement<A, any>
+type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
 type SafeSchemaP<A> = A extends SafeSchema<infer S, infer _>
   ? S
@@ -590,10 +590,10 @@ type PredToSchema<A> = A extends Refinement<any, infer P>
   : A
 
 type PatternBase<A> = A extends ReadonlyArray<infer _T>
-  ? any // TODO: improve array inference
+  ? ReadonlyArray<any> | PatternPrimitive<A>
   : A extends Record<string, any>
   ? Partial<{
-      [K in keyof A]: PatternPrimitive<A[K]> | PatternBase<A[K]>
+      [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}>
     }>
   : never
 
