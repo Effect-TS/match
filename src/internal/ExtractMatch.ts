@@ -74,8 +74,16 @@ type ExtractAndNarrow<I, P> =
         : never
       : never
     : I extends ReadonlyArray<any>
-    ? P extends Readonly<I>
-      ? P
+    ? P extends ReadonlyArray<any>
+      ? {
+          readonly [K in keyof I]: K extends keyof P
+            ? ExtractAndNarrow<I[K], P[K]>
+            : I[K]
+        } extends infer R
+        ? Fail extends R[keyof R]
+          ? never
+          : R
+        : never
       : never
     : IsPlainObject<I> extends true
     ? string extends keyof I
