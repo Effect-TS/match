@@ -426,8 +426,7 @@ export const any: SafeSchema<unknown, any> = (() => true) as any
  * @tsplus static effect/match/Matcher.Ops defined
  * @since 1.0.0
  */
-export const defined = <A>(u: unknown): Refinement<A, A & {}> =>
-  (u !== undefined) as any
+export const defined = <A>(u: A): u is A & {} => (u !== undefined) as any
 
 /**
  * @category predicates
