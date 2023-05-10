@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.21.1
+
+### Patch Changes
+
+- [#112](https://github.com/Effect-TS/match/pull/112) [`53a3a31`](https://github.com/Effect-TS/match/commit/53a3a31d492050c59990bfc17d7218b16cfda776) Thanks [@tim-smart](https://github.com/tim-smart)! - fix defined matcher
+
 ## 0.21.0
 
 ### Minor Changes
