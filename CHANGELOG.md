@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.23.0
+
+### Minor Changes
+
+- [#116](https://github.com/Effect-TS/match/pull/116) [`bafc7ac`](https://github.com/Effect-TS/match/commit/bafc7acb01a1590bce2e09075de6ac13c3dc0f92) Thanks [@tim-smart](https://github.com/tim-smart)! - update /schema
+
 ## 0.22.0
 
 ### Minor Changes
