@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.22.0
+
+### Minor Changes
+
+- [#114](https://github.com/Effect-TS/match/pull/114) [`9396d50`](https://github.com/Effect-TS/match/commit/9396d50a4cce6bce0f762a61e39a6692cc432896) Thanks [@tim-smart](https://github.com/tim-smart)! - update deps
+
 ## 0.21.1
 
 ### Patch Changes
