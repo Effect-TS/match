@@ -295,7 +295,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const defined: <A>(u: unknown) => Refinement<A, A & {}>
+export declare const defined: <A>(u: A) => u is A & {}
 ```
 
 Added in v1.0.0
