@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.23.1
+
+### Patch Changes
+
+- [#121](https://github.com/Effect-TS/match/pull/121) [`981ab25`](https://github.com/Effect-TS/match/commit/981ab25b49d28082627ebbc7bc0320637c119904) Thanks [@tim-smart](https://github.com/tim-smart)! - instanceOf helper
+
+- [#118](https://github.com/Effect-TS/match/pull/118) [`2c8c9d8`](https://github.com/Effect-TS/match/commit/2c8c9d8c84253936cc9bb784ed40eff0ef2a26c5) Thanks [@tim-smart](https://github.com/tim-smart)! - update docs
+
 ## 0.23.0
 
 ### Minor Changes
