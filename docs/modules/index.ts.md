@@ -36,6 +36,7 @@ Added in v1.0.0
   - [boolean](#boolean)
   - [date](#date)
   - [defined](#defined)
+  - [instanceOf](#instanceof)
   - [is](#is)
   - [nonEmptyString](#nonemptystring)
   - [null](#null)
@@ -296,6 +297,16 @@ Added in v1.0.0
 
 ```ts
 export declare const defined: <A>(u: A) => u is A & {}
+```
+
+Added in v1.0.0
+
+## instanceOf
+
+**Signature**
+
+```ts
+export declare const instanceOf: new (...args: any) => any
 ```
 
 Added in v1.0.0
