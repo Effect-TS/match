@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.23.2
+
+### Patch Changes
+
+- [#122](https://github.com/Effect-TS/match/pull/122) [`a36d4ca`](https://github.com/Effect-TS/match/commit/a36d4ca7dd7949fd7268f66c22d665b93b85dba7) Thanks [@tim-smart](https://github.com/tim-smart)! - docs and deps
+
+- [#122](https://github.com/Effect-TS/match/pull/122) [`a36d4ca`](https://github.com/Effect-TS/match/commit/a36d4ca7dd7949fd7268f66c22d665b93b85dba7) Thanks [@tim-smart](https://github.com/tim-smart)! - fix defined not excluding null at runtime
+
 ## 0.23.1
 
 ### Patch Changes
