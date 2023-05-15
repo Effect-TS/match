@@ -555,4 +555,18 @@ describe("Matcher", () => {
     expect(match({ status: 100, user: { name: "Tim" } })).toEqual("number, Tim")
     expect(match({ status: 100 })).toEqual("number")
   })
+
+  it("instanceOf", () => {
+    const match = pipe(
+      M.type<Uint8Array | Uint16Array>(),
+      M.when(M.instanceOf(Uint8Array), (_) => "uint8"),
+      M.when(M.instanceOf(Uint16Array), (_) => "uint16"),
+      M.orElse((_) => {
+        throw "absurd"
+      }),
+    )
+
+    expect(match(new Uint8Array([1, 2, 3]))).toEqual("uint8")
+    expect(match(new Uint16Array([1, 2, 3]))).toEqual("uint16")
+  })
 })

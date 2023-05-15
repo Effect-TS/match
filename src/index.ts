@@ -489,6 +489,16 @@ export const record: Refinement<
 > = P.isRecord
 
 /**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops instanceOf
+ * @since 1.0.0
+ */
+export const instanceOf = <A extends abstract new (...args: any) => any>(
+  constructor: A,
+): SafeSchema<InstanceType<A>, never> =>
+  ((u: unknown) => u instanceof constructor) as any
+
+/**
  * @category conversions
  * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
