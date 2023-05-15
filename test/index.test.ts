@@ -342,13 +342,14 @@ describe("Matcher", () => {
 
   it("optional props defined", () => {
     const match = pipe(
-      M.type<{ readonly user?: { readonly name: string } }>(),
+      M.type<{ readonly user?: { readonly name: string } | null }>(),
       M.when({ user: M.defined }, (_) => _.user.name),
       M.orElse(() => "no user"),
     )
 
     expect(match({})).toEqual("no user")
     expect(match({ user: undefined })).toEqual("no user")
+    expect(match({ user: null })).toEqual("no user")
     expect(match({ user: { name: "Tim" } })).toEqual("Tim")
   })
 
