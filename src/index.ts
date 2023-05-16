@@ -500,6 +500,15 @@ export const instanceOf = <A extends abstract new (...args: any) => any>(
   ((u: unknown) => u instanceof constructor) as any
 
 /**
+ * @category predicates
+ * @tsplus static effect/match/Matcher.Ops instanceOfUnsafe
+ * @since 1.0.0
+ */
+export const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
+  constructor: A,
+) => SafeSchema<InstanceType<A>, InstanceType<A>> = instanceOf
+
+/**
  * @category conversions
  * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
@@ -522,6 +531,18 @@ export const orElse =
       return a._tag === "Right" ? a.right : f(a.left)
     }
   }
+
+/**
+ * @category conversions
+ * @tsplus getter effect/match/Matcher orElseAbsurd
+ * @since 1.0.0
+ */
+export const orElseAbsurd = <I, R, RA, A, Pr>(
+  self: Matcher<I, R, RA, A, Pr>,
+): [Pr] extends [never] ? (input: I) => Unify<A> : Unify<A> =>
+  orElse(() => {
+    throw new Error("absurd")
+  })(self)
 
 /**
  * @category conversions
