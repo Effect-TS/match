@@ -604,7 +604,13 @@ export const exhaustive: <I, F, A, Pr>(
 // type helpers
 
 // combinations
-type WhenMatch<R, P> = ExtractMatch<R, PForMatch<P>>
+type WhenMatch<R, P> = P extends SafeSchema<infer SP, never>
+  ? SP
+  : P extends Refinement<infer _R, infer RP>
+  ? RP
+  : P extends PredicateA<infer PP>
+  ? PP
+  : ExtractMatch<R, PForMatch<P>>
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 
 type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
