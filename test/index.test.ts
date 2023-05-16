@@ -373,7 +373,7 @@ describe("Matcher", () => {
         return "null"
       }),
       M.when(Predicate.isBoolean, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<boolean>() satisfies true
         return "boolean"
       }),
       M.when(Predicate.isNumber, (_) => {
@@ -395,11 +395,14 @@ describe("Matcher", () => {
         return "record"
       }),
       M.when(Predicate.isSymbol, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<symbol>() satisfies true
         return "symbol"
       }),
       M.when(Predicate.isReadonlyRecord, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<{
+          readonly [x: string]: unknown
+          readonly [x: symbol]: unknown
+        }>() satisfies true
         return "readonlyrecord"
       }),
       M.exhaustive,
@@ -560,8 +563,14 @@ describe("Matcher", () => {
   it("instanceOf", () => {
     const match = pipe(
       M.type<Uint8Array | Uint16Array>(),
-      M.when(M.instanceOf(Uint8Array), (_) => "uint8"),
-      M.when(M.instanceOf(Uint16Array), (_) => "uint16"),
+      M.when(M.instanceOf(Uint8Array), (_) => {
+        typeEquals(_)<Uint8Array>() satisfies true
+        return "uint8"
+      }),
+      M.when(M.instanceOf(Uint16Array), (_) => {
+        typeEquals(_)<Uint16Array>() satisfies true
+        return "uint16"
+      }),
       M.orElse((_) => {
         throw "absurd"
       }),
@@ -569,5 +578,23 @@ describe("Matcher", () => {
 
     expect(match(new Uint8Array([1, 2, 3]))).toEqual("uint8")
     expect(match(new Uint16Array([1, 2, 3]))).toEqual("uint16")
+  })
+
+  it("instanceOf doesnt modify type", () => {
+    class Test {}
+    class Test2 {}
+
+    const a = new Test()
+
+    const result = pipe(
+      M.value<Test | Test2>(a),
+      M.when(M.instanceOf(Test), (_) => {
+        typeEquals(_)<Test>() satisfies true
+        return 1
+      }),
+      M.orElse(() => 0),
+    )
+
+    expect(result).toEqual(1)
   })
 })
