@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.23.4
+
+### Patch Changes
+
+- [#126](https://github.com/Effect-TS/match/pull/126) [`04a8c51`](https://github.com/Effect-TS/match/commit/04a8c51b03c1e8520eb7051b92d1d471629dca4c) Thanks [@tim-smart](https://github.com/tim-smart)! - orElseAbsurd and instanceOfUnsafe
+
 ## 0.23.3
 
 ### Patch Changes
