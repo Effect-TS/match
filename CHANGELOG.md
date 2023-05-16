@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.23.3
+
+### Patch Changes
+
+- [#124](https://github.com/Effect-TS/match/pull/124) [`de8cbb9`](https://github.com/Effect-TS/match/commit/de8cbb90a8d4cad617390998fab9770617afecac) Thanks [@tim-smart](https://github.com/tim-smart)! - improve top level predicates
+
 ## 0.23.2
 
 ### Patch Changes
