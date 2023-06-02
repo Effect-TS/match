@@ -28,8 +28,8 @@ devDependencies:
     specifier: ^2.26.1
     version: 2.26.1
   '@effect-ts/build-utils':
-    specifier: 0.40.3
-    version: 0.40.3(@effect-ts/core@0.60.5)(cpx@1.5.0)(picocolors@1.0.0)
+    specifier: 0.40.7
+    version: 0.40.7(@effect-ts/core@0.60.5)(cpx@1.5.0)(picocolors@1.0.0)
   '@effect-ts/core':
     specifier: ^0.60.5
     version: 0.60.5
@@ -680,8 +680,8 @@ packages:
       node-source-walk: 5.0.1
     dev: true
 
-  /@effect-ts/build-utils@0.40.3(@effect-ts/core@0.60.5)(cpx@1.5.0)(picocolors@1.0.0):
-    resolution: {integrity: sha512-4AogENdrtSyEFLYgyFNlj0d+W2ckZ/ZTapCO2lWdl4kRGHQr4/beKoNmAbPNyfxZeoJ/7rFEa1mB1Tvm7eIdlw==}
+  /@effect-ts/build-utils@0.40.7(@effect-ts/core@0.60.5)(cpx@1.5.0)(picocolors@1.0.0):
+    resolution: {integrity: sha512-shABJprKL9xm5asIeHCuBP4V1FlqoO1TCc5yeiTSxx6VmLbRnNE2GEO7nY+GYF1Fzc0U6hT7h8pVKXm20S0Y/A==}
     hasBin: true
     peerDependencies:
       '@effect-ts/core': '>= 0.28.9'
