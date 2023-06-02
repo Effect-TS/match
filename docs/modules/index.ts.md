@@ -27,6 +27,7 @@ Added in v1.0.0
   - [exhaustive](#exhaustive)
   - [option](#option)
   - [orElse](#orelse)
+  - [orElseAbsurd](#orelseabsurd)
 - [model](#model)
   - [Matcher (type alias)](#matcher-type-alias)
   - [SafeSchema (interface)](#safeschema-interface)
@@ -37,6 +38,7 @@ Added in v1.0.0
   - [date](#date)
   - [defined](#defined)
   - [instanceOf](#instanceof)
+  - [instanceOfUnsafe](#instanceofunsafe)
   - [is](#is)
   - [nonEmptyString](#nonemptystring)
   - [null](#null)
@@ -63,18 +65,8 @@ Added in v1.0.0
 ```ts
 export declare const discriminator: <D extends string>(
   field: D
-) => <
-  R,
-  P extends
-    | (Tags<D, R> & string)
-    | (Tags<D, R> & number)
-    | (Tags<D, R> & symbol)
-    | (Tags<D, R> & object)
-    | (Tags<D, R> & {}),
-  B
->(
-  first: P,
-  ...values: (P | ((_: Extract<R, Record<D, P>>) => B))[]
+) => <R, P extends Tags<D, R> & (string | number | symbol | object | {}), B>(
+  ...pattern: [first: P, ...values: P[], f: (_: Extract<R, Record<D, P>>) => B]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
@@ -93,7 +85,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const not: any
+export declare const not: <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  pattern: P,
+  f: (_: Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>) => B
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<I, AddOnly<F, WhenMatch<R, P>>, ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>, B | A, Pr>
 ```
 
 Added in v1.0.0
@@ -104,8 +101,7 @@ Added in v1.0.0
 
 ```ts
 export declare const tag: <R, P, B>(
-  first: P,
-  ...values: (P | ((_: Extract<R, Record<'_tag', P>>) => B))[]
+  ...pattern: [first: P, ...values: P[], f: (_: Extract<R, Record<'_tag', P>>) => B]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
@@ -124,7 +120,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const when: any
+export declare const when: <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  pattern: P,
+  f: (_: WhenMatch<R, P>) => B
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, SafeSchemaR<PredToSchema<P>>>,
+  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P>>>>,
+  B | A,
+  Pr
+>
 ```
 
 Added in v1.0.0
@@ -134,7 +141,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const whenAnd: any
+export declare const whenAnd: <R, const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[], B>(
+  ...args: [...patterns: P, f: (_: WhenMatch<R, UnionToIntersection<P[number]>>) => B]
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>,
+  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>>,
+  B | A,
+  Pr
+>
 ```
 
 Added in v1.0.0
@@ -144,7 +161,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const whenOr: any
+export declare const whenOr: <R, const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[], B>(
+  ...args: [...patterns: P, f: (_: WhenMatch<R, P[number]>) => B]
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>,
+  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>>,
+  B | A,
+  Pr
+>
 ```
 
 Added in v1.0.0
@@ -217,6 +244,18 @@ Added in v1.0.0
 export declare const orElse: <RA, B>(
   f: (b: RA) => B
 ) => <I, R, A, Pr>(self: Matcher<I, R, RA, A, Pr>) => [Pr] extends [never] ? (input: I) => Unify<B | A> : Unify<B | A>
+```
+
+Added in v1.0.0
+
+## orElseAbsurd
+
+**Signature**
+
+```ts
+export declare const orElseAbsurd: <I, R, RA, A, Pr>(
+  self: Matcher<I, R, RA, A, Pr>
+) => [Pr] extends [never] ? (input: I) => Unify<A> : Unify<A>
 ```
 
 Added in v1.0.0
@@ -306,7 +345,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const instanceOf: new (...args: any) => any
+export declare const instanceOf: <A extends abstract new (...args: any) => any>(
+  constructor: A
+) => SafeSchema<InstanceType<A>, never>
+```
+
+Added in v1.0.0
+
+## instanceOfUnsafe
+
+**Signature**
+
+```ts
+export declare const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
+  constructor: A
+) => SafeSchema<InstanceType<A>, InstanceType<A>>
 ```
 
 Added in v1.0.0
@@ -358,7 +411,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const record: Refinement<unknown, { [k: string]: any }>
+export declare const record: Refinement<unknown, { [k: string]: any; [k: symbol]: any }>
 ```
 
 Added in v1.0.0
