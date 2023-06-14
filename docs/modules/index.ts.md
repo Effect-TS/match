@@ -14,14 +14,19 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [discriminator](#discriminator)
+  - [discriminators](#discriminators)
+  - [discriminatorsExhaustive](#discriminatorsexhaustive)
   - [not](#not)
   - [tag](#tag)
+  - [tags](#tags)
+  - [tagsExhaustive](#tagsexhaustive)
   - [when](#when)
   - [whenAnd](#whenand)
   - [whenOr](#whenor)
 - [constructors](#constructors)
   - [type](#type)
   - [value](#value)
+  - [valueTags](#valuetags)
 - [conversions](#conversions)
   - [either](#either)
   - [exhaustive](#exhaustive)
@@ -65,7 +70,7 @@ Added in v1.0.0
 ```ts
 export declare const discriminator: <D extends string>(
   field: D
-) => <R, P extends Tags<D, R> & (string | number | symbol | object | {}), B>(
+) => <R, P extends Tags<D, R> & string, B>(
   ...pattern: [first: P, ...values: P[], f: (_: Extract<R, Record<D, P>>) => B]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
@@ -76,6 +81,44 @@ export declare const discriminator: <D extends string>(
   B | A,
   Pr
 >
+```
+
+Added in v1.0.0
+
+## discriminators
+
+**Signature**
+
+```ts
+export declare const discriminators: <D extends string>(
+  field: D
+) => <R, P extends { readonly [Tag in Tags<D, R> & string]?: ((_: Extract<R, Record<D, Tag>>) => any) | undefined }>(
+  fields: P
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, Extract<R, Record<D, keyof P>>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, Record<D, keyof P>>>>,
+  A | ReturnType<P[keyof P] & {}>,
+  Pr
+>
+```
+
+Added in v1.0.0
+
+## discriminatorsExhaustive
+
+**Signature**
+
+```ts
+export declare const discriminatorsExhaustive: <D extends string>(
+  field: D
+) => <R, P extends { readonly [Tag in Tags<D, R> & string]: (_: Extract<R, Record<D, Tag>>) => any }>(
+  fields: P
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => [Pr] extends [never] ? (u: I) => Unify<A | ReturnType<P[keyof P]>> : Unify<A | ReturnType<P[keyof P]>>
 ```
 
 Added in v1.0.0
@@ -111,6 +154,40 @@ export declare const tag: <R, P, B>(
   B | A,
   Pr
 >
+```
+
+Added in v1.0.0
+
+## tags
+
+**Signature**
+
+```ts
+export declare const tags: <R, P>(
+  fields: P
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => Matcher<
+  I,
+  AddWithout<F, Extract<R, Record<'_tag', keyof P>>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, Record<'_tag', keyof P>>>>,
+  A | ReturnType<P[keyof P] & {}>,
+  Pr
+>
+```
+
+Added in v1.0.0
+
+## tagsExhaustive
+
+**Signature**
+
+```ts
+export declare const tagsExhaustive: <R, P>(
+  fields: P
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>
+) => [Pr] extends [never] ? (u: I) => Unify<A | ReturnType<P[keyof P]>> : Unify<A | ReturnType<P[keyof P]>>
 ```
 
 Added in v1.0.0
@@ -194,6 +271,21 @@ Added in v1.0.0
 
 ```ts
 export declare const value: <I>(i: I) => Matcher<I, Without<never>, I, never, I>
+```
+
+Added in v1.0.0
+
+## valueTags
+
+**Signature**
+
+```ts
+export declare const valueTags: <
+  I,
+  P extends { readonly [Tag in Tags<'_tag', I> & string]: (_: Extract<I, { readonly _tag: Tag }>) => any }
+>(
+  fields: P
+) => (input: I) => Unify<ReturnType<P[keyof P]>>
 ```
 
 Added in v1.0.0
