@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.24.1
+
+### Patch Changes
+
+- [#131](https://github.com/Effect-TS/match/pull/131) [`cbc5d1e`](https://github.com/Effect-TS/match/commit/cbc5d1ec7b38a7e3d4d0df993de4c2afb27215e2) Thanks [@tim-smart](https://github.com/tim-smart)! - tags, tagsExhaustive, valueTags for working with tags
+
 ## 0.24.0
 
 ### Minor Changes
