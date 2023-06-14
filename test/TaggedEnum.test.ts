@@ -36,4 +36,20 @@ describe("TaggedEnum", () => {
       match(HttpError("BadRequest")({ status: 400, message: "Bad Request" })),
     ).eq("match")
   })
+
+  it("valueTags", () => {
+    const error = HttpError("BadRequest")({
+      status: 400,
+      message: "Bad Request",
+    }) as HttpError
+    const match = pipe(
+      error,
+      M.valueTags({
+        BadRequest: (_) => "match",
+        NotFound: (_) => false,
+      }),
+    )
+
+    expect(match).eq("match")
+  })
 })

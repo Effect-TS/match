@@ -185,6 +185,25 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops valueTags
+ * @since 1.0.0
+ */
+export const valueTags = <
+  I,
+  P extends {
+    readonly [Tag in Tags<"_tag", I> & string]: (
+      _: Extract<I, { readonly _tag: Tag }>,
+    ) => any
+  },
+>(
+  fields: P,
+) => {
+  const match: any = tagsExhaustive(fields)(new TypeMatcher([]))
+  return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
+}
+
+/**
+ * @category constructors
  * @tsplus static effect/match/Matcher.Ops value
  * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
@@ -265,7 +284,7 @@ export const whenAnd =
  */
 export const discriminator =
   <D extends string>(field: D) =>
-  <R, P extends Tags<D, R> & (string | number | symbol | object | {}), B>(
+  <R, P extends Tags<D, R> & string, B>(
     ...pattern: [
       first: P,
       ...values: Array<P>,
@@ -292,10 +311,91 @@ export const discriminator =
 
 /**
  * @category combinators
+ * @since 1.0.0
+ */
+export const discriminators =
+  <D extends string>(field: D) =>
+  <
+    R,
+    P extends {
+      readonly [Tag in Tags<D, R> & string]?: (
+        _: Extract<R, Record<D, Tag>>,
+      ) => any
+    },
+  >(
+    fields: P,
+  ) => {
+    const predicates: Array<When> = []
+    for (const key in fields) {
+      const pred = (_: any) => _[field] === key
+      const f = fields[key]
+      if (f) {
+        predicates.push(new When(pred, f as any))
+      }
+    }
+    const len = predicates.length
+
+    return <I, F, A, Pr>(
+      self: Matcher<I, F, R, A, Pr>,
+    ): Matcher<
+      I,
+      AddWithout<F, Extract<R, Record<D, keyof P>>>,
+      ApplyFilters<I, AddWithout<F, Extract<R, Record<D, keyof P>>>>,
+      A | ReturnType<P[keyof P] & {}>,
+      Pr
+    > => {
+      let matcher: any = self
+      for (let i = 0; i < len; i++) {
+        matcher = matcher.add(predicates[i])
+      }
+      return matcher
+    }
+  }
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const discriminatorsExhaustive: <D extends string>(
+  field: D,
+) => <
+  R,
+  P extends {
+    readonly [Tag in Tags<D, R> & string]: (
+      _: Extract<R, Record<D, Tag>>,
+    ) => any
+  },
+>(
+  fields: P,
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+) => [Pr] extends [never]
+  ? (u: I) => Unify<A | ReturnType<P[keyof P]>>
+  : Unify<A | ReturnType<P[keyof P]>> = (field: string) => (fields: object) => {
+  const addCases = discriminators(field)(fields)
+  return (matcher: any) => exhaustive(addCases(matcher))
+}
+
+/**
+ * @category combinators
  * @tsplus pipeable effect/match/Matcher tag
  * @since 1.0.0
  */
 export const tag = discriminator("_tag")
+
+/**
+ * @category combinators
+ * @tsplus pipeable effect/match/Matcher tags
+ * @since 1.0.0
+ */
+export const tags = discriminators("_tag")
+
+/**
+ * @category combinators
+ * @tsplus pipeable effect/match/Matcher tagsExhaustive
+ * @since 1.0.0
+ */
+export const tagsExhaustive = discriminatorsExhaustive("_tag")
 
 /**
  * @category combinators

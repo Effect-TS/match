@@ -597,4 +597,44 @@ describe("Matcher", () => {
 
     expect(result).toEqual(1)
   })
+
+  it("tags", () => {
+    const match = pipe(
+      M.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
+      M.tags({
+        A: (_) => _.a,
+        B: (_) => "B",
+      }),
+      M.exhaustive,
+    )
+
+    expect(match({ _tag: "A", a: 1 })).toEqual(1)
+    expect(match({ _tag: "B", b: 1 })).toEqual("B")
+  })
+
+  it("tagsExhaustive", () => {
+    const match = pipe(
+      M.type<{ _tag: "A"; a: number } | { _tag: "B"; b: number }>(),
+      M.tagsExhaustive({
+        A: (_) => _.a,
+        B: (_) => "B",
+      }),
+    )
+
+    expect(match({ _tag: "A", a: 1 })).toEqual(1)
+    expect(match({ _tag: "B", b: 1 })).toEqual("B")
+  })
+
+  it("valueTags", () => {
+    type Value = { _tag: "A"; a: number } | { _tag: "B"; b: number }
+    const match = pipe(
+      { _tag: "A", a: 123 } as Value,
+      M.valueTags({
+        A: (_) => _.a,
+        B: (_) => "B",
+      }),
+    )
+
+    expect(match).toEqual(123)
+  })
 })
