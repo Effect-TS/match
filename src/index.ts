@@ -728,7 +728,9 @@ export const exhaustive: <I, F, A, Pr>(
 type WhenMatch<R, P> = P extends SafeSchema<infer SP, never>
   ? SP
   : P extends Refinement<infer _R, infer RP>
-  ? RP
+  ? [Extract<R, RP>] extends [infer X]
+    ? X
+    : never
   : P extends PredicateA<infer PP>
   ? PP
   : ExtractMatch<R, PForMatch<P>>

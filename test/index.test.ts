@@ -373,7 +373,7 @@ describe("Matcher", () => {
         return "null"
       }),
       M.when(Predicate.isBoolean, (_) => {
-        typeEquals(_)<boolean>() satisfies true
+        typeEquals(_)<never>() satisfies true
         return "boolean"
       }),
       M.when(Predicate.isNumber, (_) => {
@@ -387,6 +387,7 @@ describe("Matcher", () => {
       M.when(M.record, (_) => {
         typeEquals(_)<
           | Record<string, A>
+          | B
           | Uint8Array
           | Set<Uint8Array>
           | Set<string>
@@ -395,14 +396,11 @@ describe("Matcher", () => {
         return "record"
       }),
       M.when(Predicate.isSymbol, (_) => {
-        typeEquals(_)<symbol>() satisfies true
+        typeEquals(_)<never>() satisfies true
         return "symbol"
       }),
       M.when(Predicate.isReadonlyRecord, (_) => {
-        typeEquals(_)<{
-          readonly [x: string]: unknown
-          readonly [x: symbol]: unknown
-        }>() satisfies true
+        typeEquals(_)<never>() satisfies true
         return "readonlyrecord"
       }),
       M.exhaustive,
