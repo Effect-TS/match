@@ -725,15 +725,24 @@ export const exhaustive: <I, F, A, Pr>(
 // type helpers
 
 // combinations
-type WhenMatch<R, P> = P extends SafeSchema<infer SP, never>
-  ? SP
-  : P extends Refinement<infer _R, infer RP>
-  ? [Extract<R, RP>] extends [infer X]
-    ? X
-    : never
-  : P extends PredicateA<infer PP>
-  ? PP
-  : ExtractMatch<R, PForMatch<P>>
+type WhenMatch<R, P> =
+  // check for any
+  0 extends 1 & R
+    ? PForMatch<P>
+    : P extends SafeSchema<infer SP, never>
+    ? SP
+    : P extends Refinement<infer _R, infer RP>
+    ? // try to narrow refinement
+      [Extract<R, RP>] extends [infer X]
+      ? [X] extends [never]
+        ? // fallback to original refinement
+          RP
+        : X
+      : never
+    : P extends PredicateA<infer PP>
+    ? PP
+    : ExtractMatch<R, PForMatch<P>>
+
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 
 type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
