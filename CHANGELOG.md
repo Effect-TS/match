@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.24.3
+
+### Patch Changes
+
+- [#136](https://github.com/Effect-TS/match/pull/136) [`4210990`](https://github.com/Effect-TS/match/commit/421099047100a468042351c333881b8b1c8499cc) Thanks [@tim-smart](https://github.com/tim-smart)! - properly narrow undefined and any
+
 ## 0.24.2
 
 ### Patch Changes
