@@ -217,9 +217,9 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
  * @since 1.0.0
  */
 export const when =
-  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  <R, const P extends PatternPrimitive<R> | PatternBase<R>, Fn extends (_: WhenMatch<R, P>) => unknown>(
     pattern: P,
-    f: (_: WhenMatch<R, P>) => B,
+    f: Fn,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -227,7 +227,7 @@ export const when =
     I,
     AddWithout<F, PForExclude<P>>,
     ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > =>
     (self as any).add(new When(makePredicate(pattern), f as any))
@@ -403,9 +403,9 @@ export const tagsExhaustive = discriminatorsExhaustive("_tag")
  * @since 1.0.0
  */
 export const not =
-  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  <R, const P extends PatternPrimitive<R> | PatternBase<R>, Fn extends (_: NotMatch<R, P>) => unknown>(
     pattern: P,
-    f: (_: NotMatch<R, P>) => B,
+    f: Fn,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -413,7 +413,7 @@ export const not =
     I,
     AddOnly<F, WhenMatch<R, P>>,
     ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > =>
     (self as any).add(new Not(makePredicate(pattern), f as any))

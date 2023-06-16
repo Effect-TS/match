@@ -128,12 +128,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const not: <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+export declare const not: <
+  R,
+  const P extends PatternPrimitive<R> | PatternBase<R>,
+  Fn extends (_: Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>) => unknown
+>(
   pattern: P,
-  f: (_: Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>) => B
+  f: Fn
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
-) => Matcher<I, AddOnly<F, WhenMatch<R, P>>, ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>, B | A, Pr>
+) => Matcher<I, AddOnly<F, WhenMatch<R, P>>, ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>, A | ReturnType<Fn>, Pr>
 ```
 
 Added in v1.0.0
@@ -197,16 +201,20 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const when: <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+export declare const when: <
+  R,
+  const P extends PatternPrimitive<R> | PatternBase<R>,
+  Fn extends (_: WhenMatch<R, P>) => unknown
+>(
   pattern: P,
-  f: (_: WhenMatch<R, P>) => B
+  f: Fn
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
   AddWithout<F, SafeSchemaR<PredToSchema<P>>>,
   ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P>>>>,
-  B | A,
+  A | ReturnType<Fn>,
   Pr
 >
 ```
