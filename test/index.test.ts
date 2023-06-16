@@ -373,7 +373,7 @@ describe("Matcher", () => {
         return "null"
       }),
       M.when(Predicate.isBoolean, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<boolean>() satisfies true
         return "boolean"
       }),
       M.when(Predicate.isNumber, (_) => {
@@ -396,11 +396,14 @@ describe("Matcher", () => {
         return "record"
       }),
       M.when(Predicate.isSymbol, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<symbol>() satisfies true
         return "symbol"
       }),
       M.when(Predicate.isReadonlyRecord, (_) => {
-        typeEquals(_)<never>() satisfies true
+        typeEquals(_)<{
+          readonly [x: string]: unknown
+          readonly [x: symbol]: unknown
+        }>() satisfies true
         return "readonlyrecord"
       }),
       M.exhaustive,
@@ -634,5 +637,74 @@ describe("Matcher", () => {
     )
 
     expect(match).toEqual(123)
+  })
+
+  it("refinement - with unknown", () => {
+    const isArray = (_: unknown): _ is ReadonlyArray<unknown> =>
+      Array.isArray(_)
+
+    const match = pipe(
+      M.type<string | Array<number>>(),
+      M.when(isArray, (_) => {
+        typeEquals(_)<Array<number>>() satisfies true
+        return "array"
+      }),
+      M.when(Predicate.isString, () => "string"),
+      M.exhaustive,
+    )
+
+    expect(match([])).toEqual("array")
+    expect(match("fail")).toEqual("string")
+  })
+
+  it("refinement nested - with unknown", () => {
+    const isArray = (_: unknown): _ is ReadonlyArray<unknown> =>
+      Array.isArray(_)
+
+    const match = pipe(
+      M.type<{ readonly a: string | Array<number> }>(),
+      M.when({ a: isArray }, (_) => {
+        typeEquals(_)<{ a: ReadonlyArray<number> }>() satisfies true
+        return "array"
+      }),
+      M.orElse(() => "fail"),
+    )
+
+    expect(match({ a: [123] })).toEqual("array")
+    expect(match({ a: "fail" })).toEqual("fail")
+  })
+
+  it("unknown - refinement", () => {
+    const match = pipe(
+      M.type<unknown>(),
+      M.when(Predicate.isReadonlyRecord, (_) => {
+        typeEquals(_)<{
+          readonly [x: string]: unknown
+          readonly [x: symbol]: unknown
+        }>() satisfies true
+        return "record"
+      }),
+      M.orElse(() => "unknown"),
+    )
+
+    expect(match({})).toEqual("record")
+    expect(match([])).toEqual("unknown")
+  })
+
+  it("any - refinement", () => {
+    const match = pipe(
+      M.type<any>(),
+      M.when(Predicate.isReadonlyRecord, (_) => {
+        typeEquals(_)<{
+          readonly [x: string]: unknown
+          readonly [x: symbol]: unknown
+        }>() satisfies true
+        return "record"
+      }),
+      M.orElse(() => "unknown"),
+    )
+
+    expect(match({})).toEqual("record")
+    expect(match([])).toEqual("unknown")
   })
 })
