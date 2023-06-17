@@ -710,20 +710,20 @@ describe("Matcher", () => {
 
   it("pattern type is not fixed by the function argument type", () => {
     type T =
-      | { resolveType: 'A', value: number }
-      | { resolveType: 'B', value: number }
-      | { resolveType: 'C', value: number };
+      | { resolveType: "A"; value: number }
+      | { resolveType: "B"; value: number }
+      | { resolveType: "C"; value: number }
 
-    const value = {resolveType: 'A', value: 12} as T;
+    const value = { resolveType: "A", value: 12 } as T
 
-    const doStuff = (x: { value: number }) => x;
+    const doStuff = (x: { value: number }) => x
 
     const result = pipe(
       M.value(value),
-      M.when({ resolveType: M.is('A', 'B') }, doStuff),
-      M.not({ resolveType: M.is('A', 'B') }, doStuff),
-      M.exhaustive
-    );
+      M.when({ resolveType: M.is("A", "B") }, doStuff),
+      M.not({ resolveType: M.is("A", "B") }, doStuff),
+      M.exhaustive,
+    )
 
     typeEquals(result)<{ value: number }>() satisfies true
   })
