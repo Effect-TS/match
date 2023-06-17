@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.24.4
+
+### Patch Changes
+
+- [#138](https://github.com/Effect-TS/match/pull/138) [`e117d3e`](https://github.com/Effect-TS/match/commit/e117d3ed869f939dbe2ceafeaed09d187d868674) Thanks [@sukovanej](https://github.com/sukovanej)! - fix pattern type derivation for `when` and `not`
+
 ## 0.24.3
 
 ### Patch Changes
