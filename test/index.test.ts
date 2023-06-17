@@ -707,4 +707,24 @@ describe("Matcher", () => {
     expect(match({})).toEqual("record")
     expect(match([])).toEqual("unknown")
   })
+
+  it("pattern type is not fixed by the function argument type", () => {
+    type T =
+      | { resolveType: "A"; value: number }
+      | { resolveType: "B"; value: number }
+      | { resolveType: "C"; value: number }
+
+    const value = { resolveType: "A", value: 12 } as T
+
+    const doStuff = (x: { value: number }) => x
+
+    const result = pipe(
+      M.value(value),
+      M.when({ resolveType: M.is("A", "B") }, doStuff),
+      M.not({ resolveType: M.is("A", "B") }, doStuff),
+      M.exhaustive,
+    )
+
+    typeEquals(result)<{ value: number }>() satisfies true
+  })
 })

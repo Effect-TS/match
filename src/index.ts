@@ -217,9 +217,13 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
  * @since 1.0.0
  */
 export const when =
-  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  <
+    R,
+    const P extends PatternPrimitive<R> | PatternBase<R>,
+    Fn extends (_: WhenMatch<R, P>) => unknown,
+  >(
     pattern: P,
-    f: (_: WhenMatch<R, P>) => B,
+    f: Fn,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -227,7 +231,7 @@ export const when =
     I,
     AddWithout<F, PForExclude<P>>,
     ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > =>
     (self as any).add(new When(makePredicate(pattern), f as any))
@@ -238,8 +242,12 @@ export const when =
  * @since 1.0.0
  */
 export const whenOr =
-  <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
-    ...args: [...patterns: P, f: (_: WhenMatch<R, P[number]>) => B]
+  <
+    R,
+    const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
+    Fn extends (_: WhenMatch<R, P[number]>) => unknown,
+  >(
+    ...args: [...patterns: P, f: Fn]
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -247,7 +255,7 @@ export const whenOr =
     I,
     AddWithout<F, PForExclude<P[number]>>,
     ApplyFilters<I, AddWithout<F, PForExclude<P[number]>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > => {
     const onMatch = args[args.length - 1] as any
@@ -261,8 +269,12 @@ export const whenOr =
  * @since 1.0.0
  */
 export const whenAnd =
-  <R, const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>, B>(
-    ...args: [...patterns: P, f: (_: WhenMatch<R, ArrayToIntersection<P>>) => B]
+  <
+    R,
+    const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
+    Fn extends (_: WhenMatch<R, ArrayToIntersection<P>>) => unknown,
+  >(
+    ...args: [...patterns: P, f: Fn]
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -270,7 +282,7 @@ export const whenAnd =
     I,
     AddWithout<F, PForExclude<ArrayToIntersection<P>>>,
     ApplyFilters<I, AddWithout<F, PForExclude<ArrayToIntersection<P>>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > => {
     const onMatch = args[args.length - 1] as any
@@ -403,9 +415,13 @@ export const tagsExhaustive = discriminatorsExhaustive("_tag")
  * @since 1.0.0
  */
 export const not =
-  <R, const P extends PatternPrimitive<R> | PatternBase<R>, B>(
+  <
+    R,
+    const P extends PatternPrimitive<R> | PatternBase<R>,
+    Fn extends (_: NotMatch<R, P>) => unknown,
+  >(
     pattern: P,
-    f: (_: NotMatch<R, P>) => B,
+    f: Fn,
   ) =>
   <I, F, A, Pr>(
     self: Matcher<I, F, R, A, Pr>,
@@ -413,7 +429,7 @@ export const not =
     I,
     AddOnly<F, WhenMatch<R, P>>,
     ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
-    A | B,
+    A | ReturnType<Fn>,
     Pr
   > =>
     (self as any).add(new Not(makePredicate(pattern), f as any))
@@ -727,7 +743,7 @@ export const exhaustive: <I, F, A, Pr>(
 // combinations
 type WhenMatch<R, P> =
   // check for any
-  0 extends 1 & R
+  [0] extends [1 & R]
     ? PForMatch<P>
     : P extends SafeSchema<infer SP, never>
     ? SP
