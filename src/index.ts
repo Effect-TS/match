@@ -185,6 +185,15 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
 
 /**
  * @category constructors
+ * @tsplus static effect/match/Matcher.Ops value
+ * @tsplus static effect/match/Matcher.Ops __call
+ * @since 1.0.0
+ */
+export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
+  new ValueMatcher(i, E.left(i))
+
+/**
+ * @category constructors
  * @tsplus static effect/match/Matcher.Ops valueTags
  * @since 1.0.0
  */
@@ -204,12 +213,23 @@ export const valueTags = <
 
 /**
  * @category constructors
- * @tsplus static effect/match/Matcher.Ops value
- * @tsplus static effect/match/Matcher.Ops __call
+ * @tsplus static effect/match/Matcher.Ops typeTags
  * @since 1.0.0
  */
-export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
-  new ValueMatcher(i, E.left(i))
+export const typeTags =
+  <I>() =>
+  <
+    P extends {
+      readonly [Tag in Tags<"_tag", I> & string]: (
+        _: Extract<I, { readonly _tag: Tag }>,
+      ) => any
+    },
+  >(
+    fields: P,
+  ) => {
+    const match: any = tagsExhaustive(fields)(new TypeMatcher([]))
+    return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
+  }
 
 /**
  * @category combinators

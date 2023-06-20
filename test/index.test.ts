@@ -639,6 +639,25 @@ describe("Matcher", () => {
     expect(match).toEqual(123)
   })
 
+  it("typeTags", () => {
+    type Value = { _tag: "A"; a: number } | { _tag: "B"; b: number }
+    const matcher = M.typeTags<Value>()
+
+    expect(
+      matcher({
+        A: (_) => _.a,
+        B: (_) => "fail",
+      })({ _tag: "A", a: 123 }),
+    ).toEqual(123)
+
+    expect(
+      matcher({
+        A: (_) => _.a,
+        B: (_) => "B",
+      })({ _tag: "B", b: 123 }),
+    ).toEqual("B")
+  })
+
   it("refinement - with unknown", () => {
     const isArray = (_: unknown): _ is ReadonlyArray<unknown> =>
       Array.isArray(_)
