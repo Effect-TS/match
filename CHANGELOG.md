@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.24.5
+
+### Patch Changes
+
+- [#140](https://github.com/Effect-TS/match/pull/140) [`1030bc9`](https://github.com/Effect-TS/match/commit/1030bc9a1f8cc9594a1d48cc097acf2c3d2740b9) Thanks [@tim-smart](https://github.com/tim-smart)! - add typeTags
+
 ## 0.24.4
 
 ### Patch Changes
