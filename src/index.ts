@@ -721,9 +721,16 @@ export const option: <I, F, R, A, Pr>(
   : O.Option<Unify<A>> = (<I, A>(self: Matcher<I, any, any, A, I>) => {
   const toEither = either(self)
   if (E.isEither(toEither)) {
-    return O.fromEither(toEither)
+    return E.match(toEither, {
+      onLeft: () => O.none(),
+      onRight: O.some,
+    })
   }
-  return (input: I): O.Option<A> => O.fromEither((toEither as any)(input))
+  return (input: I): O.Option<A> =>
+    E.match((toEither as any)(input), {
+      onLeft: () => O.none(),
+      onRight: (_: A) => O.some(_),
+    })
 }) as any
 
 /**
