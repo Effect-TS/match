@@ -750,7 +750,7 @@ export const exhaustive: <I, F, A, Pr>(
       return toEither.right
     }
 
-    throw "absurd"
+    throw new Error("@effect/match: exhaustive absurd")
   }
 
   return (u: I): A => {
@@ -761,7 +761,7 @@ export const exhaustive: <I, F, A, Pr>(
       return result.right as any
     }
 
-    throw "absurd"
+    throw new Error("@effect/match: exhaustive absurd")
   }
 }) as any
 
