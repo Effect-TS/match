@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.25.1
+
+### Patch Changes
+
+- [#144](https://github.com/Effect-TS/match/pull/144) [`e1357e2`](https://github.com/Effect-TS/match/commit/e1357e27927bb971bf0da8d9ea205f70732fbeb5) Thanks [@tim-smart](https://github.com/tim-smart)! - improve exhaustive error message
+
 ## 0.25.0
 
 ### Minor Changes
