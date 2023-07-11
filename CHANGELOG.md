@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.26.0
+
+### Minor Changes
+
+- [#146](https://github.com/Effect-TS/match/pull/146) [`4f1fc8f`](https://github.com/Effect-TS/match/commit/4f1fc8f133ed4cce7d5e30a85e56387707103393) Thanks [@tim-smart](https://github.com/tim-smart)! - update dependencies
+
 ## 0.25.1
 
 ### Patch Changes
