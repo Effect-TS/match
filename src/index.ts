@@ -21,6 +21,11 @@ export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
   | TypeMatcher<Input, Filters, RemainingApplied, Result>
   | ValueMatcher<Input, Filters, RemainingApplied, Result, Provided>
 
+type ValueMatch = {
+  <I extends [any, ...any]>(i: I): Matcher<I, Without<never>, I, never, I>
+  <I>(i: I): Matcher<I, Without<never>, I, never, I>
+}
+
 class TypeMatcher<Input, Filters, Remaining, Result> {
   readonly _tag = "TypeMatcher"
   readonly _input: (_: Input) => unknown = identity
@@ -189,8 +194,7 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
  * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
-export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
-  new ValueMatcher(i, E.left(i))
+export const value: ValueMatch = (i: any): any => new ValueMatcher(i, E.left(i))
 
 /**
  * @category constructors
