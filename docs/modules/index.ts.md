@@ -301,7 +301,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const value: <I>(i: I) => Matcher<I, Without<never>, I, never, I>
+export declare const value: <const I>(i: I) => Matcher<I, Without<never>, I, never, I>
 ```
 
 Added in v1.0.0
@@ -312,7 +312,7 @@ Added in v1.0.0
 
 ```ts
 export declare const valueTags: <
-  I,
+  const I,
   P extends { readonly [Tag in Tags<'_tag', I> & string]: (_: Extract<I, { readonly _tag: Tag }>) => any }
 >(
   fields: P

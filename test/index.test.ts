@@ -168,7 +168,7 @@ describe("Matcher", () => {
 
   it("literals duplicate", () => {
     const result = pipe(
-      M.value("yeah"),
+      M.value("yeah" as string),
       M.when("yeah", (_) => _ === "yeah"),
       M.when("yeah", (_) => "dupe"),
       M.orElse((_) => "nah"),
