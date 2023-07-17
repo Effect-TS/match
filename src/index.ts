@@ -4,6 +4,8 @@
 import * as E from "@effect/data/Either"
 import { identity } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as P from "@effect/data/Predicate"
 import type { Unify } from "@effect/data/Unify"
@@ -21,7 +23,7 @@ export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
   | TypeMatcher<Input, Filters, RemainingApplied, Result>
   | ValueMatcher<Input, Filters, RemainingApplied, Result, Provided>
 
-class TypeMatcher<Input, Filters, Remaining, Result> {
+class TypeMatcher<Input, Filters, Remaining, Result> implements Pipeable {
   readonly _tag = "TypeMatcher"
   readonly _input: (_: Input) => unknown = identity
   readonly _filters: (_: never) => Filters = identity
@@ -33,9 +35,15 @@ class TypeMatcher<Input, Filters, Remaining, Result> {
   add<I, R, RA, A>(_case: Case): TypeMatcher<I, R, RA, A> {
     return new TypeMatcher([...this.cases, _case])
   }
+
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
 }
 
-class ValueMatcher<Input, Filters, Remaining, Result, Provided> {
+class ValueMatcher<Input, Filters, Remaining, Result, Provided>
+  implements Pipeable
+{
   readonly _tag = "ValueMatcher"
   readonly _input: (_: Input) => unknown = identity
   readonly _filters: (_: never) => Filters = identity
@@ -66,6 +74,10 @@ class ValueMatcher<Input, Filters, Remaining, Result, Provided> {
 
     // @ts-expect-error
     return this
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
