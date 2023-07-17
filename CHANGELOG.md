@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.27.1
+
+### Patch Changes
+
+- [#152](https://github.com/Effect-TS/match/pull/152) [`0bfe62a`](https://github.com/Effect-TS/match/commit/0bfe62a387037f93ff4f52b23735f5d19527ba14) Thanks [@tim-smart](https://github.com/tim-smart)! - use const generic for input types
+
+- [#151](https://github.com/Effect-TS/match/pull/151) [`c27987e`](https://github.com/Effect-TS/match/commit/c27987ee3538ef1fd696c6f4730a8e29737ad8a0) Thanks [@tim-smart](https://github.com/tim-smart)! - add Pipeable trait to matchers
+
 ## 0.27.0
 
 ### Minor Changes
