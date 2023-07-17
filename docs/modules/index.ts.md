@@ -25,6 +25,7 @@ Added in v1.0.0
   - [whenOr](#whenor)
 - [constructors](#constructors)
   - [type](#type)
+  - [typeTags](#typetags)
   - [value](#value)
   - [valueTags](#valuetags)
 - [conversions](#conversions)
@@ -226,15 +227,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const whenAnd: <R, const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[], B>(
-  ...args: [...patterns: P, f: (_: WhenMatch<R, UnionToIntersection<P[number]>>) => B]
+export declare const whenAnd: <
+  R,
+  const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[],
+  Fn extends (_: WhenMatch<R, UnionToIntersection<P[number]>>) => unknown
+>(
+  ...args: [...patterns: P, f: Fn]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
   AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>,
   ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>>,
-  B | A,
+  A | ReturnType<Fn>,
   Pr
 >
 ```
@@ -246,15 +251,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const whenOr: <R, const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[], B>(
-  ...args: [...patterns: P, f: (_: WhenMatch<R, P[number]>) => B]
+export declare const whenOr: <
+  R,
+  const P extends readonly (PatternPrimitive<R> | PatternBase<R>)[],
+  Fn extends (_: WhenMatch<R, P[number]>) => unknown
+>(
+  ...args: [...patterns: P, f: Fn]
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
   AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>,
   ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>>,
-  B | A,
+  A | ReturnType<Fn>,
   Pr
 >
 ```
@@ -273,12 +282,26 @@ export declare const type: <I>() => Matcher<I, Without<never>, I, never, never>
 
 Added in v1.0.0
 
+## typeTags
+
+**Signature**
+
+```ts
+export declare const typeTags: <I>() => <
+  P extends { readonly [Tag in Tags<'_tag', I> & string]: (_: Extract<I, { readonly _tag: Tag }>) => any }
+>(
+  fields: P
+) => (input: I) => Unify<ReturnType<P[keyof P]>>
+```
+
+Added in v1.0.0
+
 ## value
 
 **Signature**
 
 ```ts
-export declare const value: <I>(i: I) => Matcher<I, Without<never>, I, never, I>
+export declare const value: <const I>(i: I) => Matcher<I, Without<never>, I, never, I>
 ```
 
 Added in v1.0.0
@@ -289,7 +312,7 @@ Added in v1.0.0
 
 ```ts
 export declare const valueTags: <
-  I,
+  const I,
   P extends { readonly [Tag in Tags<'_tag', I> & string]: (_: Extract<I, { readonly _tag: Tag }>) => any }
 >(
   fields: P

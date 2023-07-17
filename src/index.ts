@@ -189,7 +189,7 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
  * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
-export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
+export const value = <const I>(i: I): Matcher<I, Without<never>, I, never, I> =>
   new ValueMatcher(i, E.left(i))
 
 /**
@@ -198,7 +198,7 @@ export const value = <I>(i: I): Matcher<I, Without<never>, I, never, I> =>
  * @since 1.0.0
  */
 export const valueTags = <
-  I,
+  const I,
   P extends {
     readonly [Tag in Tags<"_tag", I> & string]: (
       _: Extract<I, { readonly _tag: Tag }>,
