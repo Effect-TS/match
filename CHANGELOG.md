@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.27.2
+
+### Patch Changes
+
+- [#155](https://github.com/Effect-TS/match/pull/155) [`3731e5c`](https://github.com/Effect-TS/match/commit/3731e5c3b6ec2da4bac00ae8a71a7f6797c896af) Thanks [@tim-smart](https://github.com/tim-smart)! - fix Pipeable trait
+
+- [#155](https://github.com/Effect-TS/match/pull/155) [`3731e5c`](https://github.com/Effect-TS/match/commit/3731e5c3b6ec2da4bac00ae8a71a7f6797c896af) Thanks [@tim-smart](https://github.com/tim-smart)! - fix non-literals eliminating possible matches
+
 ## 0.27.1
 
 ### Patch Changes
