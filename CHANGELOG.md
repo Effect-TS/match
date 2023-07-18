@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.28.0
+
+### Minor Changes
+
+- [#157](https://github.com/Effect-TS/match/pull/157) [`aeef9e4`](https://github.com/Effect-TS/match/commit/aeef9e4a1cf54dbe8234649dddcc94a301a0cb9a) Thanks [@tim-smart](https://github.com/tim-smart)! - update /schema
+
 ## 0.27.2
 
 ### Patch Changes
