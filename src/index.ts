@@ -23,17 +23,29 @@ export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
   | TypeMatcher<Input, Filters, RemainingApplied, Result>
   | ValueMatcher<Input, Filters, RemainingApplied, Result, Provided>
 
-class TypeMatcher<Input, Filters, Remaining, Result> implements Pipeable {
+interface TypeMatcher<Input, Filters, Remaining, Result> extends Pipeable {
+  readonly _tag: "TypeMatcher"
+  readonly _input: (_: Input) => unknown
+  readonly _filters: (_: never) => Filters
+  readonly _remaining: (_: never) => Remaining
+  readonly _result: (_: never) => Result
+  readonly cases: ReadonlyArray<Case>
+  readonly add: <I, R, RA, A>(_case: Case) => TypeMatcher<I, R, RA, A>
+}
+
+class TypeMatcherImpl<Input, Filters, Remaining, Result>
+  implements TypeMatcher<Input, Filters, Remaining, Result>
+{
   readonly _tag = "TypeMatcher"
-  readonly _input: (_: Input) => unknown = identity
-  readonly _filters: (_: never) => Filters = identity
-  readonly _remaining: (_: never) => Remaining = identity
-  readonly _result: (_: never) => Result = identity
+  readonly _input = identity
+  readonly _filters = identity
+  readonly _remaining = identity
+  readonly _result = identity
 
   constructor(readonly cases: ReadonlyArray<Case>) {}
 
   add<I, R, RA, A>(_case: Case): TypeMatcher<I, R, RA, A> {
-    return new TypeMatcher([...this.cases, _case])
+    return new TypeMatcherImpl([...this.cases, _case])
   }
 
   pipe() {
@@ -41,8 +53,19 @@ class TypeMatcher<Input, Filters, Remaining, Result> implements Pipeable {
   }
 }
 
-class ValueMatcher<Input, Filters, Remaining, Result, Provided>
-  implements Pipeable
+interface ValueMatcher<Input, Filters, Remaining, Result, Provided>
+  extends Pipeable {
+  readonly _tag: "ValueMatcher"
+  readonly _input: (_: Input) => unknown
+  readonly _filters: (_: never) => Filters
+  readonly _result: (_: never) => Result
+  readonly provided: Provided
+  readonly value: E.Either<Remaining, Provided>
+  readonly add: <I, R, RA, A, Pr>(_case: Case) => ValueMatcher<I, R, RA, A, Pr>
+}
+
+class ValueMatcherImpl<Input, Filters, Remaining, Result, Provided>
+  implements ValueMatcher<Input, Filters, Remaining, Result, Provided>
 {
   readonly _tag = "ValueMatcher"
   readonly _input: (_: Input) => unknown = identity
@@ -61,12 +84,12 @@ class ValueMatcher<Input, Filters, Remaining, Result, Provided>
     }
 
     if (_case._tag === "When" && _case.guard(this.provided) === true) {
-      return new ValueMatcher(
+      return new ValueMatcherImpl(
         this.provided,
         E.right(_case.evaluate(this.provided)),
       )
     } else if (_case._tag === "Not" && _case.guard(this.provided) === false) {
-      return new ValueMatcher(
+      return new ValueMatcherImpl(
         this.provided,
         E.right(_case.evaluate(this.provided)),
       )
@@ -193,7 +216,7 @@ const makeAndPredicate = (
  * @since 1.0.0
  */
 export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
-  new TypeMatcher([])
+  new TypeMatcherImpl([])
 
 /**
  * @category constructors
@@ -202,7 +225,7 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
  * @since 1.0.0
  */
 export const value = <const I>(i: I): Matcher<I, Without<never>, I, never, I> =>
-  new ValueMatcher(i, E.left(i))
+  new ValueMatcherImpl(i, E.left(i))
 
 /**
  * @category constructors
@@ -219,7 +242,7 @@ export const valueTags = <
 >(
   fields: P,
 ) => {
-  const match: any = tagsExhaustive(fields)(new TypeMatcher([]))
+  const match: any = tagsExhaustive(fields)(new TypeMatcherImpl([]))
   return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
 }
 
@@ -239,7 +262,7 @@ export const typeTags =
   >(
     fields: P,
   ) => {
-    const match: any = tagsExhaustive(fields)(new TypeMatcher([]))
+    const match: any = tagsExhaustive(fields)(new TypeMatcherImpl([]))
     return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
   }
 
@@ -848,6 +871,18 @@ type PredToSchema<A> = A extends never
   ? A
   : A extends Record<string, any>
   ? { [K in keyof A]: PredToSchema<A[K]> }
+  : NonLiteralsTo<A, never>
+
+type NonLiteralsTo<A, T> = [A] extends [string | number | boolean | bigint]
+  ? [string] extends [A]
+    ? T
+    : [number] extends [A]
+    ? T
+    : [boolean] extends [A]
+    ? T
+    : [bigint] extends [A]
+    ? T
+    : A
   : A
 
 type PatternBase<A> = A extends ReadonlyArray<infer _T>

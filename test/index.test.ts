@@ -746,4 +746,21 @@ describe("Matcher", () => {
 
     typeEquals(result)<{ value: number }>() satisfies true
   })
+
+  it("non literal refinement", () => {
+    const a: number = 1
+    const b: string = "b"
+
+    const match = M.type<{ a: number; b: string }>().pipe(
+      M.when({ a, b }, (_) => {
+        typeEquals(_)<{ a: number; b: string }>() satisfies true
+        return "ok"
+      }),
+      M.either,
+    )
+
+    typeEquals(match({ a, b }))<
+      E.Either<{ a: number; b: string }, string>
+    >() satisfies true
+  })
 })
