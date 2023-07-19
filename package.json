@@ -108,7 +108,7 @@
     "vitest": "0.33.0"
   },
   "dependencies": {
-    "@effect/data": "^0.15.0",
-    "@effect/schema": "^0.28.0"
+    "@effect/data": "^0.16.0",
+    "@effect/schema": "^0.29.0"
   }
 }
