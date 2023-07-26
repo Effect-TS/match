@@ -122,9 +122,6 @@ class Not {
   ) {}
 }
 
-const isSchema = (u: object): u is S.Schema<unknown, unknown> =>
-  "ast" in u && P.isObject(u.ast) && "annotations" in u.ast
-
 const makePredicate = (pattern: unknown): Predicate<unknown> => {
   if (typeof pattern === "function") {
     return pattern as Predicate<unknown>
@@ -146,7 +143,7 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
       return true
     }
   } else if (pattern !== null && typeof pattern === "object") {
-    if (isSchema(pattern)) {
+    if (S.isSchema(pattern)) {
       const validate = S.validateEither(pattern)
       return (u: unknown) =>
         validate(u, { onExcessProperty: "ignore" })._tag === "Right"
