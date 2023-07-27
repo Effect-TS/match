@@ -7,7 +7,6 @@ type Simplify<A> = { [K in keyof A]: A[K] } & {}
 
 /**
  * @category model
- * @tsplus type effect/match/ADT
  * @since 1.0.0
  */
 export type ADT<A extends Record<string, Record<string, any>>> = {
@@ -101,7 +100,6 @@ export namespace ADT {
 
 /**
  * @category constructors
- * @tsplus static effect/data/Data adt
  * @since 1.0.0
  */
 export function adt<A extends ADT.Constructor>(): ADT.Constructor4<A> {
@@ -109,7 +107,6 @@ export function adt<A extends ADT.Constructor>(): ADT.Constructor4<A> {
 }
 /**
  * @category constructors
- * @tsplus static effect/data/Data adt1
  * @since 1.0.0
  */
 export function adt1<A extends ADT.Constructor>(): ADT.Constructor1<A> {
@@ -117,7 +114,6 @@ export function adt1<A extends ADT.Constructor>(): ADT.Constructor1<A> {
 }
 /**
  * @category constructors
- * @tsplus static effect/data/Data adt2
  * @since 1.0.0
  */
 export function adt2<A extends ADT.Constructor>(): ADT.Constructor2<A> {
@@ -125,7 +121,6 @@ export function adt2<A extends ADT.Constructor>(): ADT.Constructor2<A> {
 }
 /**
  * @category constructors
- * @tsplus static effect/data/Data adt3
  * @since 1.0.0
  */
 export function adt3<A extends ADT.Constructor>(): ADT.Constructor3<A> {

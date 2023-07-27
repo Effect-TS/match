@@ -15,8 +15,6 @@ import * as S from "@effect/schema/Schema"
 
 /**
  * @category model
- * @tsplus type effect/match/Matcher
- * @tsplus companion effect/match/Matcher.Ops
  * @since 1.0.0
  */
 export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
@@ -209,7 +207,6 @@ const makeAndPredicate = (
 
 /**
  * @category constructors
- * @tsplus static effect/match/Matcher.Ops type
  * @since 1.0.0
  */
 export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
@@ -217,8 +214,6 @@ export const type = <I>(): Matcher<I, Without<never>, I, never, never> =>
 
 /**
  * @category constructors
- * @tsplus static effect/match/Matcher.Ops value
- * @tsplus static effect/match/Matcher.Ops __call
  * @since 1.0.0
  */
 export const value = <const I>(i: I): Matcher<I, Without<never>, I, never, I> =>
@@ -226,7 +221,6 @@ export const value = <const I>(i: I): Matcher<I, Without<never>, I, never, I> =>
 
 /**
  * @category constructors
- * @tsplus static effect/match/Matcher.Ops valueTags
  * @since 1.0.0
  */
 export const valueTags = <
@@ -245,7 +239,6 @@ export const valueTags = <
 
 /**
  * @category constructors
- * @tsplus static effect/match/Matcher.Ops typeTags
  * @since 1.0.0
  */
 export const typeTags =
@@ -265,7 +258,6 @@ export const typeTags =
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher when
  * @since 1.0.0
  */
 export const when =
@@ -290,7 +282,6 @@ export const when =
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher whenOr
  * @since 1.0.0
  */
 export const whenOr =
@@ -317,7 +308,6 @@ export const whenOr =
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher whenAnd
  * @since 1.0.0
  */
 export const whenAnd =
@@ -442,28 +432,24 @@ export const discriminatorsExhaustive: <D extends string>(
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher tag
  * @since 1.0.0
  */
 export const tag = discriminator("_tag")
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher tags
  * @since 1.0.0
  */
 export const tags = discriminators("_tag")
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher tagsExhaustive
  * @since 1.0.0
  */
 export const tagsExhaustive = discriminatorsExhaustive("_tag")
 
 /**
  * @category combinators
- * @tsplus pipeable effect/match/Matcher not
  * @since 1.0.0
  */
 export const not =
@@ -508,7 +494,6 @@ export interface SafeSchema<A, R = A> {
 
 /**
  * @since 1.0.0
- * @tsplus type effect/match/SafeSchema
  */
 export namespace SafeSchema {
   /**
@@ -524,7 +509,6 @@ export namespace SafeSchema {
  * refinements that could make the pattern not match.
  *
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops unsafe
  * @since 1.0.0
  */
 export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
@@ -535,7 +519,6 @@ export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
  * contain refinements that could make the pattern not match.
  *
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops safe
  * @since 1.0.0
  */
 export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
@@ -543,7 +526,6 @@ export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
 
 /**
  * @category predicates
- * @tsplus getter effect/match/SafeSchema nonEmpty
  * @since 1.0.0
  */
 export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
@@ -551,7 +533,6 @@ export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops is
  * @since 1.0.0
  */
 export const is: <Literals extends ReadonlyArray<LiteralValue>>(
@@ -570,28 +551,24 @@ export const is: <Literals extends ReadonlyArray<LiteralValue>>(
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops string
  * @since 1.0.0
  */
 export const string: Refinement<unknown, string> = P.isString
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops number
  * @since 1.0.0
  */
 export const number: Refinement<unknown, number> = P.isNumber
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops any
  * @since 1.0.0
  */
 export const any: SafeSchema<unknown, any> = (() => true) as any
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops defined
  * @since 1.0.0
  */
 export const defined = <A>(u: A): u is A & {} =>
@@ -599,16 +576,11 @@ export const defined = <A>(u: A): u is A & {} =>
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops boolean
  * @since 1.0.0
  */
 export const boolean: Refinement<unknown, boolean> = P.isBoolean
 
-/**
- * @tsplus static effect/match/Matcher.Ops undefined
- * @since 1.0.0
- */
-export const _undefined: Refinement<unknown, undefined> = P.isUndefined
+const _undefined: Refinement<unknown, undefined> = P.isUndefined
 export {
   /**
    * @category predicates
@@ -617,11 +589,7 @@ export {
   _undefined as undefined,
 }
 
-/**
- * @tsplus static effect/match/Matcher.Ops null
- * @since 1.0.0
- */
-export const _null: Refinement<unknown, null> = P.isNull
+const _null: Refinement<unknown, null> = P.isNull
 export {
   /**
    * @category predicates
@@ -632,21 +600,18 @@ export {
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops bigint
  * @since 1.0.0
  */
 export const bigint: Refinement<unknown, bigint> = P.isBigint
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops date
  * @since 1.0.0
  */
 export const date: Refinement<unknown, Date> = P.isDate
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops record
  * @since 1.0.0
  */
 export const record: Refinement<
@@ -659,7 +624,6 @@ export const record: Refinement<
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops instanceOf
  * @since 1.0.0
  */
 export const instanceOf = <A extends abstract new (...args: any) => any>(
@@ -669,7 +633,6 @@ export const instanceOf = <A extends abstract new (...args: any) => any>(
 
 /**
  * @category predicates
- * @tsplus static effect/match/Matcher.Ops instanceOfUnsafe
  * @since 1.0.0
  */
 export const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
@@ -678,7 +641,6 @@ export const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
 
 /**
  * @category conversions
- * @tsplus pipeable effect/match/Matcher orElse
  * @since 1.0.0
  */
 export const orElse =
@@ -702,7 +664,6 @@ export const orElse =
 
 /**
  * @category conversions
- * @tsplus getter effect/match/Matcher orElseAbsurd
  * @since 1.0.0
  */
 export const orElseAbsurd = <I, R, RA, A, Pr>(
@@ -714,7 +675,6 @@ export const orElseAbsurd = <I, R, RA, A, Pr>(
 
 /**
  * @category conversions
- * @tsplus getter effect/match/Matcher either
  * @since 1.0.0
  */
 export const either: <I, F, R, A, Pr>(
@@ -743,7 +703,6 @@ export const either: <I, F, R, A, Pr>(
 
 /**
  * @category conversions
- * @tsplus getter effect/match/Matcher option
  * @since 1.0.0
  */
 export const option: <I, F, R, A, Pr>(
@@ -767,7 +726,6 @@ export const option: <I, F, R, A, Pr>(
 
 /**
  * @category conversions
- * @tsplus getter effect/match/Matcher exhaustive
  * @since 1.0.0
  */
 export const exhaustive: <I, F, A, Pr>(
