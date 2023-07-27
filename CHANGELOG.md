@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.30.0
+
+### Minor Changes
+
+- [#163](https://github.com/Effect-TS/match/pull/163) [`9a5f896`](https://github.com/Effect-TS/match/commit/9a5f8967848bc2f87bcefdd148b1db297c6e1053) Thanks [@tim-smart](https://github.com/tim-smart)! - update /data and /schema
+
+- [#163](https://github.com/Effect-TS/match/pull/163) [`9a5f896`](https://github.com/Effect-TS/match/commit/9a5f8967848bc2f87bcefdd148b1db297c6e1053) Thanks [@tim-smart](https://github.com/tim-smart)! - drop tsplus support
+
 ## 0.29.1
 
 ### Patch Changes
