@@ -1,9 +1,0 @@
-{
-  "importMap": {
-    "^(.*)/src/index\\.(ts|js)$": "@effect/match",
-    "^(.*)/src/(.*)\\.(ts|js)$": "@effect/match/$2"
-  },
-  "traceMap": {
-    "^(.*)/src/(.*)\\.(ts|js)$": "(@effect/match) $2"
-  }
-}

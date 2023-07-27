@@ -58,7 +58,6 @@ export namespace TaggedEnum {
  * ```
  *
  * @category constructors
- * @tsplus static effect/data/Data taggedEnum
  * @since 1.0.0
  */
 export function taggedEnum<
