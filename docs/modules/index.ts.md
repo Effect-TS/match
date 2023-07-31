@@ -57,8 +57,6 @@ Added in v1.0.0
 - [utils](#utils)
   - [SafeSchemaId](#safeschemaid)
   - [SafeSchemaId (type alias)](#safeschemaid-type-alias)
-  - [\_null](#_null)
-  - [\_undefined](#_undefined)
 
 ---
 
@@ -603,26 +601,6 @@ Added in v1.0.0
 
 ```ts
 export type SafeSchemaId = typeof SafeSchemaId
-```
-
-Added in v1.0.0
-
-## \_null
-
-**Signature**
-
-```ts
-export declare const _null: Refinement<unknown, null>
-```
-
-Added in v1.0.0
-
-## \_undefined
-
-**Signature**
-
-```ts
-export declare const _undefined: Refinement<unknown, undefined>
 ```
 
 Added in v1.0.0
