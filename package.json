@@ -68,8 +68,10 @@
     "@changesets/cli": "^2.26.2",
     "@effect-ts/build-utils": "0.40.7",
     "@effect-ts/core": "^0.60.5",
+    "@effect/data": "^0.17.1",
     "@effect/docgen": "^0.1.2",
     "@effect/language-service": "^0.0.19",
+    "@effect/schema": "^0.32.0",
     "@types/benchmark": "^2.1.2",
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
@@ -107,7 +109,7 @@
     "vite": "^4.4.7",
     "vitest": "0.33.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@effect/data": "^0.17.1",
     "@effect/schema": "^0.32.0"
   }
