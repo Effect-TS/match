@@ -22,10 +22,8 @@ export namespace ADT {
   type Value<A extends { _tag: string }, K extends A["_tag"]> = Omit<
     Extract<A, { _tag: K }>,
     "_tag" | keyof Data.Case
-  > extends infer T
-    ? {} extends T
-      ? void
-      : T
+  > extends infer T ? {} extends T ? void
+    : T
     : never
 
   type Result<A extends { _tag: string }, K extends A["_tag"]> = Extract<
@@ -52,13 +50,12 @@ export namespace ADT {
     D = unknown,
   > = F extends {
     adt: { _tag: string }
-  }
-    ? (F & {
-        readonly A: A
-        readonly B: B
-        readonly C: C
-        readonly D: D
-      })["adt"]
+  } ? (F & {
+      readonly A: A
+      readonly B: B
+      readonly C: C
+      readonly D: D
+    })["adt"]
     : never
 
   /**
