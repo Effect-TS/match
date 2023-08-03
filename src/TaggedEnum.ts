@@ -34,14 +34,14 @@ export namespace TaggedEnum {
    */
   export type Infer<A extends Constructor<any>> = A extends Constructor<infer T>
     ? {
-        [K in keyof T]: Data.Data<
-          Simplify<
-            Readonly<T[K]> & {
-              readonly _tag: K
-            }
-          >
+      [K in keyof T]: Data.Data<
+        Simplify<
+          Readonly<T[K]> & {
+            readonly _tag: K
+          }
         >
-      }[keyof T]
+      >
+    }[keyof T]
     : never
 }
 

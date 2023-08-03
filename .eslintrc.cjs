@@ -8,26 +8,26 @@ module.exports = {
   },
   settings: {
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"],
+      "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
       typescript: {
-        alwaysTryTypes: true,
-      },
-    },
+        alwaysTryTypes: true
+      }
+    }
   },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier",
+    "plugin:@effect/recommended"
   ],
   plugins: [
     "deprecation",
     "import",
     "sort-destructure-keys",
     "simple-import-sort",
-    "codegen",
+    "codegen"
   ],
   rules: {
     "codegen/codegen": "error",
@@ -50,7 +50,7 @@ module.exports = {
     "deprecation/deprecation": "off",
     "@typescript-eslint/array-type": [
       "warn",
-      { default: "generic", readonly: "generic" },
+      { default: "generic", readonly: "generic" }
     ],
     "@typescript-eslint/member-delimiter-style": 0,
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -62,8 +62,8 @@ module.exports = {
       "error",
       {
         argsIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
-      },
+        varsIgnorePattern: "^_"
+      }
     ],
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/camelcase": "off",
@@ -73,5 +73,17 @@ module.exports = {
     "@typescript-eslint/no-array-constructor": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-namespace": "off",
-  },
+    "@effect/dprint": [
+      "error",
+      {
+        config: {
+          indentWidth: 2,
+          lineWidth: 80,
+          semiColons: "asi",
+          quoteStyle: "alwaysDouble",
+          "arrowFunction.useParentheses": "force"
+        }
+      }
+    ]
+  }
 }

@@ -52,7 +52,8 @@ class TypeMatcherImpl<Input, Filters, Remaining, Result>
 }
 
 interface ValueMatcher<Input, Filters, Remaining, Result, Provided>
-  extends Pipeable {
+  extends Pipeable
+{
   readonly _tag: "ValueMatcher"
   readonly _input: (_: Input) => unknown
   readonly _filters: (_: never) => Filters
@@ -241,96 +242,91 @@ export const valueTags = <
  * @category constructors
  * @since 1.0.0
  */
-export const typeTags =
-  <I>() =>
-  <
-    P extends {
-      readonly [Tag in Tags<"_tag", I> & string]: (
-        _: Extract<I, { readonly _tag: Tag }>,
-      ) => any
-    },
-  >(
-    fields: P,
-  ) => {
-    const match: any = tagsExhaustive(fields)(new TypeMatcherImpl([]))
-    return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
-  }
+export const typeTags = <I>() =>
+<
+  P extends {
+    readonly [Tag in Tags<"_tag", I> & string]: (
+      _: Extract<I, { readonly _tag: Tag }>,
+    ) => any
+  },
+>(
+  fields: P,
+) => {
+  const match: any = tagsExhaustive(fields)(new TypeMatcherImpl([]))
+  return (input: I): Unify<ReturnType<P[keyof P]>> => match(input)
+}
 
 /**
  * @category combinators
  * @since 1.0.0
  */
-export const when =
-  <
-    R,
-    const P extends PatternPrimitive<R> | PatternBase<R>,
-    Fn extends (_: WhenMatch<R, P>) => unknown,
-  >(
-    pattern: P,
-    f: Fn,
-  ) =>
-  <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ): Matcher<
-    I,
-    AddWithout<F, PForExclude<P>>,
-    ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
-    A | ReturnType<Fn>,
-    Pr
-  > =>
-    (self as any).add(new When(makePredicate(pattern), f as any))
+export const when = <
+  R,
+  const P extends PatternPrimitive<R> | PatternBase<R>,
+  Fn extends (_: WhenMatch<R, P>) => unknown,
+>(
+  pattern: P,
+  f: Fn,
+) =>
+<I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+): Matcher<
+  I,
+  AddWithout<F, PForExclude<P>>,
+  ApplyFilters<I, AddWithout<F, PForExclude<P>>>,
+  A | ReturnType<Fn>,
+  Pr
+> => (self as any).add(new When(makePredicate(pattern), f as any))
 
 /**
  * @category combinators
  * @since 1.0.0
  */
-export const whenOr =
-  <
-    R,
-    const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
-    Fn extends (_: WhenMatch<R, P[number]>) => unknown,
-  >(
-    ...args: [...patterns: P, f: Fn]
-  ) =>
-  <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ): Matcher<
-    I,
-    AddWithout<F, PForExclude<P[number]>>,
-    ApplyFilters<I, AddWithout<F, PForExclude<P[number]>>>,
-    A | ReturnType<Fn>,
-    Pr
-  > => {
-    const onMatch = args[args.length - 1] as any
-    const patterns = args.slice(0, -1) as unknown as P
-    return (self as any).add(new When(makeOrPredicate(patterns), onMatch))
-  }
+export const whenOr = <
+  R,
+  const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
+  Fn extends (_: WhenMatch<R, P[number]>) => unknown,
+>(
+  ...args: [...patterns: P, f: Fn]
+) =>
+<I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+): Matcher<
+  I,
+  AddWithout<F, PForExclude<P[number]>>,
+  ApplyFilters<I, AddWithout<F, PForExclude<P[number]>>>,
+  A | ReturnType<Fn>,
+  Pr
+> => {
+  const onMatch = args[args.length - 1] as any
+  const patterns = args.slice(0, -1) as unknown as P
+  return (self as any).add(new When(makeOrPredicate(patterns), onMatch))
+}
 
 /**
  * @category combinators
  * @since 1.0.0
  */
-export const whenAnd =
-  <
-    R,
-    const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
-    Fn extends (_: WhenMatch<R, ArrayToIntersection<P>>) => unknown,
-  >(
-    ...args: [...patterns: P, f: Fn]
-  ) =>
-  <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ): Matcher<
-    I,
-    AddWithout<F, PForExclude<ArrayToIntersection<P>>>,
-    ApplyFilters<I, AddWithout<F, PForExclude<ArrayToIntersection<P>>>>,
-    A | ReturnType<Fn>,
-    Pr
-  > => {
-    const onMatch = args[args.length - 1] as any
-    const patterns = args.slice(0, -1) as unknown as P
-    return (self as any).add(new When(makeAndPredicate(patterns), onMatch))
-  }
+export const whenAnd = <
+  R,
+  const P extends ReadonlyArray<PatternPrimitive<R> | PatternBase<R>>,
+  Fn extends (_: WhenMatch<R, ArrayToIntersection<P>>) => unknown,
+>(
+  ...args: [...patterns: P, f: Fn]
+) =>
+<I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+): Matcher<
+  I,
+  AddWithout<F, PForExclude<ArrayToIntersection<P>>>,
+  ApplyFilters<I, AddWithout<F, PForExclude<ArrayToIntersection<P>>>>,
+  A | ReturnType<Fn>,
+  Pr
+> => {
+  const onMatch = args[args.length - 1] as any
+  const patterns = args.slice(0, -1) as unknown as P
+  return (self as any).add(new When(makeAndPredicate(patterns), onMatch))
+}
 
 /**
  * @category combinators
@@ -347,10 +343,9 @@ export const discriminator =
   ) => {
     const f = pattern[pattern.length - 1]
     const values: Array<P> = pattern.slice(0, -1) as any
-    const pred =
-      values.length === 1
-        ? (_: any) => _[field] === values[0]
-        : (_: any) => values.includes(_[field])
+    const pred = values.length === 1
+      ? (_: any) => _[field] === values[0]
+      : (_: any) => values.includes(_[field])
 
     return <I, F, A, Pr>(
       self: Matcher<I, F, R, A, Pr>,
@@ -367,44 +362,43 @@ export const discriminator =
  * @category combinators
  * @since 1.0.0
  */
-export const discriminators =
-  <D extends string>(field: D) =>
-  <
-    R,
-    P extends {
-      readonly [Tag in Tags<D, R> & string]?: (
-        _: Extract<R, Record<D, Tag>>,
-      ) => any
-    },
-  >(
-    fields: P,
-  ) => {
-    const predicates: Array<When> = []
-    for (const key in fields) {
-      const pred = (_: any) => _[field] === key
-      const f = fields[key]
-      if (f) {
-        predicates.push(new When(pred, f as any))
-      }
-    }
-    const len = predicates.length
-
-    return <I, F, A, Pr>(
-      self: Matcher<I, F, R, A, Pr>,
-    ): Matcher<
-      I,
-      AddWithout<F, Extract<R, Record<D, keyof P>>>,
-      ApplyFilters<I, AddWithout<F, Extract<R, Record<D, keyof P>>>>,
-      A | ReturnType<P[keyof P] & {}>,
-      Pr
-    > => {
-      let matcher: any = self
-      for (let i = 0; i < len; i++) {
-        matcher = matcher.add(predicates[i])
-      }
-      return matcher
+export const discriminators = <D extends string>(field: D) =>
+<
+  R,
+  P extends {
+    readonly [Tag in Tags<D, R> & string]?: (
+      _: Extract<R, Record<D, Tag>>,
+    ) => any
+  },
+>(
+  fields: P,
+) => {
+  const predicates: Array<When> = []
+  for (const key in fields) {
+    const pred = (_: any) => _[field] === key
+    const f = fields[key]
+    if (f) {
+      predicates.push(new When(pred, f as any))
     }
   }
+  const len = predicates.length
+
+  return <I, F, A, Pr>(
+    self: Matcher<I, F, R, A, Pr>,
+  ): Matcher<
+    I,
+    AddWithout<F, Extract<R, Record<D, keyof P>>>,
+    ApplyFilters<I, AddWithout<F, Extract<R, Record<D, keyof P>>>>,
+    A | ReturnType<P[keyof P] & {}>,
+    Pr
+  > => {
+    let matcher: any = self
+    for (let i = 0; i < len; i++) {
+      matcher = matcher.add(predicates[i])
+    }
+    return matcher
+  }
+}
 
 /**
  * @category combinators
@@ -423,12 +417,11 @@ export const discriminatorsExhaustive: <D extends string>(
   fields: P,
 ) => <I, F, A, Pr>(
   self: Matcher<I, F, R, A, Pr>,
-) => [Pr] extends [never]
-  ? (u: I) => Unify<A | ReturnType<P[keyof P]>>
+) => [Pr] extends [never] ? (u: I) => Unify<A | ReturnType<P[keyof P]>>
   : Unify<A | ReturnType<P[keyof P]>> = (field: string) => (fields: object) => {
-  const addCases = discriminators(field)(fields)
-  return (matcher: any) => exhaustive(addCases(matcher))
-}
+    const addCases = discriminators(field)(fields)
+    return (matcher: any) => exhaustive(addCases(matcher))
+  }
 
 /**
  * @category combinators
@@ -452,25 +445,23 @@ export const tagsExhaustive = discriminatorsExhaustive("_tag")
  * @category combinators
  * @since 1.0.0
  */
-export const not =
-  <
-    R,
-    const P extends PatternPrimitive<R> | PatternBase<R>,
-    Fn extends (_: NotMatch<R, P>) => unknown,
-  >(
-    pattern: P,
-    f: Fn,
-  ) =>
-  <I, F, A, Pr>(
-    self: Matcher<I, F, R, A, Pr>,
-  ): Matcher<
-    I,
-    AddOnly<F, WhenMatch<R, P>>,
-    ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
-    A | ReturnType<Fn>,
-    Pr
-  > =>
-    (self as any).add(new Not(makePredicate(pattern), f as any))
+export const not = <
+  R,
+  const P extends PatternPrimitive<R> | PatternBase<R>,
+  Fn extends (_: NotMatch<R, P>) => unknown,
+>(
+  pattern: P,
+  f: Fn,
+) =>
+<I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+): Matcher<
+  I,
+  AddOnly<F, WhenMatch<R, P>>,
+  ApplyFilters<I, AddOnly<F, WhenMatch<R, P>>>,
+  A | ReturnType<Fn>,
+  Pr
+> => (self as any).add(new Not(makePredicate(pattern), f as any))
 
 /**
  * @since 1.0.0
@@ -528,8 +519,8 @@ export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
  * @category predicates
  * @since 1.0.0
  */
-export const nonEmptyString: SafeSchema<string, never> = ((u: unknown) =>
-  typeof u === "string" && u.length > 0) as any
+export const nonEmptyString: SafeSchema<string, never> =
+  ((u: unknown) => typeof u === "string" && u.length > 0) as any
 
 /**
  * @category predicates
@@ -626,7 +617,7 @@ export const record: Refinement<
  * @category predicates
  * @since 1.0.0
  */
-export const instanceOf = <A extends abstract new (...args: any) => any>(
+export const instanceOf = <A extends abstract new(...args: any) => any>(
   constructor: A,
 ): SafeSchema<InstanceType<A>, never> =>
   ((u: unknown) => u instanceof constructor) as any
@@ -635,7 +626,7 @@ export const instanceOf = <A extends abstract new (...args: any) => any>(
  * @category predicates
  * @since 1.0.0
  */
-export const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
+export const instanceOfUnsafe: <A extends abstract new(...args: any) => any>(
   constructor: A,
 ) => SafeSchema<InstanceType<A>, InstanceType<A>> = instanceOf
 
@@ -643,24 +634,23 @@ export const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
  * @category conversions
  * @since 1.0.0
  */
-export const orElse =
-  <RA, B>(f: (b: RA) => B) =>
-  <I, R, A, Pr>(
-    self: Matcher<I, R, RA, A, Pr>,
-  ): [Pr] extends [never] ? (input: I) => Unify<A | B> : Unify<A | B> => {
-    const result = either(self)
+export const orElse = <RA, B>(f: (b: RA) => B) =>
+<I, R, A, Pr>(
+  self: Matcher<I, R, RA, A, Pr>,
+): [Pr] extends [never] ? (input: I) => Unify<A | B> : Unify<A | B> => {
+  const result = either(self)
 
-    if (E.isEither(result)) {
-      // @ts-expect-error
-      return result._tag === "Right" ? result.right : f(result.left)
-    }
-
+  if (E.isEither(result)) {
     // @ts-expect-error
-    return (input: I) => {
-      const a = result(input)
-      return a._tag === "Right" ? a.right : f(a.left)
-    }
+    return result._tag === "Right" ? result.right : f(result.left)
   }
+
+  // @ts-expect-error
+  return (input: I) => {
+    const a = result(input)
+    return a._tag === "Right" ? a.right : f(a.left)
+  }
+}
 
 /**
  * @category conversions
@@ -679,27 +669,26 @@ export const orElseAbsurd = <I, R, RA, A, Pr>(
  */
 export const either: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>,
-) => [Pr] extends [never]
-  ? (input: I) => E.Either<R, Unify<A>>
+) => [Pr] extends [never] ? (input: I) => E.Either<R, Unify<A>>
   : E.Either<R, Unify<A>> = (<I, R, RA, A>(self: Matcher<I, R, RA, A, I>) => {
-  if (self._tag === "ValueMatcher") {
-    return self.value
-  }
-
-  const len = self.cases.length
-  return (input: I): E.Either<RA, A> => {
-    for (let i = 0; i < len; i++) {
-      const _case = self.cases[i]
-      if (_case._tag === "When" && _case.guard(input) === true) {
-        return E.right(_case.evaluate(input))
-      } else if (_case._tag === "Not" && _case.guard(input) === false) {
-        return E.right(_case.evaluate(input))
-      }
+    if (self._tag === "ValueMatcher") {
+      return self.value
     }
 
-    return E.left(input as any)
-  }
-}) as any
+    const len = self.cases.length
+    return (input: I): E.Either<RA, A> => {
+      for (let i = 0; i < len; i++) {
+        const _case = self.cases[i]
+        if (_case._tag === "When" && _case.guard(input) === true) {
+          return E.right(_case.evaluate(input))
+        } else if (_case._tag === "Not" && _case.guard(input) === false) {
+          return E.right(_case.evaluate(input))
+        }
+      }
+
+      return E.left(input as any)
+    }
+  }) as any
 
 /**
  * @category conversions
@@ -707,22 +696,21 @@ export const either: <I, F, R, A, Pr>(
  */
 export const option: <I, F, R, A, Pr>(
   self: Matcher<I, F, R, A, Pr>,
-) => [Pr] extends [never]
-  ? (input: I) => O.Option<Unify<A>>
+) => [Pr] extends [never] ? (input: I) => O.Option<Unify<A>>
   : O.Option<Unify<A>> = (<I, A>(self: Matcher<I, any, any, A, I>) => {
-  const toEither = either(self)
-  if (E.isEither(toEither)) {
-    return E.match(toEither, {
-      onLeft: () => O.none(),
-      onRight: O.some,
-    })
-  }
-  return (input: I): O.Option<A> =>
-    E.match((toEither as any)(input), {
-      onLeft: () => O.none(),
-      onRight: (_: A) => O.some(_),
-    })
-}) as any
+    const toEither = either(self)
+    if (E.isEither(toEither)) {
+      return E.match(toEither, {
+        onLeft: () => O.none(),
+        onRight: O.some,
+      })
+    }
+    return (input: I): O.Option<A> =>
+      E.match((toEither as any)(input), {
+        onLeft: () => O.none(),
+        onRight: (_: A) => O.some(_),
+      })
+  }) as any
 
 /**
  * @category conversions
@@ -760,20 +748,16 @@ export const exhaustive: <I, F, A, Pr>(
 // combinations
 type WhenMatch<R, P> =
   // check for any
-  [0] extends [1 & R]
-    ? PForMatch<P>
-    : P extends SafeSchema<infer SP, never>
-    ? SP
+  [0] extends [1 & R] ? PForMatch<P>
+    : P extends SafeSchema<infer SP, never> ? SP
     : P extends Refinement<infer _R, infer RP>
-    ? // try to narrow refinement
-      [Extract<R, RP>] extends [infer X]
-      ? [X] extends [never]
-        ? // fallback to original refinement
-          RP
+    // try to narrow refinement
+      ? [Extract<R, RP>] extends [infer X] ? [X] extends [never]
+          // fallback to original refinement
+          ? RP
         : X
       : never
-    : P extends PredicateA<infer PP>
-    ? PP
+    : P extends PredicateA<infer PP> ? PP
     : ExtractMatch<R, PForMatch<P>>
 
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
@@ -784,68 +768,47 @@ type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
-type SafeSchemaP<A> = A extends never
-  ? never
-  : A extends SafeSchema<infer S, infer _>
-  ? S
-  : A extends Function
-  ? A
-  : A extends Record<string, any>
-  ? { [K in keyof A]: SafeSchemaP<A[K]> }
+type SafeSchemaP<A> = A extends never ? never
+  : A extends SafeSchema<infer S, infer _> ? S
+  : A extends Function ? A
+  : A extends Record<string, any> ? { [K in keyof A]: SafeSchemaP<A[K]> }
   : A
 
-type SafeSchemaR<A> = A extends never
-  ? never
-  : A extends SafeSchema<infer _, infer R>
-  ? R
-  : A extends Function
-  ? A
-  : A extends Record<string, any>
-  ? { [K in keyof A]: SafeSchemaR<A[K]> }
+type SafeSchemaR<A> = A extends never ? never
+  : A extends SafeSchema<infer _, infer R> ? R
+  : A extends Function ? A
+  : A extends Record<string, any> ? { [K in keyof A]: SafeSchemaR<A[K]> }
   : A
 
-type ResolvePred<A> = A extends never
-  ? never
-  : A extends Refinement<any, infer P>
-  ? P
-  : A extends Predicate<infer P>
-  ? P
-  : A extends SafeSchema<any>
-  ? A
-  : A extends Record<string, any>
-  ? { [K in keyof A]: ResolvePred<A[K]> }
+type ResolvePred<A> = A extends never ? never
+  : A extends Refinement<any, infer P> ? P
+  : A extends Predicate<infer P> ? P
+  : A extends SafeSchema<any> ? A
+  : A extends Record<string, any> ? { [K in keyof A]: ResolvePred<A[K]> }
   : A
 
-type PredToSchema<A> = A extends never
-  ? never
-  : A extends Refinement<any, infer P>
-  ? SafeSchema<P, P>
-  : A extends Predicate<infer P>
-  ? SafeSchema<P, never>
-  : A extends SafeSchema<any>
-  ? A
-  : A extends Record<string, any>
-  ? { [K in keyof A]: PredToSchema<A[K]> }
+type PredToSchema<A> = A extends never ? never
+  : A extends Refinement<any, infer P> ? SafeSchema<P, P>
+  : A extends Predicate<infer P> ? SafeSchema<P, never>
+  : A extends SafeSchema<any> ? A
+  : A extends Record<string, any> ? { [K in keyof A]: PredToSchema<A[K]> }
   : NonLiteralsTo<A, never>
 
 type NonLiteralsTo<A, T> = [A] extends [string | number | boolean | bigint]
-  ? [string] extends [A]
-    ? T
-    : [number] extends [A]
-    ? T
-    : [boolean] extends [A]
-    ? T
-    : [bigint] extends [A]
-    ? T
-    : A
+  ? [string] extends [A] ? T
+  : [number] extends [A] ? T
+  : [boolean] extends [A] ? T
+  : [bigint] extends [A] ? T
+  : A
   : A
 
 type PatternBase<A> = A extends ReadonlyArray<infer _T>
   ? ReadonlyArray<any> | PatternPrimitive<A>
-  : A extends Record<string, any>
-  ? Partial<{
-      [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}>
-    }>
+  : A extends Record<string, any> ? Partial<
+      {
+        [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}>
+      }
+    >
   : never
 
 type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
@@ -860,34 +823,25 @@ interface Only<X> {
   readonly _X: X
 }
 
-type AddWithout<A, X> = [A] extends [Without<infer WX>]
-  ? Without<X | WX>
-  : [A] extends [Only<infer OX>]
-  ? Only<Exclude<OX, X>>
+type AddWithout<A, X> = [A] extends [Without<infer WX>] ? Without<X | WX>
+  : [A] extends [Only<infer OX>] ? Only<Exclude<OX, X>>
   : never
 
-type AddOnly<A, X> = [A] extends [Without<infer WX>]
-  ? [X] extends [WX]
-    ? never
-    : Only<X>
-  : [A] extends [Only<infer OX>]
-  ? [X] extends [OX]
-    ? Only<X>
+type AddOnly<A, X> = [A] extends [Without<infer WX>] ? [X] extends [WX] ? never
+  : Only<X>
+  : [A] extends [Only<infer OX>] ? [X] extends [OX] ? Only<X>
     : never
   : never
 
-type ApplyFilters<I, A> = A extends Only<infer X>
-  ? X
-  : A extends Without<infer X>
-  ? Exclude<I, X>
+type ApplyFilters<I, A> = A extends Only<infer X> ? X
+  : A extends Without<infer X> ? Exclude<I, X>
   : never
 
 type Tags<D extends string, P> = P extends Record<D, infer X> ? X : never
 
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
   x: infer R,
-) => any
-  ? R
+) => any ? R
   : never
 
 type ArrayToIntersection<A extends ReadonlyArray<any>> = UnionToIntersection<

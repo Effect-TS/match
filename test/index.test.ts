@@ -521,11 +521,15 @@ describe("Matcher", () => {
         { company: { name: M.string } },
         (_) => [_.status, _.user.name, _.company.name].join(", "),
       ),
-      M.whenAnd({ status: 200 }, { user: { name: M.string } }, (_) =>
-        [_.status, _.user.name].join(", "),
+      M.whenAnd(
+        { status: 200 },
+        { user: { name: M.string } },
+        (_) => [_.status, _.user.name].join(", "),
       ),
-      M.whenAnd({ status: M.number }, { user: { name: M.string } }, (_) =>
-        ["number", _.user.name].join(", "),
+      M.whenAnd(
+        { status: M.number },
+        { user: { name: M.string } },
+        (_) => ["number", _.user.name].join(", "),
       ),
       M.when({ status: M.number }, (_) => "number"),
       M.exhaustive,

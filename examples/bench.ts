@@ -1,9 +1,9 @@
+import { pipe } from "@effect/data/Function"
 import * as Match from "@effect/match"
 import type { TaggedEnum } from "@effect/match/TaggedEnum"
 import { taggedEnum } from "@effect/match/TaggedEnum"
-import { pipe } from "@effect/data/Function"
-import { match } from "ts-pattern"
 import benny from "benny"
+import { match } from "ts-pattern"
 
 const ABC = taggedEnum<{
   A: { a: number }
