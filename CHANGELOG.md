@@ -1,5 +1,17 @@
 # @effect/match
 
+## 0.32.0
+
+### Minor Changes
+
+- [#170](https://github.com/Effect-TS/match/pull/170) [`67effd5`](https://github.com/Effect-TS/match/commit/67effd5090881260c4f3e5333057d2f43a5970c3) Thanks [@tim-smart](https://github.com/tim-smart)! - update dependencies
+
+### Patch Changes
+
+- [#169](https://github.com/Effect-TS/match/pull/169) [`f5b2ff1`](https://github.com/Effect-TS/match/commit/f5b2ff16a928bdce4eac0eb4d4483ff2100a1fa7) Thanks [@tim-smart](https://github.com/tim-smart)! - update build tools
+
+- [#167](https://github.com/Effect-TS/match/pull/167) [`075785b`](https://github.com/Effect-TS/match/commit/075785b943f01be59088e5aaaf253a5faadc9f46) Thanks [@tim-smart](https://github.com/tim-smart)! - use peer deps for /data and /schema
+
 ## 0.31.0
 
 ### Minor Changes
