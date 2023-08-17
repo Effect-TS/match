@@ -11,7 +11,7 @@ Functional pattern matching with the full power of Typescript.
 To install from npm:
 
 ```
-npm install @effect/match
+npm install @effect/data @effect/io @effect/schema @effect/match
 ```
 
 Once you have installed the library, you can import the necessary types and functions from the `@effect/match` module.
