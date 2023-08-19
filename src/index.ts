@@ -10,8 +10,6 @@ import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as P from "@effect/data/Predicate"
 import type { Unify } from "@effect/data/Unify"
 import type { ExtractMatch } from "@effect/match/internal/ExtractMatch"
-import type { LiteralValue } from "@effect/schema/AST"
-import * as S from "@effect/schema/Schema"
 
 /**
  * @category model
@@ -142,12 +140,6 @@ const makePredicate = (pattern: unknown): Predicate<unknown> => {
       return true
     }
   } else if (pattern !== null && typeof pattern === "object") {
-    if (S.isSchema(pattern)) {
-      const validate = S.validateEither(pattern)
-      return (u: unknown) =>
-        validate(u, { onExcessProperty: "ignore" })._tag === "Right"
-    }
-
     const keysAndPredicates = Object.entries(pattern).map(
       ([k, p]) => [k, makePredicate(p)] as const,
     )
@@ -466,67 +458,37 @@ export const not = <
 /**
  * @since 1.0.0
  */
-export const SafeSchemaId = Symbol.for("@effect/match/SafeSchema")
+export const SafeRefinementId = Symbol.for("@effect/match/SafeRefinementId")
 
 /**
  * @since 1.0.0
  */
-export type SafeSchemaId = typeof SafeSchemaId
+export type SafeRefinementId = typeof SafeRefinementId
 
 /**
  * @category model
  * @since 1.0.0
  */
-export interface SafeSchema<A, R = A> {
-  readonly [SafeSchemaId]: SafeSchemaId
+export interface SafeRefinement<A, R = A> {
+  readonly [SafeRefinementId]: SafeRefinementId
   readonly _A: A
   readonly _R: R
 }
 
 /**
- * @since 1.0.0
- */
-export namespace SafeSchema {
-  /**
-   * @since 1.0.0
-   */
-  export type Infer<
-    S extends { readonly _tag: "SafeSchema"; readonly _A: any },
-  > = Parameters<S["_A"]>[0]
-}
-
-/**
- * Use a schema as a predicate, marking it **unsafe**. Unsafe means it contains
- * refinements that could make the pattern not match.
- *
  * @category predicates
  * @since 1.0.0
  */
-export const unsafe = <A>(schema: S.Schema<A>): SafeSchema<A, never> =>
-  schema as any
-
-/**
- * Use a schema as a predicate, marking it **safe**. Safe means **it does not**
- * contain refinements that could make the pattern not match.
- *
- * @category predicates
- * @since 1.0.0
- */
-export const safe = <A>(schema: S.Schema<A, A>): SafeSchema<A, A> =>
-  schema as any
-
-/**
- * @category predicates
- * @since 1.0.0
- */
-export const nonEmptyString: SafeSchema<string, never> =
+export const nonEmptyString: SafeRefinement<string, never> =
   ((u: unknown) => typeof u === "string" && u.length > 0) as any
 
 /**
  * @category predicates
  * @since 1.0.0
  */
-export const is: <Literals extends ReadonlyArray<LiteralValue>>(
+export const is: <
+  Literals extends ReadonlyArray<string | number | boolean | null | bigint>,
+>(
   ...literals: Literals
 ) => Refinement<unknown, Literals[number]> = (...literals): any => {
   const len = literals.length
@@ -556,7 +518,7 @@ export const number: Refinement<unknown, number> = P.isNumber
  * @category predicates
  * @since 1.0.0
  */
-export const any: SafeSchema<unknown, any> = (() => true) as any
+export const any: SafeRefinement<unknown, any> = (() => true) as any
 
 /**
  * @category predicates
@@ -619,7 +581,7 @@ export const record: Refinement<
  */
 export const instanceOf = <A extends abstract new(...args: any) => any>(
   constructor: A,
-): SafeSchema<InstanceType<A>, never> =>
+): SafeRefinement<InstanceType<A>, never> =>
   ((u: unknown) => u instanceof constructor) as any
 
 /**
@@ -628,7 +590,7 @@ export const instanceOf = <A extends abstract new(...args: any) => any>(
  */
 export const instanceOfUnsafe: <A extends abstract new(...args: any) => any>(
   constructor: A,
-) => SafeSchema<InstanceType<A>, InstanceType<A>> = instanceOf
+) => SafeRefinement<InstanceType<A>, InstanceType<A>> = instanceOf
 
 /**
  * @category conversions
@@ -749,7 +711,7 @@ export const exhaustive: <I, F, A, Pr>(
 type WhenMatch<R, P> =
   // check for any
   [0] extends [1 & R] ? PForMatch<P>
-    : P extends SafeSchema<infer SP, never> ? SP
+    : P extends SafeRefinement<infer SP, never> ? SP
     : P extends Refinement<infer _R, infer RP>
     // try to narrow refinement
       ? [Extract<R, RP>] extends [infer X] ? [X] extends [never]
@@ -762,36 +724,36 @@ type WhenMatch<R, P> =
 
 type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 
-type PForMatch<P> = SafeSchemaP<ResolvePred<P>>
-type PForExclude<P> = SafeSchemaR<PredToSchema<P>>
+type PForMatch<P> = SafeRefinementP<ResolvePred<P>>
+type PForExclude<P> = SafeRefinementR<ToSafeRefinement<P>>
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
 
-type SafeSchemaP<A> = A extends never ? never
-  : A extends SafeSchema<infer S, infer _> ? S
+type SafeRefinementP<A> = A extends never ? never
+  : A extends SafeRefinement<infer S, infer _> ? S
   : A extends Function ? A
-  : A extends Record<string, any> ? { [K in keyof A]: SafeSchemaP<A[K]> }
+  : A extends Record<string, any> ? { [K in keyof A]: SafeRefinementP<A[K]> }
   : A
 
-type SafeSchemaR<A> = A extends never ? never
-  : A extends SafeSchema<infer _, infer R> ? R
+type SafeRefinementR<A> = A extends never ? never
+  : A extends SafeRefinement<infer _, infer R> ? R
   : A extends Function ? A
-  : A extends Record<string, any> ? { [K in keyof A]: SafeSchemaR<A[K]> }
+  : A extends Record<string, any> ? { [K in keyof A]: SafeRefinementR<A[K]> }
   : A
 
 type ResolvePred<A> = A extends never ? never
   : A extends Refinement<any, infer P> ? P
   : A extends Predicate<infer P> ? P
-  : A extends SafeSchema<any> ? A
+  : A extends SafeRefinement<any> ? A
   : A extends Record<string, any> ? { [K in keyof A]: ResolvePred<A[K]> }
   : A
 
-type PredToSchema<A> = A extends never ? never
-  : A extends Refinement<any, infer P> ? SafeSchema<P, P>
-  : A extends Predicate<infer P> ? SafeSchema<P, never>
-  : A extends SafeSchema<any> ? A
-  : A extends Record<string, any> ? { [K in keyof A]: PredToSchema<A[K]> }
+type ToSafeRefinement<A> = A extends never ? never
+  : A extends Refinement<any, infer P> ? SafeRefinement<P, P>
+  : A extends Predicate<infer P> ? SafeRefinement<P, never>
+  : A extends SafeRefinement<any> ? A
+  : A extends Record<string, any> ? { [K in keyof A]: ToSafeRefinement<A[K]> }
   : NonLiteralsTo<A, never>
 
 type NonLiteralsTo<A, T> = [A] extends [string | number | boolean | bigint]
@@ -811,7 +773,7 @@ type PatternBase<A> = A extends ReadonlyArray<infer _T>
     >
   : never
 
-type PatternPrimitive<A> = PredicateA<A> | A | SafeSchema<any>
+type PatternPrimitive<A> = PredicateA<A> | A | SafeRefinement<any>
 
 interface Without<X> {
   readonly _tag: "Without"

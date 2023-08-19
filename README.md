@@ -85,7 +85,7 @@ console.log(match({ age: 4 })) // "4 is too young"
 
 ### `not` patterns
 
-`not` lets you match on everything but a specific value or Schema.
+`not` lets you match on everything but a specific value.
 
 ```ts
 import * as Match from "@effect/match"
@@ -129,7 +129,7 @@ A Matcher that _might_ match a value. Returns an [Option](https://github.com/fp-
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@effect/data/Either";
+import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
@@ -149,7 +149,7 @@ A Matcher that marks the end of the matching process and checks if all possible 
 
 ```ts
 import * as Match from "@effect/match"
-import * as E from "@effect/data/Either";
+import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 
 // type Either<L, R> = { _tag: "Right", right: R } | { _tag: "Left", left: L }
@@ -158,7 +158,6 @@ const result = pipe(
   Match.when({ _tag: "Right" }, (_) => _.right),
   Match.exhaustive, // TypeError! { _tag: "left", left: never } is not assignable to never
 )
-
 ```
 
 ### `orElse`
@@ -179,7 +178,6 @@ console.log(match("hello")) // "I literally do not understand"
 console.log(match("hi")) // "hello"
 ```
 
-
 ### `either`
 
 A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-ts/core/blob/main/guides/Either.md) in the shape of `Either<NoMatchResult, MatchResult>`.
@@ -187,7 +185,6 @@ A Matcher that _might_ match a value. Returns an [Either](https://github.com/fp-
 ```ts
 import * as Match from "@effect/match"
 import { pipe } from "@effect/data/Function"
-
 
 const match = pipe(
   Match.type<string>(),

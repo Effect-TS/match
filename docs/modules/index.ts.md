@@ -36,7 +36,7 @@ Added in v1.0.0
   - [orElseAbsurd](#orelseabsurd)
 - [model](#model)
   - [Matcher (type alias)](#matcher-type-alias)
-  - [SafeSchema (interface)](#safeschema-interface)
+  - [SafeRefinement (interface)](#saferefinement-interface)
 - [predicates](#predicates)
   - [any](#any)
   - [bigint](#bigint)
@@ -50,13 +50,11 @@ Added in v1.0.0
   - [null](#null)
   - [number](#number)
   - [record](#record)
-  - [safe](#safe)
   - [string](#string)
   - [undefined](#undefined)
-  - [unsafe](#unsafe)
 - [utils](#utils)
-  - [SafeSchemaId](#safeschemaid)
-  - [SafeSchemaId (type alias)](#safeschemaid-type-alias)
+  - [SafeRefinementId](#saferefinementid)
+  - [SafeRefinementId (type alias)](#saferefinementid-type-alias)
 
 ---
 
@@ -130,7 +128,7 @@ Added in v1.0.0
 export declare const not: <
   R,
   const P extends PatternPrimitive<R> | PatternBase<R>,
-  Fn extends (_: Exclude<R, ExtractMatch<R, SafeSchemaR<PredToSchema<P>>>>) => unknown
+  Fn extends (_: Exclude<R, ExtractMatch<R, SafeRefinementR<ToSafeRefinement<P>>>>) => unknown
 >(
   pattern: P,
   f: Fn
@@ -211,8 +209,8 @@ export declare const when: <
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<F, SafeSchemaR<PredToSchema<P>>>,
-  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P>>>>,
+  AddWithout<F, SafeRefinementR<ToSafeRefinement<P>>>,
+  ApplyFilters<I, AddWithout<F, SafeRefinementR<ToSafeRefinement<P>>>>,
   A | ReturnType<Fn>,
   Pr
 >
@@ -235,8 +233,8 @@ export declare const whenAnd: <
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>,
-  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<UnionToIntersection<P[number]>>>>>,
+  AddWithout<F, SafeRefinementR<ToSafeRefinement<UnionToIntersection<P[number]>>>>,
+  ApplyFilters<I, AddWithout<F, SafeRefinementR<ToSafeRefinement<UnionToIntersection<P[number]>>>>>,
   A | ReturnType<Fn>,
   Pr
 >
@@ -259,8 +257,8 @@ export declare const whenOr: <
   self: Matcher<I, F, R, A, Pr>
 ) => Matcher<
   I,
-  AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>,
-  ApplyFilters<I, AddWithout<F, SafeSchemaR<PredToSchema<P[number]>>>>,
+  AddWithout<F, SafeRefinementR<ToSafeRefinement<P[number]>>>,
+  ApplyFilters<I, AddWithout<F, SafeRefinementR<ToSafeRefinement<P[number]>>>>,
   A | ReturnType<Fn>,
   Pr
 >
@@ -395,13 +393,13 @@ export type Matcher<Input, Filters, RemainingApplied, Result, Provided> =
 
 Added in v1.0.0
 
-## SafeSchema (interface)
+## SafeRefinement (interface)
 
 **Signature**
 
 ```ts
-export interface SafeSchema<A, R = A> {
-  readonly [SafeSchemaId]: SafeSchemaId
+export interface SafeRefinement<A, R = A> {
+  readonly [SafeRefinementId]: SafeRefinementId
   readonly _A: A
   readonly _R: R
 }
@@ -416,7 +414,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const any: SafeSchema<unknown, any>
+export declare const any: SafeRefinement<unknown, any>
 ```
 
 Added in v1.0.0
@@ -468,7 +466,7 @@ Added in v1.0.0
 ```ts
 export declare const instanceOf: <A extends abstract new (...args: any) => any>(
   constructor: A
-) => SafeSchema<InstanceType<A>, never>
+) => SafeRefinement<InstanceType<A>, never>
 ```
 
 Added in v1.0.0
@@ -480,7 +478,7 @@ Added in v1.0.0
 ```ts
 export declare const instanceOfUnsafe: <A extends abstract new (...args: any) => any>(
   constructor: A
-) => SafeSchema<InstanceType<A>, InstanceType<A>>
+) => SafeRefinement<InstanceType<A>, InstanceType<A>>
 ```
 
 Added in v1.0.0
@@ -490,7 +488,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const is: <Literals extends readonly LiteralValue[]>(
+export declare const is: <Literals extends readonly (string | number | bigint | boolean | null)[]>(
   ...literals: Literals
 ) => Refinement<unknown, Literals[number]>
 ```
@@ -502,7 +500,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const nonEmptyString: SafeSchema<string, never>
+export declare const nonEmptyString: SafeRefinement<string, never>
 ```
 
 Added in v1.0.0
@@ -537,19 +535,6 @@ export declare const record: Refinement<unknown, { [k: string]: any; [k: symbol]
 
 Added in v1.0.0
 
-## safe
-
-Use a schema as a predicate, marking it **safe**. Safe means **it does not**
-contain refinements that could make the pattern not match.
-
-**Signature**
-
-```ts
-export declare const safe: <A>(schema: S.Schema<A, A>) => SafeSchema<A, A>
-```
-
-Added in v1.0.0
-
 ## string
 
 **Signature**
@@ -570,37 +555,24 @@ export declare const undefined: Refinement<unknown, undefined>
 
 Added in v1.0.0
 
-## unsafe
-
-Use a schema as a predicate, marking it **unsafe**. Unsafe means it contains
-refinements that could make the pattern not match.
-
-**Signature**
-
-```ts
-export declare const unsafe: <A>(schema: S.Schema<A, A>) => SafeSchema<A, never>
-```
-
-Added in v1.0.0
-
 # utils
 
-## SafeSchemaId
+## SafeRefinementId
 
 **Signature**
 
 ```ts
-export declare const SafeSchemaId: typeof SafeSchemaId
+export declare const SafeRefinementId: typeof SafeRefinementId
 ```
 
 Added in v1.0.0
 
-## SafeSchemaId (type alias)
+## SafeRefinementId (type alias)
 
 **Signature**
 
 ```ts
-export type SafeSchemaId = typeof SafeSchemaId
+export type SafeRefinementId = typeof SafeRefinementId
 ```
 
 Added in v1.0.0

@@ -4,7 +4,6 @@ import * as O from "@effect/data/Option"
 import * as Predicate from "@effect/data/Predicate"
 import * as M from "@effect/match"
 import { typeEquals } from "@effect/match/test/utils/typeEquals"
-import * as S from "@effect/schema/Schema"
 
 describe("Matcher", () => {
   it("exhaustive", () => {
@@ -216,7 +215,7 @@ describe("Matcher", () => {
         (_) => _.foo.bar.baz.qux,
       ),
       M.when(
-        { foo: { bar: { baz: { qux: M.safe(S.string) } } } },
+        { foo: { bar: { baz: { qux: M.string } } } },
         (_) => _.foo.bar.baz.qux,
       ),
       M.when({ foo: { bar: null } }, (_) => _.foo.bar),
