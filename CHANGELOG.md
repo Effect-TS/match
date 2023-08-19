@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.33.0
+
+### Minor Changes
+
+- [#173](https://github.com/Effect-TS/match/pull/173) [`7c99a42`](https://github.com/Effect-TS/match/commit/7c99a42ac2730479dc1364d97d7e2d8139d4ecf5) Thanks [@tim-smart](https://github.com/tim-smart)! - remove /schema dependency
+
 ## 0.32.0
 
 ### Minor Changes
