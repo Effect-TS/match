@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.34.0
+
+### Minor Changes
+
+- [#175](https://github.com/Effect-TS/match/pull/175) [`36ca9f9`](https://github.com/Effect-TS/match/commit/36ca9f9507326dab3e547a06dcd0f235f9466a6b) Thanks [@tim-smart](https://github.com/tim-smart)! - remove TaggedEnum/ADT modules (moved to @effect/data/Data)
+
 ## 0.33.0
 
 ### Minor Changes
