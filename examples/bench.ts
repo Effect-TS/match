@@ -1,16 +1,15 @@
+import * as Data from "@effect/data/Data"
 import { pipe } from "@effect/data/Function"
 import * as Match from "@effect/match"
-import type { TaggedEnum } from "@effect/match/TaggedEnum"
-import { taggedEnum } from "@effect/match/TaggedEnum"
 import benny from "benny"
 import { match } from "ts-pattern"
 
-const ABC = taggedEnum<{
+type ABC = Data.TaggedEnum<{
   A: { a: number }
   B: { b: number }
   C: { c: number }
-}>()
-type ABC = TaggedEnum.Infer<typeof ABC>
+}>
+const ABC = Data.taggedEnum<ABC>()
 
 const matchEval = pipe(
   Match.type<ABC>(),
@@ -27,6 +26,15 @@ const matchPatternEval = pipe(
   Match.when({ _tag: "C" }, (_) => _.c),
   Match.exhaustive,
 )
+
+const matchValue = (abc: ABC) =>
+  pipe(
+    Match.value(abc),
+    Match.tag("A", (_) => _.a),
+    Match.tag("B", (_) => _.b),
+    Match.tag("C", (_) => _.c),
+    Match.exhaustive,
+  )
 
 const matchPatternValue = (abc: ABC) =>
   pipe(
@@ -60,6 +68,7 @@ benny.suite(
   "comparison",
   benny.add("@effect/match Match.type/tag", () => matchEval(abc)),
   benny.add("@effect/match Match.type/when", () => matchPatternEval(abc)),
+  benny.add("@effect/match Match.value/tag", () => matchValue(abc)),
   benny.add("@effect/match Match.value/when", () => matchPatternValue(abc)),
   benny.add("ts-pattern", () => tspEval(abc)),
   benny.add("if/else", () => ifElseEval(abc)),
