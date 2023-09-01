@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.35.1
+
+### Patch Changes
+
+- [#179](https://github.com/Effect-TS/match/pull/179) [`e658ce0`](https://github.com/Effect-TS/match/commit/e658ce09a3ff012faa0bcfcb8e2fcf0783ec0626) Thanks [@tim-smart](https://github.com/tim-smart)! - bump peer deps
+
 ## 0.35.0
 
 ### Minor Changes
