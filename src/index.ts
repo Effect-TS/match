@@ -354,6 +354,33 @@ export const discriminator =
  * @category combinators
  * @since 1.0.0
  */
+export const discriminatorStartsWith =
+  <D extends string>(field: D) =>
+  <R, P extends string, B>(
+    pattern: P,
+    f: (_: Extract<R, Record<D, P | `${P}${string}`>>) => B,
+  ) => {
+    const pred = (_: any) =>
+      typeof _[field] === "string" && _[field].startsWith(pattern)
+
+    return <I, F, A, Pr>(
+      self: Matcher<I, F, R, A, Pr>,
+    ): Matcher<
+      I,
+      AddWithout<F, Extract<R, Record<D, P | `${P}${string}`>>>,
+      ApplyFilters<
+        I,
+        AddWithout<F, Extract<R, Record<D, P | `${P}${string}`>>>
+      >,
+      A | B,
+      Pr
+    > => (self as any).add(new When(pred, f as any)) as any
+  }
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
 export const discriminators = <D extends string>(field: D) =>
 <
   R,
@@ -419,7 +446,27 @@ export const discriminatorsExhaustive: <D extends string>(
  * @category combinators
  * @since 1.0.0
  */
-export const tag = discriminator("_tag")
+export const tag: <R, P extends Tags<"_tag", R> & string, B>(
+  ...pattern: [
+    first: P,
+    ...values: Array<P>,
+    f: (_: Extract<R, Record<"_tag", P>>) => B,
+  ]
+) => <I, F, A, Pr>(
+  self: Matcher<I, F, R, A, Pr>,
+) => Matcher<
+  I,
+  AddWithout<F, Extract<R, Record<"_tag", P>>>,
+  ApplyFilters<I, AddWithout<F, Extract<R, Record<"_tag", P>>>>,
+  B | A,
+  Pr
+> = discriminator("_tag")
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const tagStartsWith = discriminatorStartsWith("_tag")
 
 /**
  * @category combinators

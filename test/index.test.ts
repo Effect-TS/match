@@ -766,4 +766,17 @@ describe("Matcher", () => {
       E.Either<{ a: number; b: string }, string>
     >() satisfies true
   })
+
+  it("discriminatorStartsWith", () => {
+    const match = pipe(
+      M.type<{ type: "A" } | { type: "B" } | { type: "A.A" } | {}>(),
+      M.discriminatorStartsWith("type")("A", (_) => 1 as const),
+      M.discriminatorStartsWith("type")("B", (_) => 2 as const),
+      M.orElse((_) => 3 as const),
+    )
+    expect(match({ type: "A" })).toEqual(1)
+    expect(match({ type: "A.A" })).toEqual(1)
+    expect(match({ type: "B" })).toEqual(2)
+    expect(match({})).toEqual(3)
+  })
 })
