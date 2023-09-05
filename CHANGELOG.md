@@ -1,5 +1,13 @@
 # @effect/match
 
+## 0.35.2
+
+### Patch Changes
+
+- [#181](https://github.com/Effect-TS/match/pull/181) [`14e0676`](https://github.com/Effect-TS/match/commit/14e06767f5a28419d2e5c474f19aad57e4e92860) Thanks [@tim-smart](https://github.com/tim-smart)! - add discriminatorStartsWith & tagStartsWith
+
+- [#183](https://github.com/Effect-TS/match/pull/183) [`9403c5e`](https://github.com/Effect-TS/match/commit/9403c5ec1e713961cd1e44751f782a1a99693eb7) Thanks [@tim-smart](https://github.com/tim-smart)! - restructure modules
+
 ## 0.35.1
 
 ### Patch Changes
