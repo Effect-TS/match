@@ -122,7 +122,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type PForExclude<P> = SafeRefinementR<ToSafeRefinement<P>>
+export type PForExclude<P> = [SafeRefinementR<ToSafeRefinement<P>>] extends [infer X] ? X : never
 ```
 
 Added in v1.0.0
@@ -132,7 +132,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type PForMatch<P> = SafeRefinementP<ResolvePred<P>>
+export type PForMatch<P> = [SafeRefinementP<ResolvePred<P>>] extends [infer X] ? X : never
 ```
 
 Added in v1.0.0
@@ -145,9 +145,7 @@ Added in v1.0.0
 export type PatternBase<A> = A extends ReadonlyArray<infer _T>
   ? ReadonlyArray<any> | PatternPrimitive<A>
   : A extends Record<string, any>
-  ? Partial<{
-      [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}>
-    }>
+  ? Partial<DrainOuterGeneric<{ [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}> }>>
   : never
 ```
 
