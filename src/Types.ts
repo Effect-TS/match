@@ -31,12 +31,16 @@ export type NotMatch<R, P> = Exclude<R, ExtractMatch<R, PForExclude<P>>>
 /**
  * @since 1.0.0
  */
-export type PForMatch<P> = SafeRefinementP<ResolvePred<P>>
+export type PForMatch<P> = [SafeRefinementP<ResolvePred<P>>] extends [infer X]
+  ? X
+  : never
 
 /**
  * @since 1.0.0
  */
-export type PForExclude<P> = SafeRefinementR<ToSafeRefinement<P>>
+export type PForExclude<P> = [SafeRefinementR<ToSafeRefinement<P>>] extends
+  [infer X] ? X
+  : never
 
 // utilities
 type PredicateA<A> = Predicate<A> | Refinement<A, A>
@@ -44,27 +48,31 @@ type PredicateA<A> = Predicate<A> | Refinement<A, A>
 type SafeRefinementP<A> = A extends never ? never
   : A extends SafeRefinement<infer S, infer _> ? S
   : A extends Function ? A
-  : A extends Record<string, any> ? { [K in keyof A]: SafeRefinementP<A[K]> }
+  : A extends Record<string, any>
+    ? DrainOuterGeneric<{ [K in keyof A]: SafeRefinementP<A[K]> }>
   : A
 
 type SafeRefinementR<A> = A extends never ? never
   : A extends SafeRefinement<infer _, infer R> ? R
   : A extends Function ? A
-  : A extends Record<string, any> ? { [K in keyof A]: SafeRefinementR<A[K]> }
+  : A extends Record<string, any>
+    ? DrainOuterGeneric<{ [K in keyof A]: SafeRefinementR<A[K]> }>
   : A
 
 type ResolvePred<A> = A extends never ? never
   : A extends Refinement<any, infer P> ? P
   : A extends Predicate<infer P> ? P
   : A extends SafeRefinement<any> ? A
-  : A extends Record<string, any> ? { [K in keyof A]: ResolvePred<A[K]> }
+  : A extends Record<string, any>
+    ? DrainOuterGeneric<{ [K in keyof A]: ResolvePred<A[K]> }>
   : A
 
 type ToSafeRefinement<A> = A extends never ? never
   : A extends Refinement<any, infer P> ? SafeRefinement<P, P>
   : A extends Predicate<infer P> ? SafeRefinement<P, never>
   : A extends SafeRefinement<any> ? A
-  : A extends Record<string, any> ? { [K in keyof A]: ToSafeRefinement<A[K]> }
+  : A extends Record<string, any>
+    ? DrainOuterGeneric<{ [K in keyof A]: ToSafeRefinement<A[K]> }>
   : NonLiteralsTo<A, never>
 
 type NonLiteralsTo<A, T> = [A] extends [string | number | boolean | bigint]
@@ -75,15 +83,17 @@ type NonLiteralsTo<A, T> = [A] extends [string | number | boolean | bigint]
   : A
   : A
 
+type DrainOuterGeneric<T> = [T] extends [unknown] ? T : never
+
 /**
  * @since 1.0.0
  */
 export type PatternBase<A> = A extends ReadonlyArray<infer _T>
   ? ReadonlyArray<any> | PatternPrimitive<A>
   : A extends Record<string, any> ? Partial<
-      {
-        [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}>
-      }
+      DrainOuterGeneric<
+        { [K in keyof A]: PatternPrimitive<A[K] & {}> | PatternBase<A[K] & {}> }
+      >
     >
   : never
 
@@ -207,16 +217,22 @@ type ExtractAndNarrow<I, P> =
   // unknown is a wildcard pattern
   unknown extends P ? I
     : IsUnion<I> extends true
-      ? ListOf<I> extends infer L
-        ? L extends Array<any>
-          ? Exclude<{ [K in keyof L]: ExtractAndNarrow<L[K], P> }[number], Fail>
+      ? ListOf<I> extends infer L ? L extends Array<any> ? Exclude<
+            DrainOuterGeneric<
+              { [K in keyof L]: ExtractAndNarrow<L[K], P> }
+            >[number],
+            Fail
+          >
         : never
       : never
-    : I extends ReadonlyArray<any> ? P extends ReadonlyArray<any> ? {
-          readonly [K in keyof I]: K extends keyof P
-            ? ExtractAndNarrow<I[K], P[K]>
-            : I[K]
-        } extends infer R ? Fail extends R[keyof R] ? never
+    : I extends ReadonlyArray<any>
+      ? P extends ReadonlyArray<any> ? DrainOuterGeneric<
+          {
+            readonly [K in keyof I]: K extends keyof P
+              ? ExtractAndNarrow<I[K], P[K]>
+              : I[K]
+          }
+        > extends infer R ? Fail extends R[keyof R] ? never
           : R
         : never
       : never
@@ -225,9 +241,11 @@ type ExtractAndNarrow<I, P> =
       : symbol extends keyof I ? I extends P ? I
         : never
       : Simplify<
-        {
-          [RK in Extract<keyof I, keyof P>]-?: ExtractAndNarrow<I[RK], P[RK]>
-        } & Omit<I, keyof P>
+        DrainOuterGeneric<
+          {
+            [RK in Extract<keyof I, keyof P>]-?: ExtractAndNarrow<I[RK], P[RK]>
+          }
+        > & Omit<I, keyof P>
       > extends infer R ? [keyof P] extends [keyof RemoveFails<R>] ? R
         : never
       : never
