@@ -1,7 +1,7 @@
-import * as Data from "@effect/data/Data"
-import { pipe } from "@effect/data/Function"
 import * as Match from "@effect/match"
 import benny from "benny"
+import * as Data from "effect/Data"
+import { pipe } from "effect/Function"
 import { match } from "ts-pattern"
 
 type ABC = Data.TaggedEnum<{
