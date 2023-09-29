@@ -23,9 +23,6 @@ devDependencies:
   '@effect/build-utils':
     specifier: ^0.1.4
     version: 0.1.4
-  '@effect/data':
-    specifier: ^0.18.3
-    version: 0.18.3
   '@effect/docgen':
     specifier: ^0.1.4
     version: 0.1.4(@types/node@20.5.7)(typescript@5.2.2)
@@ -59,6 +56,9 @@ devDependencies:
   concurrently:
     specifier: ^8.2.1
     version: 8.2.1
+  effect:
+    specifier: 2.0.0-next.37
+    version: 2.0.0-next.37
   eslint:
     specifier: ^8.48.0
     version: 8.48.0
@@ -652,10 +652,6 @@ packages:
     resolution: {integrity: sha512-eQs28z44SHdDR0lFyO0e+0R6+kx0yNqzXOOKgbQOssDaoqXyEutiFfde2aSWBvcQRS7yt0WW6dYNQ2y7jYFK9Q==}
     engines: {node: '>=16.17.1'}
     hasBin: true
-    dev: true
-
-  /@effect/data@0.18.3:
-    resolution: {integrity: sha512-xNG4CwxE758EK0v81EIPnKv9QeU/x9st1Doab/Fjf7sb9V3n55C85aBiKChpKgGD8pKCPHcjGydLsRHVUvzpwg==}
     dev: true
 
   /@effect/docgen@0.1.4(@types/node@20.5.7)(typescript@5.2.2):
@@ -2386,6 +2382,10 @@ packages:
 
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+    dev: true
+
+  /effect@2.0.0-next.37:
+    resolution: {integrity: sha512-poONzql/x5pn9ZtsmabqiPPZPuiGJoMUoZccGMaCZWYY1DSD8klYNviQEker1BDU0szr+J7bmyFFjgdYT3BVfQ==}
     dev: true
 
   /electron-to-chromium@1.4.507:

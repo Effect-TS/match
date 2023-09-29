@@ -1,12 +1,12 @@
-import * as Either from "@effect/data/Either"
-import { identity } from "@effect/data/Function"
-import * as Option from "@effect/data/Option"
-import { pipeArguments } from "@effect/data/Pipeable"
-import type * as Predicate from "@effect/data/Predicate"
-import type { Unify } from "@effect/data/Unify"
 import type * as Match from "@effect/match"
 import type { SafeRefinement } from "@effect/match/SafeRefinement"
 import type * as Types from "@effect/match/Types"
+import * as Either from "effect/Either"
+import { identity } from "effect/Function"
+import * as Option from "effect/Option"
+import { pipeArguments } from "effect/Pipeable"
+import type * as Predicate from "effect/Predicate"
+import type { Unify } from "effect/Unify"
 
 /** @internal */
 export const TypeId: Match.MatcherTypeId = Symbol.for(

@@ -1,9 +1,9 @@
-import * as E from "@effect/data/Either"
-import { pipe } from "@effect/data/Function"
-import * as O from "@effect/data/Option"
-import * as Predicate from "@effect/data/Predicate"
 import * as M from "@effect/match"
 import { typeEquals } from "@effect/match/test/utils/typeEquals"
+import * as E from "effect/Either"
+import { pipe } from "effect/Function"
+import * as O from "effect/Option"
+import * as Predicate from "effect/Predicate"
 
 describe("Matcher", () => {
   it("exhaustive", () => {
