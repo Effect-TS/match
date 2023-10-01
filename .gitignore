@@ -4,6 +4,7 @@ node_modules/
 yarn-error.log
 .ultra.cache.json
 .DS_Store
+.direnv/
 tmp/
 build/
 dist/
