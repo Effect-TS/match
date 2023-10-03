@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
-import type { SafeRefinement } from "./SafeRefinement"
 import type { Predicate, Refinement } from "effect/Predicate"
 import type { UnionToIntersection } from "effect/Types"
+import type { SafeRefinement } from "./SafeRefinement"
 
 /**
  * @since 1.0.0
