@@ -23,8 +23,8 @@ devDependencies:
     specifier: ^2.26.2
     version: 2.26.2
   '@effect/build-utils':
-    specifier: ^0.1.4
-    version: 0.1.4
+    specifier: ^0.1.5
+    version: 0.1.5
   '@effect/docgen':
     specifier: ^0.1.8
     version: 0.1.8(@types/node@20.8.2)(typescript@5.2.2)
@@ -58,12 +58,9 @@ devDependencies:
   benny:
     specifier: ^3.7.1
     version: 3.7.1
-  concurrently:
-    specifier: ^8.2.1
-    version: 8.2.1
   effect:
-    specifier: 2.0.0-next.42
-    version: 2.0.0-next.42
+    specifier: 2.0.0-next.44
+    version: 2.0.0-next.44
   eslint:
     specifier: ^8.50.0
     version: 8.50.0
@@ -85,15 +82,9 @@ devDependencies:
   eslint-plugin-sort-destructure-keys:
     specifier: ^1.5.0
     version: 1.5.0(eslint@8.50.0)
-  glob:
-    specifier: ^10.3.10
-    version: 10.3.10
   madge:
     specifier: ^6.1.0
     version: 6.1.0(typescript@5.2.2)
-  rimraf:
-    specifier: ^5.0.5
-    version: 5.0.5
   ts-node:
     specifier: ^10.9.1
     version: 10.9.1(@types/node@20.8.2)(typescript@5.2.2)
@@ -715,8 +706,8 @@ packages:
     resolution: {integrity: sha512-rPwwm/RrFIolz6xHa8Kzpshuwpe+xu/XcEw9iUmRF2tnyIwxxaW7XoFKaQ+GfPju81cKpH4vJeq7/2IizKvyjg==}
     dev: true
 
-  /@effect/build-utils@0.1.4:
-    resolution: {integrity: sha512-eQs28z44SHdDR0lFyO0e+0R6+kx0yNqzXOOKgbQOssDaoqXyEutiFfde2aSWBvcQRS7yt0WW6dYNQ2y7jYFK9Q==}
+  /@effect/build-utils@0.1.5:
+    resolution: {integrity: sha512-j1ggCQnhIQ4TZaEAc2xyQXC2ChWsbIziwxDwKqBH6xL2VZDCEpxkNKPhN66QLJFVOuv/POUI9mzOKRZVde6LVQ==}
     engines: {node: '>=16.17.1'}
     hasBin: true
     dev: true
@@ -2152,22 +2143,6 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /concurrently@8.2.1:
-    resolution: {integrity: sha512-nVraf3aXOpIcNud5pB9M82p1tynmZkrSGQ1p6X/VY8cJ+2LMVqAgXsJxYYefACSHbTYlm92O1xuhdGTjwoEvbQ==}
-    engines: {node: ^14.13.0 || >=16.0.0}
-    hasBin: true
-    dependencies:
-      chalk: 4.1.2
-      date-fns: 2.30.0
-      lodash: 4.17.21
-      rxjs: 7.8.1
-      shell-quote: 1.8.1
-      spawn-command: 0.0.2
-      supports-color: 8.1.1
-      tree-kill: 1.2.2
-      yargs: 17.7.2
-    dev: true
-
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
     dev: true
@@ -2229,13 +2204,6 @@ packages:
 
   /dataloader@2.2.2:
     resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
-    dev: true
-
-  /date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
-    dependencies:
-      '@babel/runtime': 7.23.1
     dev: true
 
   /debug@3.2.7:
@@ -2547,8 +2515,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /effect@2.0.0-next.42:
-    resolution: {integrity: sha512-ydeSVYDmX70CPyUmZ12SNEQZrzynBmzmxm8An4kl3Bpw8GPbZhkpjb0z41+6vBKiuIAhko3icspLy71qIAytEA==}
+  /effect@2.0.0-next.44:
+    resolution: {integrity: sha512-0oBnoqWW5u1b0AhmDiGZ/TX8La697YcCrTacEBU7v+gKZeH+bbVJwPEqesGagot0sErBrvyE0H9h7Si4lHhkuA==}
     dev: true
 
   /electron-to-chromium@1.4.539:
@@ -5166,12 +5134,6 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
-  /rxjs@7.8.1:
-    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
-    dependencies:
-      tslib: 2.6.2
-    dev: true
-
   /safe-array-concat@1.0.1:
     resolution: {integrity: sha512-6XbUAseYE2KtOuGueyeobCySj9L4+66Tn6KQMOPQJrAJEowYKW/YR/MGJZl7FdydUdaFu4LYyDZjxf4/Nmo23Q==}
     engines: {node: '>=0.4'}
@@ -5272,10 +5234,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /shell-quote@1.8.1:
-    resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
-    dev: true
-
   /side-channel@1.0.4:
     resolution: {integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==}
     dependencies:
@@ -5349,10 +5307,6 @@ packages:
   /sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
     deprecated: Please use @jridgewell/sourcemap-codec instead
-    dev: true
-
-  /spawn-command@0.0.2:
-    resolution: {integrity: sha512-zC8zGoGkmc8J9ndvml8Xksr1Amk9qBujgbF0JAIWO7kXr43w0h/0GJNM/Vustixu+YE8N/MTrQ7N31FvHUACxQ==}
     dev: true
 
   /spawndamnit@2.0.0:
@@ -5570,13 +5524,6 @@ packages:
       has-flag: 4.0.0
     dev: true
 
-  /supports-color@8.1.1:
-    resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
-    engines: {node: '>=10'}
-    dependencies:
-      has-flag: 4.0.0
-    dev: true
-
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
@@ -5665,11 +5612,6 @@ packages:
 
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
-    dev: true
-
-  /tree-kill@1.2.2:
-    resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
-    hasBin: true
     dev: true
 
   /trim-newlines@3.0.1:
