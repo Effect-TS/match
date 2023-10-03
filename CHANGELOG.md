@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.37.0
+
+### Minor Changes
+
+- [#189](https://github.com/Effect-TS/match/pull/189) [`213d831`](https://github.com/Effect-TS/match/commit/213d831d178a6889eaf017dd3067cf2f38c59b56) Thanks [@tim-smart](https://github.com/tim-smart)! - update deps & use preconstruct
+
 ## 0.36.1
 
 ### Patch Changes
