@@ -5,7 +5,7 @@
 /**
  * @since 1.0.0
  */
-export const SafeRefinementId = Symbol.for("@effect/match/SafeRefinement")
+export const SafeRefinementId = Symbol.for("./SafeRefinement")
 
 /**
  * @since 1.0.0

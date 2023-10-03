@@ -1,14 +1,46 @@
 {
-  "extends": "./tsconfig.base.json",
-  "references": [
-    {
-      "path": "./tsconfig.build.json"
+  "compilerOptions": {
+    "moduleDetection": "force",
+    "composite": true,
+    "downlevelIteration": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "preserveSymlinks": true,
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "sourceMap": true,
+    "declarationMap": true,
+    "strict": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noEmitOnError": false,
+    "noErrorTruncation": true,
+    "allowJs": false,
+    "checkJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "stripInternal": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": false,
+    "strictNullChecks": true,
+    "target": "ES2021",
+    "module": "NodeNext",
+    "incremental": true,
+    "removeComments": false,
+    "baseUrl": ".",
+    "paths": {
+      "@effect/match/test/*": ["./test/*.ts"],
+      "@effect/match/*": ["./src/*.ts"],
+      "@effect/match": ["./src/index.ts"]
     },
-    {
-      "path": "./tsconfig.build-test.json"
-    },
-    {
-      "path": "./tsconfig.examples.json"
-    }
-  ]
+    "types": ["vitest/globals", "node"],
+    "plugins": [{ "name": "@effect/language-service" }]
+  },
+  "include": ["src", "test", "examples"]
 }
