@@ -4,9 +4,11 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@effect/match": ["./build/esm/index.js"],
-      "@effect/match/*": ["./build/esm/*"]
+      "@effect/match/test/*": ["./test/*.ts"],
+      "@effect/match/*": ["./src/*.ts"],
+      "@effect/match": ["./src/index.ts"]
     }
   },
-  "include": ["./build/esm/**/*.js"]
+  "include": ["**/*.esm.js"],
+  "exclude": ["node_modules"]
 }

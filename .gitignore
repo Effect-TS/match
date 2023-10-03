@@ -7,3 +7,10 @@ yarn-error.log
 tmp/
 build/
 dist/
+.direnv/
+
+# files
+/dist
+/internal
+/SafeRefinement
+/Types

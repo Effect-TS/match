@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
-import type { SafeRefinement } from "@effect/match/SafeRefinement"
+import type { SafeRefinement } from "./SafeRefinement"
 import type { Predicate, Refinement } from "effect/Predicate"
 import type { UnionToIntersection } from "effect/Types"
 
@@ -187,7 +187,7 @@ type IsUnion<T, U extends T = T> = (
 ) extends false ? false
   : true
 
-const Fail = Symbol.for("@effect/match/Fail")
+const Fail = Symbol.for("./Fail")
 type Fail = typeof Fail
 
 type Replace<A, B> = A extends Function ? A

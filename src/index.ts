@@ -1,14 +1,14 @@
 /**
  * @since 1.0.0
  */
-import * as internal from "@effect/match/internal/matcher"
-import type { SafeRefinement } from "@effect/match/SafeRefinement"
-import type * as Types from "@effect/match/Types"
 import type * as E from "effect/Either"
 import type * as O from "effect/Option"
 import type { Pipeable } from "effect/Pipeable"
 import * as Predicate from "effect/Predicate"
 import type { Unify } from "effect/Unify"
+import * as internal from "./internal/matcher"
+import type { SafeRefinement } from "./SafeRefinement"
+import type * as Types from "./Types"
 
 /**
  * @category type ids

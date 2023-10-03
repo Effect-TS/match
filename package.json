@@ -16,6 +16,17 @@
   },
   "homepage": "https://github.com/effect-ts/match",
   "description": "Pattern matching for TypeScript",
+  "main": "dist/effect-match.cjs.js",
+  "module": "dist/effect-match.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "*.ts"
+    ],
+    "distFilenameStrategy": "full",
+    "exports": {
+      "importConditionDefaultExport": "default"
+    }
+  },
   "tags": [
     "typescript",
     "pattern-matching"
@@ -27,47 +38,54 @@
   "scripts": {
     "example": "ts-node --project tsconfig.examples.json",
     "version": "changeset version && pnpm install --no-frozen-lockfile && pnpm run docs-update",
-    "release": "pnpm run build && changeset publish",
-    "clean": "rimraf build tsbuildinfo dist .ultra.cache.json",
-    "build": "pnpm build-all && pnpm build-pack",
-    "build-cjs": "babel build/esm --config-file ./.babel.cjs.json --out-dir build/cjs --out-file-extension .js --source-maps",
-    "build-mjs": "babel build/esm --config-file ./.babel.mjs.json --out-dir build/mjs --out-file-extension .mjs --source-maps",
-    "build-post": "build-utils pack-v1",
-    "build-pack": "concurrently \"pnpm build-cjs\" \"pnpm build-mjs\" && pnpm build-post",
-    "build-all": "tsc -b tsconfig.json",
-    "build-watch": "tsc -b tsconfig.json --watch",
+    "clean": "node scripts/clean.mjs",
+    "gen": "node scripts/gen.mjs",
+    "build": "pnpm gen && preconstruct fix && preconstruct build && pnpm gen",
     "dtslint": "dtslint dtslint",
     "lint": "eslint . --ext .ts,.tsx",
     "autofix": "pnpm lint --fix",
     "tc": "tsc --noEmit",
     "docs": "docgen",
     "docs-update": "git add --force --all docs/modules || true",
-    "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
+    "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning dist",
     "test": "vitest",
     "test-all": "npm run circular && npm run lint && npm run dtslint && vitest run",
     "coverage": "vitest run --coverage"
   },
   "exports": {
     ".": {
-      "require": "./build/cjs/index.js"
+      "types": "./dist/declarations/src/index.d.ts",
+      "module": "./dist/effect-match.esm.js",
+      "import": "./dist/effect-match.cjs.mjs",
+      "default": "./dist/effect-match.cjs.js"
     },
-    "./*": {
-      "require": "./build/cjs/*.js"
+    "./package.json": "./package.json",
+    "./SafeRefinement": {
+      "types": "./dist/declarations/src/SafeRefinement.d.ts",
+      "module": "./SafeRefinement/dist/effect-match-SafeRefinement.esm.js",
+      "import": "./SafeRefinement/dist/effect-match-SafeRefinement.cjs.mjs",
+      "default": "./SafeRefinement/dist/effect-match-SafeRefinement.cjs.js"
+    },
+    "./Types": {
+      "types": "./dist/declarations/src/Types.d.ts",
+      "module": "./Types/dist/effect-match-Types.esm.js",
+      "import": "./Types/dist/effect-match-Types.cjs.mjs",
+      "default": "./Types/dist/effect-match-Types.cjs.js"
     }
   },
   "peerDependencies": {
     "effect": "2.0.0-next.42"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.0",
     "@babel/core": "^7.23.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
+    "@babel/preset-typescript": "^7.23.0",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.2",
     "@effect/build-utils": "^0.1.4",
     "@effect/docgen": "^0.1.8",
     "@effect/eslint-plugin": "^0.1.2",
     "@effect/language-service": "^0.0.21",
+    "@preconstruct/cli": "^2.8.1",
     "@types/chai": "^4.3.6",
     "@types/node": "^20.8.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -86,7 +104,6 @@
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "glob": "^10.3.10",
     "madge": "^6.1.0",
-    "preconstruct": "^1.0.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
     "ts-pattern": "^5.0.5",
@@ -94,5 +111,17 @@
     "typescript": "5.2.2",
     "vite": "^4.4.9",
     "vitest": "0.34.6"
+  },
+  "files": [
+    "src",
+    "dist",
+    "internal",
+    "SafeRefinement",
+    "Types"
+  ],
+  "pnpm": {
+    "patchedDependencies": {
+      "@preconstruct/cli@2.8.1": "patches/@preconstruct__cli@2.8.1.patch"
+    }
   }
 }
