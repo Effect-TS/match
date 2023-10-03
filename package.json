@@ -2,8 +2,7 @@
   "name": "@effect/match",
   "version": "0.36.1",
   "publishConfig": {
-    "access": "public",
-    "directory": "dist"
+    "access": "public"
   },
   "repository": {
     "type": "git",
