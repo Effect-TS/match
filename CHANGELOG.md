@@ -1,5 +1,17 @@
 # @effect/match
 
+## 0.38.0
+
+### Minor Changes
+
+- [#192](https://github.com/Effect-TS/match/pull/192) [`52a095e`](https://github.com/Effect-TS/match/commit/52a095ed0d44a980e0076ca65375fa406e5e7ed1) Thanks [@tim-smart](https://github.com/tim-smart)! - update effect
+
+### Patch Changes
+
+- [#191](https://github.com/Effect-TS/match/pull/191) [`fe65347`](https://github.com/Effect-TS/match/commit/fe653473f7e7fc62f25c09211222d95b0f938e92) Thanks [@tim-smart](https://github.com/tim-smart)! - switch to build-utils prepare-v1
+
+- [#191](https://github.com/Effect-TS/match/pull/191) [`fe65347`](https://github.com/Effect-TS/match/commit/fe653473f7e7fc62f25c09211222d95b0f938e92) Thanks [@tim-smart](https://github.com/tim-smart)! - update effect
+
 ## 0.37.0
 
 ### Minor Changes
