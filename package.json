@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "example": "ts-node --project tsconfig.examples.json",
-    "version": "changeset version && pnpm install --no-frozen-lockfile && pnpm run docs-update",
+    "version": "changeset version",
     "clean": "node scripts/clean.mjs",
     "gen": "build-utils prepare-v1",
     "build": "pnpm gen && preconstruct fix && preconstruct build && pnpm gen",
@@ -47,7 +47,7 @@
     "autofix": "pnpm lint --fix",
     "tc": "tsc --noEmit",
     "docs": "docgen",
-    "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning dist",
+    "circular": "madge --extensions ts --circular --no-color --no-spinner --warning src",
     "test": "vitest",
     "test-all": "npm run circular && npm run lint && npm run dtslint && vitest run",
     "coverage": "vitest run --coverage"
