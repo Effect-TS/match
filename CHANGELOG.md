@@ -1,5 +1,11 @@
 # @effect/match
 
+## 0.40.0
+
+### Minor Changes
+
+- [#197](https://github.com/Effect-TS/match/pull/197) [`fe06161`](https://github.com/Effect-TS/match/commit/fe061610a10fa243a3f9e69903f500483d36c661) Thanks [@sukovanej](https://github.com/sukovanej)! - Update effect.
+
 ## 0.39.0
 
 ### Minor Changes
